@@ -1,0 +1,15 @@
+{
+	"wwwAddress": "127.0.0.1",
+	"wwwPort": 8080,
+	"serviceAddress": "127.0.0.1",
+	"servicePort": 8085,
+	"smtpAddress": "127.0.0.1",
+	"smtpPort": 25,
+	"dbEngine": "SQLite",
+	"dbHost": "",
+	"dbPort": 0,
+	"dbDatabase": "./mailslurper.db",
+	"dbUserName": "",
+	"dbPassword": "",
+	"maxWorkers": 1000
+}

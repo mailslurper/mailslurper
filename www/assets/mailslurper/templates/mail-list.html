@@ -1,0 +1,26 @@
+<div ui-layout="{flow:'column'}">
+	<div class="well">
+		<table class="table table-condensed" ng-repeat="mail in mailItems">
+			<tr>
+				<td><strong>Subject&#58;</strong></td>
+				<td>{{mail.subject}}</td>
+			</tr>
+			<tr>
+				<td><strong>Date Sent&#58;</strong></td>
+				<td>{{mail.dateSent}}</td>
+			</tr>
+			<tr>
+				<td><strong>From&#58;</strong></td>
+				<td>{{mail.fromAddress}}</td>
+			</tr>
+		</table>
+
+		<div>
+				<a on-click="openAttachment" class="attachmentLink"><span class="label label-info">{{fileName}}</span></a>
+		</div>
+	</div>
+
+	<div class="mail-view">
+		mailView
+	</div>
+</div>

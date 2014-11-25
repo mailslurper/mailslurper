@@ -1,0 +1,67 @@
+html, body {
+	height: 100%;
+	overflow: hidden;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+#wrap {
+	height: 100%;
+}
+
+#footer {
+	height: 60px;
+	background-color: #f5f5f5;
+}
+
+#footer .credit { width: 50%; }
+
+.navbar { min-height: 35px; height: 35px; }
+.navbar-brand { padding: 7px 15px 0; }
+.nav > li {
+	top: -7px;
+}
+
+.container {
+	min-height: 100% !important;
+	height: 100% !important;
+}
+.container .credit {
+	margin: 20px 0;
+}
+
+#content {
+	height: 100%;
+}
+
+.highlight-row {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+#mails {
+}
+
+.padding-top-22 { padding-top: 22px; }
+.margin-bottom-15 { margin-bottom: 15px; }
+
+.cursor { cursor: pointer; }
+.pointer { cursor: default; }
+
+.margin-right-20 { margin-right: 20px; }
+
+.navbar { margin-bottom: 0px; }
+.sortable { cursor: pointer; }
+
+#mailItemsTable { margin-bottom: 0px; }
+#mailItemsHeader { margin-bottom: 0px; }
+.mail-view { padding: 10px; }
+.mailrow { cursor: default; }
+#searchNav { margin-left: 25px; }
+.attachmentLink { cursor: default; }
+.credit {
+	position: relative;
+	top: 15px;
+	left: 15px;
+}

@@ -11,14 +11,21 @@ import (
 	"os"
 	"runtime"
 
+//	"github.com/adampresley/sigint"
+
 	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/libmailslurper/receiver"
 	"github.com/mailslurper/libmailslurper/server"
 	"github.com/mailslurper/libmailslurper/storage"
-	"github.com/mailslurper/mailslurperservice/listener"
+	serviceListener "github.com/mailslurper/mailslurperservice/listener"
 
-	"github.com/adampresley/sigint"
-)
+	appListener "github.com/mailslurper/mailslurper/listener"
+
+/*	"github.com/miketheprogrammer/go-thrust/dispatcher"
+	"github.com/miketheprogrammer/go-thrust/session"
+	"github.com/miketheprogrammer/go-thrust/spawn"
+	"github.com/miketheprogrammer/go-thrust/window"
+*/)
 
 func main() {
 	var err error
@@ -26,11 +33,11 @@ func main() {
 
 	/*
 	 * Prepare SIGINT handler (CTRL+C)
-	 */
 	sigint.ListenForSIGINT(func() {
 		log.Println("Shutting down...")
 		os.Exit(0)
 	})
+	 */
 
 	/*
 	 * Load configuration
@@ -82,7 +89,26 @@ func main() {
 	go server.Dispatcher(pool, smtpServer, receivers)
 
 	/*
+	 * Setup the app HTTP listener
+	 */
+	go appListener.StartHttpListener(appListener.NewHttpListener(config.WWWAddress, config.WWWPort))
+
+	/*
+	 * Setup Thrust window
+	spawn.SetBaseDirectory("./")
+	spawn.Run(true)
+
+	mySession := session.NewSession(false, false, "cache")
+
+	thrustWindow := window.NewWindow("http://" + config.GetFullWwwBindingAddress(), mySession)
+	thrustWindow.Show()
+	thrustWindow.Focus()
+
+	go dispatcher.RunLoop()
+	 */
+
+	/*
 	 * Start the services server
 	 */
-	listener.StartHttpListener(listener.NewHttpListener(config.ServiceAddress, config.ServicePort))
+	serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
 }

@@ -1,0 +1,37 @@
+<div id="mails">
+	<table class="table" id="mailItemsHeader">
+		<thead>
+			<tr>
+				<th width="1%">&nbsp;</th>
+				<th width="14%" class="sortable" on-click="sort:dateSent">Date <span class="{{getSortIcon('dateSent')}}"></span></th>
+				<th width="45%" class="sortable" on-click="sort:subject">Subject <span class="{{getSortIcon('subject')}}"></span></th>
+				<th width="20%" class="sortable" on-click="sort:fromAddress">From <span class="{{getSortIcon('fromAddress')}}"></span></th>
+				<th width="20%" class="sortable" on-click="sort:toAddresses">To <span class="{{getSortIcon('toAddresses')}}"></span></th>
+			</tr>
+		</thead>
+	</table>
+
+	<table class="table" id="mailItemsTable">
+		<tbody>
+			{{#mails.length <= 0}}
+				<tr>
+					<td colspan="4">
+						No mail items to display. Send some mail!
+					</td>
+				</tr>
+			{{/mails.length <= 0}}
+
+			{{#mails.length > 0}}
+				{{# sort(mails, sortColumn) }}
+					<tr on-click="viewMailItem" class="mailrow">
+						<td width="1%">{{{attachmentIcon}}}</td>
+						<td width="14%">{{dateSent}}</td>
+						<td width="45%">{{subject}}</td>
+						<td width="20%">{{fromAddress}}</td>
+						<td width="20%">{{(compressTo(toAddresses))}}</td>
+					</tr>
+				{{/mails}}
+			{{/mails.length > 0}}
+		</tbody>
+	</table>
+</div>

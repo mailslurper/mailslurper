@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+// Copyright 2013 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+-->
+<html lang="en" ng-app="app">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Slurp mails into oblivion!" />
+	<meta name="author" content="Adam Presley" />
+	<link href="/assets/images/favicon.ico" rel="shortcut icon" />
+
+	<title>MailSlurper</title>
+
+	<!--CSS-START-->
+	<link href="/assets/bootstrap/bootstrap.css" rel="stylesheet" />
+	<link href="/assets/bootstrap/bootstrap-theme.css" rel="stylesheet" />
+	<link href="/assets/mailslurper/css/style.css" rel="stylesheet" />
+	<link href="/assets/mailslurper/css/layout.css" rel="stylesheet" />
+	<link href="/assets/ui-layout/ui-layout.css" rel="stylesheet" />
+	<!--CSS-END-->
+
+	<!--JS-START-->
+	<script src="/assets/jquery/jquery.js"></script>
+	<script src="/assets/bootstrap/bootstrap.js"></script>
+	<script src="/assets/angularjs/angular.js"></script>
+	<script src="/assets/angularjs/angular-route.js"></script>
+	<script src="/assets/angularjs/ui-bootstrap-tpls-0.9.0.js"></script>
+
+	<script src="/assets/ui-layout/ui-layout.js"></script>
+
+	<script src="/assets/mailslurper/js/app.js"></script>
+	<script src="/assets/mailslurper/js/index-controller.js"></script>
+	<!--JS-END-->
+</head>
+
+<body ng-controller="IndexCtrl">
+	<div ui-layout style="height: 100%;">
+		<div ui-layout-container min-size="35px" size="36px" max-size="35px">
+			<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="/">MailSlurper</a>
+					</div>
+
+					<div class="navbar-collapse collapse">
+						<ul class="nav navbar-nav">
+							<li id="homeNav"><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+							<li id="configNav"><a href="/configuration"><span class="glyphicon glyphicon-cog"></span></a></li>
+
+							<li id="searchNav" class="hide"><a href="#"><span class="glyphicon glyphicon-search"></span> &nbsp;Search</a></li>
+							<li id="clearNav" class="hide"><a href="#"><span class="glyphicon glyphicon-minus"></span> &nbsp;Clear</a></li>
+						</ul>
+					</div>
+			</div>
+		</div>
+
+		<div ng-view></div>
+
+		<footer id="footer">
+				<p class="text-muted credit">&copy; 2013 Adam Presley</p>
+		</footer>
+	</div>
+</body>
+</html>

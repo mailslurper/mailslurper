@@ -1,0 +1,83 @@
+.flexy-layout {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+.flexy-layout > .block {
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+}
+
+.flexy-layout.column > .block {
+    height: 100%;
+}
+
+.flexy-layout.row > .block {
+    width: 100%;
+}
+
+.block.splitter {
+    position: relative;
+    overflow: visible;
+}
+
+.flexy-layout.column > .splitter{
+    width: 5px;
+}
+
+.flexy-layout.row > .splitter{
+    height: 5px;
+}
+
+.ghost {
+    float: left;
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    z-index: 99;
+    cursor: col-resize;
+}
+
+.block-content {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+body {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    color: rgb(80, 80, 80);
+
+}
+
+.block {
+    transition: all 0.2s;
+}
+
+.block-content{
+    border:1px solid #000000;
+}
+
+.splitter{
+    background: orange;
+}
+
+.ghost {
+    background: orange;
+    opacity: 0.5;
+}

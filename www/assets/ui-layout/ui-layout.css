@@ -1,0 +1,30 @@
+
+/**
+  UI.Layout CSS
+*************************************/
+.stretch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Can be changed by hand ;)*/
+  overflow: auto;
+}
+
+.ui-splitbar{
+  display: block;
+  background-color: #ffffff;
+  right: auto;
+  position: absolute;
+  z-index: 99999;
+}
+
+.ui-layout-row > .ui-splitbar{
+  height: 8px; width: 100%;
+  cursor: row-resize;
+}
+.ui-layout-column > .ui-splitbar{
+  width: 8px; height: 100%;
+  cursor: col-resize;
+}

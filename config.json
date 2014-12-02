@@ -4,7 +4,7 @@
 	"serviceAddress": "127.0.0.1",
 	"servicePort": 8085,
 	"smtpAddress": "127.0.0.1",
-	"smtpPort": 25,
+	"smtpPort": 2500,
 	"dbEngine": "SQLite",
 	"dbHost": "",
 	"dbPort": 0,

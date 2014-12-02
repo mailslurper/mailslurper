@@ -4,6 +4,12 @@ html, body {
 	width: 100%;
 	padding: 0px;
 	margin: 0px;
+	font-size: 0.85em;
+}
+
+#header {
+	height: 35px;
+	overflow: hidden;
 }
 
 #wrap {
@@ -59,9 +65,16 @@ html, body {
 .mail-view { padding: 10px; }
 .mailrow { cursor: default; }
 #searchNav { margin-left: 25px; }
-.attachmentLink { cursor: default; }
+.attachmentLink { cursor: pointer; margin-right: 10px; }
 .credit {
 	position: relative;
 	top: 15px;
 	left: 15px;
+}
+
+/******************************************************************************
+ * jQuery UI Layout Overrides
+ *****************************************************************************/
+.ui-layout-pane {
+	padding: 0px;
 }

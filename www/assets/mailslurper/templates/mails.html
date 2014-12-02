@@ -1,0 +1,38 @@
+<div mail-layout>
+	<div class="ui-layout-north" style="overflow: hidden;">
+		<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">MailSlurper</a>
+			</div>
+
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li id="homeNav"><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+					<li id="configNav"><a href="/configuration"><span class="glyphicon glyphicon-cog"></span></a></li>
+
+					<li id="searchNav" class="hide"><a href="#"><span class="glyphicon glyphicon-search"></span> &nbsp;Search</a></li>
+					<li id="clearNav" class="hide"><a href="#"><span class="glyphicon glyphicon-minus"></span> &nbsp;Clear</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui-layout-center">
+		<ng-include src="'/assets/mailslurper/templates/mail-list.html'"></ng-include>
+	</div>
+
+	<div class="mail-view ui-layout-east">
+		<ng-include src="'/assets/mailslurper/templates/mail-view.html'"></ng-include>
+	</div>
+
+	<div class="ui-layout-south" style="overflow: hidden;">
+		<footer id="footer">
+				<p class="text-muted credit">&copy; 2013 Adam Presley</p>
+		</footer>
+	</div>
+</div>

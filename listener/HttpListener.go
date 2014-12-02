@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/mailslurper/mailslurper/controllers/homeController"
+	"github.com/mailslurper/mailslurper/controllers/webSocketController"
 	"github.com/mailslurper/mailslurper/middleware"
 
 	"github.com/gorilla/mux"
@@ -48,6 +49,9 @@ func setupHttpRouter() http.Handler {
 
 	// Static requests
 	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./www/assets"))))
+
+	// Web-sockets
+	router.HandleFunc("/ws", webSocketController.WebSocketHandler)
 
 /*
 

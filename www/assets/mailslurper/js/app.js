@@ -1,15 +1,13 @@
 "use strict";
 
-var app = angular.module("app", ["ngRoute", "ui.layout", "ui.bootstrap"])
+$(document).ready(function() {
+	/*
+	 * Setup routing
+	 */
+	var routes = {
+		"home": MailHomeController.index
+	};
 
-.config(["$routeProvider", function($routeProvider) {
-	$routeProvider
-		.when("/", {
-			controller: "IndexCtrl",
-			templateUrl: "/assets/mailslurper/templates/mail-list.html"
-		})
-
-		.otherwise({
-			redirectTo: "/"
-		});
-}]);
+	Grapnel.listen(routes);
+	window.location.hash = "#home";
+});

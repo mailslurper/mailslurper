@@ -1,26 +1,74 @@
-<div ui-layout="{flow:'column'}">
-	<div class="well">
-		<table class="table table-condensed" ng-repeat="mail in mailItems">
+<div id="mails" class="ui-layout-center">
+	<table class="table" id="mailItemsHeader">
+		<thead>
 			<tr>
-				<td><strong>Subject&#58;</strong></td>
-				<td>{{mail.subject}}</td>
+				<th width="1%">&nbsp;</th>
+				<th width="14%" class="sortable" on-click="sort:dateSent">Date <span class="{{getSortIcon('dateSent')}}"></span></th>
+				<th width="45%" class="sortable" on-click="sort:subject">Subject <span class="{{getSortIcon('subject')}}"></span></th>
+				<th width="20%" class="sortable" on-click="sort:fromAddress">From <span class="{{getSortIcon('fromAddress')}}"></span></th>
+				<th width="20%" class="sortable" on-click="sort:toAddresses">To <span class="{{getSortIcon('toAddresses')}}"></span></th>
 			</tr>
-			<tr>
-				<td><strong>Date Sent&#58;</strong></td>
-				<td>{{mail.dateSent}}</td>
-			</tr>
-			<tr>
-				<td><strong>From&#58;</strong></td>
-				<td>{{mail.fromAddress}}</td>
-			</tr>
-		</table>
+		</thead>
+	</table>
 
-		<div>
-				<a on-click="openAttachment" class="attachmentLink"><span class="label label-info">{{fileName}}</span></a>
+	<table class="table" id="mailItemsTable">
+		<tbody>
+			{{#mails.length <= 0}}
+				<tr>
+					<td colspan="4">
+						No mail items to display. Send some mail!
+					</td>
+				</tr>
+			{{/mails.length <= 0}}
+
+			{{#mails.length > 0}}
+				{{# sort(mails, sortColumn) }}
+					<tr on-click="viewMailItem" class="mailrow">
+						<td width="1%">{{{(getAttachmentIcon(attachments))}}}</td>
+						<td width="14%">{{dateSent}}</td>
+						<td width="45%">{{subject}}</td>
+						<td width="20%">{{fromAddress}}</td>
+						<td width="20%">{{(compressTo(toAddresses))}}</td>
+					</tr>
+				{{/mails}}
+			{{/mails.length > 0}}
+		</tbody>
+	</table>
+</div>
+
+<div class="ui-layout-east">
+	{{#subject.length > 0}}
+		<div class="well">
+			<table class="table table-condensed">
+				<tr>
+					<td><strong>Subject:</strong></td>
+					<td>{{subject}}</td>
+				</tr>
+				<tr>
+					<td><strong>Date Sent:</strong></td>
+					<td>{{dateSent}}</td>
+				</tr>
+				<tr>
+					<td><strong>From:</strong></td>
+					<td>{{fromAddress}}</td>
+				</tr>
+			</table>
+
+			<div>
+				{{#attachments}}
+					<a href="http://localhost:8085/v1/mails/{{mailId}}/attachments/{{id}}" data-featherlight="image" class="attachmentLink"><span class="label label-info">{{headers.fileName}}</span></a>
+				{{/attachments}}
+			</div>
 		</div>
-	</div>
 
-	<div class="mail-view">
-		mailView
-	</div>
+		<div class="mail-view">
+			{{{body}}}
+		</div>
+	{{/subject.length > 0}}
+
+	{{#subject.length <= 0}}
+		<div class="alert alert-info">
+			Select a mail to view details
+		</div>
+	{{/subject.length <= 0}}
 </div>

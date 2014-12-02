@@ -10,8 +10,6 @@ import (
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
-
-//	"github.com/gorilla/mux"
 )
 
 func Index(writer http.ResponseWriter, request *http.Request) {

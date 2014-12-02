@@ -11,21 +11,22 @@ import (
 	"os"
 	"runtime"
 
-//	"github.com/adampresley/sigint"
+	"github.com/adampresley/sigint"
 
 	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/libmailslurper/receiver"
 	"github.com/mailslurper/libmailslurper/server"
 	"github.com/mailslurper/libmailslurper/storage"
+	"github.com/mailslurper/libmailslurper/websocket"
 	serviceListener "github.com/mailslurper/mailslurperservice/listener"
 
 	appListener "github.com/mailslurper/mailslurper/listener"
 
-/*	"github.com/miketheprogrammer/go-thrust/dispatcher"
-	"github.com/miketheprogrammer/go-thrust/session"
-	"github.com/miketheprogrammer/go-thrust/spawn"
-	"github.com/miketheprogrammer/go-thrust/window"
-*/)
+/*
+*/
+	"github.com/miketheprogrammer/go-thrust"
+	"github.com/miketheprogrammer/go-thrust/lib/commands"
+)
 
 func main() {
 	var err error
@@ -33,11 +34,12 @@ func main() {
 
 	/*
 	 * Prepare SIGINT handler (CTRL+C)
-	sigint.ListenForSIGINT(func() {
-		log.Println("Shutting down...")
-		os.Exit(0)
-	})
 	 */
+	sigint.ListenForSIGINT(func() {
+		log.Println("Shutting down via SIGINT...")
+		//os.Exit(0)
+		thrust.Exit()
+	})
 
 	/*
 	 * Load configuration
@@ -81,6 +83,7 @@ func main() {
 	 */
 	receivers := []receiver.IMailItemReceiver{
 		receiver.DatabaseReceiver{},
+		receiver.WebSocketReceiver{},
 	}
 
 	/*
@@ -94,21 +97,30 @@ func main() {
 	go appListener.StartHttpListener(appListener.NewHttpListener(config.WWWAddress, config.WWWPort))
 
 	/*
-	 * Setup Thrust window
-	spawn.SetBaseDirectory("./")
-	spawn.Run(true)
-
-	mySession := session.NewSession(false, false, "cache")
-
-	thrustWindow := window.NewWindow("http://" + config.GetFullWwwBindingAddress(), mySession)
-	thrustWindow.Show()
-	thrustWindow.Focus()
-
-	go dispatcher.RunLoop()
+	 * Setup web socket bucket
 	 */
+	websocket.WebSocketConnections = make(map[*websocket.WebSocketConnection]bool)
 
 	/*
 	 * Start the services server
 	 */
-	serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
+	//serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
+	go serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
+
+	/*
+	 * Setup Thrust window
+	 */
+	thrust.DisableLogger()
+	thrust.Start()
+
+	thrustWindow := thrust.NewWindow("http://" + config.GetFullWwwBindingAddress(), nil)
+	thrustWindow.Show()
+	thrustWindow.Focus()
+
+	thrust.NewEventHandler("closed", func(eventResult commands.EventResult) {
+		log.Println("INFO - Closing application...")
+		thrust.Exit()
+	})
+
+	thrust.LockThread()
 }

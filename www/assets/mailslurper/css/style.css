@@ -24,9 +24,9 @@ html, body {
 #footer .credit { width: 50%; }
 
 .navbar { min-height: 35px; height: 35px; }
-.navbar-brand { padding: 7px 15px 0; }
+.navbar-brand { padding: 3px 15px 0; }
 .nav > li {
-	top: -7px;
+	top: -12px;
 }
 
 .container {

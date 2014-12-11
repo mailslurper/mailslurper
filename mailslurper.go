@@ -1,9 +1,6 @@
 // Copyright 2013-3014 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
-
-// LOOK ITO USING https://github.com/GeertJohan/go.rice
-// TO EMBED ASSETS IN A SINGLE EXE!!!
 package main
 
 import (
@@ -21,11 +18,6 @@ import (
 	serviceListener "github.com/mailslurper/mailslurperservice/listener"
 
 	appListener "github.com/mailslurper/mailslurper/listener"
-
-/*
-*/
-	"github.com/miketheprogrammer/go-thrust"
-	"github.com/miketheprogrammer/go-thrust/lib/commands"
 )
 
 func main() {
@@ -37,8 +29,7 @@ func main() {
 	 */
 	sigint.ListenForSIGINT(func() {
 		log.Println("Shutting down via SIGINT...")
-		//os.Exit(0)
-		thrust.Exit()
+		os.Exit(0)
 	})
 
 	/*
@@ -70,7 +61,7 @@ func main() {
 	/*
 	 * Setup the SMTP listener
 	 */
-	smtpServer, err := server.SetupSmtpServerListener(config.GetFullSmtpBindingAddress());
+	smtpServer, err := server.SetupSmtpServerListener(config.GetFullSmtpBindingAddress())
 	if err != nil {
 		log.Println("ERROR - There was a problem starting the SMTP listener: ", err)
 		os.Exit(0)
@@ -104,23 +95,5 @@ func main() {
 	/*
 	 * Start the services server
 	 */
-	//serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
-	go serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
-
-	/*
-	 * Setup Thrust window
-	 */
-	thrust.DisableLogger()
-	thrust.Start()
-
-	thrustWindow := thrust.NewWindow("http://" + config.GetFullWwwBindingAddress(), nil)
-	thrustWindow.Show()
-	thrustWindow.Focus()
-
-	thrust.NewEventHandler("closed", func(eventResult commands.EventResult) {
-		log.Println("INFO - Closing application...")
-		thrust.Exit()
-	})
-
-	thrust.LockThread()
+	serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
 }

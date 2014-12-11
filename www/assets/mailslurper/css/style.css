@@ -24,10 +24,13 @@ html, body {
 #footer .credit { width: 50%; }
 
 .navbar { min-height: 35px; height: 35px; }
-.navbar-brand { padding: 3px 15px 0; }
+.navbar-brand { padding: 7px 15px 0; }
+.navbar-inverse { background-color: #5264ae; }
+.navbar-inverse .navbar-brand { color: white; }
 .nav > li {
-	top: -12px;
+	top: -8px;
 }
+.navbar-inverse .navbar-nav > li > a { color: white; }
 
 .container {
 	min-height: 100% !important;

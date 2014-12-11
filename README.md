@@ -3,7 +3,6 @@
 ### Copyright Information
 This application makes use of the following libraries.
 
-* [Go-Thrust](https://github.com/miketheprogrammer/go-thrust) - MIT
 * [Gorilla WebSocket](https://github.com/gorilla/websocket) - BSD
 * [Gorilla Mux](https://github.com/gorilla/mux) - Modified BSD?
 * [Alice Middleware](https://github.com/justinas/alice) - MIT

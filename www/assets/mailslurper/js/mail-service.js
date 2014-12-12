@@ -9,7 +9,7 @@ var MailService = {
 	 * Performs an AJAX call to get a single mail item by ID.
 	 */
 	getMailItem: function(id, callback) {
-		$.ajax({ url: ServiceSettings.buildUrl("/mails/" + id }).done(function(data) {
+		$.ajax({ url: ServiceSettings.buildUrl("/mails/" + id ) }).done(function(data) {
 			callback(data.mailItem);
 		});
 	},

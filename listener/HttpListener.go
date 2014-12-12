@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/mailslurper/mailslurper/controllers/homeController"
+	"github.com/mailslurper/mailslurper/controllers/settingsController"
 	"github.com/mailslurper/mailslurper/controllers/webSocketController"
 	"github.com/mailslurper/mailslurper/middleware"
 
@@ -43,9 +44,9 @@ Sets the HTTP routes
 func setupHttpRouter() http.Handler {
 	router := mux.NewRouter()
 
-
 	// Home
 	router.HandleFunc("/", homeController.Index).Methods("GET")
+	router.HandleFunc("/servicesettings", settingsController.GetServiceSettings).Methods("GET", "OPTIONS")
 
 	// Static requests
 	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./www/assets"))))
@@ -53,17 +54,17 @@ func setupHttpRouter() http.Handler {
 	// Web-sockets
 	router.HandleFunc("/ws", webSocketController.WebSocketHandler)
 
-/*
+	/*
 
-	// Configuration
-	requestRouter.HandleFunc("/configuration", controllers.Config).Methods("GET")
-	requestRouter.HandleFunc("/config", controllers.GetConfig).Methods("GET")
-	requestRouter.HandleFunc("/config", controllers.SaveConfig).Methods("PUT")
+		// Configuration
+		requestRouter.HandleFunc("/configuration", controllers.Config).Methods("GET")
+		requestRouter.HandleFunc("/config", controllers.GetConfig).Methods("GET")
+		requestRouter.HandleFunc("/config", controllers.SaveConfig).Methods("PUT")
 
-	// Web-sockets
-	requestRouter.HandleFunc("/ws", smtp.WebsocketHandler)
+		// Web-sockets
+		requestRouter.HandleFunc("/ws", smtp.WebsocketHandler)
 
-*/
+	*/
 	return router
 }
 

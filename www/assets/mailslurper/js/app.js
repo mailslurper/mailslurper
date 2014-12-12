@@ -2,6 +2,11 @@
 
 $(document).ready(function() {
 	/*
+	 * Get service app settings
+	 */
+	ServiceSettings.getServiceSettings();
+
+	/*
 	 * Setup routing
 	 */
 	var routes = {

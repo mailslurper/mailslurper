@@ -1,11 +1,16 @@
 # MailSlurper
 
+Simple mail SMTP server that slurps mail into oblivion! Useful only for local development MailSlurper runs on your local machine and listens for outgoing mail send requests. When one is received the mail item is stored in a database and display in a web-based application.
+
+
+
 ### Copyright Information
 This application makes use of the following libraries.
 
 * [Gorilla WebSocket](https://github.com/gorilla/websocket) - BSD
 * [Gorilla Mux](https://github.com/gorilla/mux) - Modified BSD?
 * [Alice Middleware](https://github.com/justinas/alice) - MIT
+* [Open-Golang](https://github.com/skratchdot/open-golang) - MIT
 * [Bootstrap](http://getbootstrap.com/) - MIT
 * [Featherlight](https://github.com/noelboss/featherlight/) - MIT
 * [Grapnel](https://github.com/EngineeringMode/Grapnel.js) - MIT

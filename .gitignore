@@ -24,3 +24,4 @@ _testmain.go
 *.exe
 mail.db
 mailslurper.db
+mailslurper

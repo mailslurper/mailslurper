@@ -12,7 +12,6 @@ var MailHomeController = {
 		mails.unshift(mailItem);
 
 		view.set("mails", mails);
-		//mailsBackup = mails;
 	},
 
 	/**

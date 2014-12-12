@@ -4,20 +4,22 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"runtime"
 
 	"github.com/adampresley/sigint"
+	"github.com/skratchdot/open-golang/open"
 
 	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/libmailslurper/receiver"
 	"github.com/mailslurper/libmailslurper/server"
 	"github.com/mailslurper/libmailslurper/storage"
 	"github.com/mailslurper/libmailslurper/websocket"
-	serviceListener "github.com/mailslurper/mailslurperservice/listener"
-
+	"github.com/mailslurper/mailslurper/global"
 	appListener "github.com/mailslurper/mailslurper/listener"
+	serviceListener "github.com/mailslurper/mailslurperservice/listener"
 )
 
 func main() {
@@ -35,7 +37,7 @@ func main() {
 	/*
 	 * Load configuration
 	 */
-	config, err := configuration.LoadConfigurationFromFile(configuration.CONFIGURATION_FILE_NAME)
+	global.Config, err = configuration.LoadConfigurationFromFile(configuration.CONFIGURATION_FILE_NAME)
 	if err != nil {
 		log.Println("ERROR - There was an error reading your configuration file: ", err)
 		os.Exit(0)
@@ -44,7 +46,7 @@ func main() {
 	/*
 	 * Setup global database connection handle
 	 */
-	databaseConnection := config.GetDatabaseConfiguration()
+	databaseConnection := global.Config.GetDatabaseConfiguration()
 
 	if err = storage.ConnectToStorage(databaseConnection); err != nil {
 		log.Println("ERROR - There was an error connecting to your data storage: ", err)
@@ -56,12 +58,12 @@ func main() {
 	/*
 	 * Setup the server pool
 	 */
-	pool := server.NewServerPool(config.MaxWorkers)
+	pool := server.NewServerPool(global.Config.MaxWorkers)
 
 	/*
 	 * Setup the SMTP listener
 	 */
-	smtpServer, err := server.SetupSmtpServerListener(config.GetFullSmtpBindingAddress())
+	smtpServer, err := server.SetupSmtpServerListener(global.Config.GetFullSmtpBindingAddress())
 	if err != nil {
 		log.Println("ERROR - There was a problem starting the SMTP listener: ", err)
 		os.Exit(0)
@@ -85,7 +87,7 @@ func main() {
 	/*
 	 * Setup the app HTTP listener
 	 */
-	go appListener.StartHttpListener(appListener.NewHttpListener(config.WWWAddress, config.WWWPort))
+	go appListener.StartHttpListener(appListener.NewHttpListener(global.Config.WWWAddress, global.Config.WWWPort))
 
 	/*
 	 * Setup web socket bucket
@@ -93,7 +95,13 @@ func main() {
 	websocket.WebSocketConnections = make(map[*websocket.WebSocketConnection]bool)
 
 	/*
+	 * Fire the app up in the user's default browser.
+	 */
+	log.Printf("INFO - Opening browser to http://%s:%d", global.Config.WWWAddress, global.Config.WWWPort)
+	open.Start(fmt.Sprintf("http://%s:%d", global.Config.WWWAddress, global.Config.WWWPort))
+
+	/*
 	 * Start the services server
 	 */
-	serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
+	serviceListener.StartHttpListener(serviceListener.NewHttpListener(global.Config.ServiceAddress, global.Config.ServicePort))
 }

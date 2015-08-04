@@ -68,6 +68,10 @@ require(
 				viewMailDetails(context);
 			});
 
+			$("#btnRefresh").on("click", function() {
+				refreshMailList(context);
+			});
+
 			$("#btnSearch").on("click", function() {
 				renderSearchMailModal(context);
 			});
@@ -98,6 +102,14 @@ require(
 				.catch(AlertService.error);
 
 			return Promise.resolve(context);
+		};
+
+		/**
+		 * Refreshes the mail list view. Basically just
+		 * performs a search again.
+		 */
+		var refreshMailList = function(context) {
+			return performSearch(context);
 		};
 
 		/**

@@ -1,0 +1,13 @@
+{
+  "name": "MailSlurper-Server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+     "name": "Adam Presley",
+     "email": "adam@adampresley.com",
+     "url": "http://adampresley.com"
+  },
+  "dependencies": {
+    "uglify-js": "^2.4.23"
+  }
+}

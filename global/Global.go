@@ -1,7 +1,6 @@
 package global
 
-import (
-	"github.com/mailslurper/libmailslurper/configuration"
+const (
+	// Version of the MailSlurper Server application
+	SERVER_VERSION string = "1.0.0"
 )
-
-var Config *configuration.Configuration

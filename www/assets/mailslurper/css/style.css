@@ -1,83 +1,73 @@
-html, body {
-	height: 100%;
-	overflow: hidden;
+/*
+ * MailSlurper Server
+ */
+.body-container {
+	padding: 0px;
+	margin: 55px 0px 0px 0px;
+	width: 99%;
+}
+
+.date-range-picker {
+	background-color: #fff;
+	cursor: pointer;
+	padding: 5px 10px;
+	border: 1px solid #ccc;
 	width: 100%;
+}
+
+.downloadAttachment {
+	color: white;
+}
+
+.downloadAttachment:hover {
+	color: white;
+}
+
+.downloadAttachment:visited {
+	color: white;
+}
+
+.label-right-margin {
+	margin-right: 10px;
+}
+
+.mail-list-navbar {
+	margin-bottom: 0px;
 	padding: 0px;
-	margin: 0px;
-	font-size: 0.85em;
+	min-height: 1px;
 }
 
-#header {
-	height: 35px;
-	overflow: hidden;
+.mail-list-navbar .navbar-btn {
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 
-#wrap {
-	height: 100%;
+.nav-container {
+	margin-left: 0px;
 }
 
-#footer {
-	height: 60px;
-	background-color: #f5f5f5;
+.padding-right-0 {
+	padding-right: 0px;
 }
 
-#footer .credit { width: 50%; }
 
-.navbar { min-height: 35px; height: 35px; }
-.navbar-brand { padding: 7px 15px 0; }
-.navbar-inverse { background-color: #5264ae; }
-.navbar-inverse .navbar-brand { color: white; }
-.nav > li {
-	top: -8px;
-}
-.navbar-inverse .navbar-nav > li > a { color: white; }
+/*
+ * Bootstrap
+ */
 
-.container {
-	min-height: 100% !important;
-	height: 100% !important;
-}
-.container .credit {
-	margin: 20px 0;
-}
+/*
+ * BlockUI
+ */
+.blockMsg {
+	display: inline-block;
+	background-color: #333 !important;
+	color: #f5f5f5 !important;
+	padding: 20px !important;
+	border-radius: 4px !important;
+	font-size: 20px;
+	font-weight: bold;
+	border: 1px solid #888 !important;
+	/* needed for IE */
 
-#content {
-	height: 100%;
-}
-
-.highlight-row {
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-
-#mails {
-}
-
-.padding-top-22 { padding-top: 22px; }
-.margin-bottom-15 { margin-bottom: 15px; }
-
-.cursor { cursor: pointer; }
-.pointer { cursor: default; }
-
-.margin-right-20 { margin-right: 20px; }
-
-.navbar { margin-bottom: 0px; }
-.sortable { cursor: pointer; }
-
-#mailItemsTable { margin-bottom: 0px; }
-#mailItemsHeader { margin-bottom: 0px; }
-.mail-view { padding: 10px; }
-.mailrow { cursor: default; }
-#searchNav { margin-left: 25px; }
-.attachmentLink { cursor: pointer; margin-right: 10px; }
-.credit {
-	position: relative;
-	top: 15px;
-	left: 15px;
-}
-
-/******************************************************************************
- * jQuery UI Layout Overrides
- *****************************************************************************/
-.ui-layout-pane {
-	padding: 0px;
+	filter: alpha(opacity=100);
 }

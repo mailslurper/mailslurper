@@ -1,0 +1,7 @@
+<div class="form-group">
+	<label for="savedSearchID">Saved Search:</label>
+	<select id="savedSearchID" class="form-control">
+		{{#each savedSearches}}
+			<option value="{{@index}}">{{name}}</option>
+		{{/each}}
+</div>

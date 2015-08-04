@@ -1,0 +1,40 @@
+<table>
+	<tbody>
+		<tr>
+			<td width="25%">To:</td>
+			<td>{{mail.toAddresses}}</td>
+		</tr>
+		<tr>
+			<td>From:</td>
+			<td>{{mail.fromAddress}}</td>
+		</tr>
+		<tr>
+			<td>Subject:</td>
+			<td>{{mail.subject}}</td>
+		</tr>
+</table>
+
+{{#if mail.attachments.length}}
+	<hr />
+
+	<strong>Attachements:</strong><br />
+	{{#each mail.attachments}}
+		<span class="label label-success label-right-margin">
+			{{#ifIsImageAttachment this}}
+				<a href="{{attachmentURL this}}" class="downloadAttachment" data-lightbox="{{id}}">{{headers.fileName}}</a>
+			{{else}}
+				<a href="{{attachmentURL this}}" class="downloadAttachment" target="_blank">{{headers.fileName}}</a>
+			{{/ifIsImageAttachment}}
+		</span>
+	{{/each}}
+{{/if}}
+
+<hr />
+
+{{{mail.body}}}
+
+<div class="hidden">
+	<div id="attachmentModal">
+		<div id="attachmentContent"></div>
+	</div>
+</div>

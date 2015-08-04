@@ -24,4 +24,7 @@ _testmain.go
 *.exe
 mail.db
 mailslurper.db
-#mailslurper
+mailslurper
+node_modules
+www/assets/*
+!www/assets/mailslurper

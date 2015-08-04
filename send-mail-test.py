@@ -46,29 +46,29 @@ if __name__ == "__main__":
 		#
 		# Send text+html emails
 		#
-		if sendMultipartMails:
-			for index in range(numMails):
-				quote = getQuote()
-
-				textBody = "Hello,\nHere is today's quote.\n\n{0}\n  -- {1}\n\nSincerely,\nAdam Presley".format(quote["quote"], quote["source"])
-				htmlBody = "<p>Hello,</p><p>Here is today's quote.</p><p><em>{0}</em><br />&nbsp;&nbsp;-- {1}</p><p>Sincerely,<br />Adam Presley</p>".format(quote["quote"], quote["source"],)
-
-				text = MIMEText(textBody, "plain")
-				html = MIMEText(htmlBody, "html")
-
-				msg = MIMEMultipart("alternative")
-
-				msg["Subject"] = "Quote From {0}".format(quote["source"])
-				msg["From"] = me
-				msg["To"] = to
-				msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S +0000 UTC")
-
-				msg.attach(text)
-				msg.attach(html)
-
-				server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-				server.sendmail(me, [to], msg.as_string())
-				server.quit()
+		#if sendMultipartMails:
+			# for index in range(numMails):
+			# 	quote = getQuote()
+			#
+			# 	textBody = "Hello,\nHere is today's quote.\n\n{0}\n  -- {1}\n\nSincerely,\nAdam Presley".format(quote["quote"], quote["source"])
+			# 	htmlBody = "<p>Hello,</p><p>Here is today's quote.</p><p><em>{0}</em><br />&nbsp;&nbsp;-- {1}</p><p>Sincerely,<br />Adam Presley</p>".format(quote["quote"], quote["source"],)
+			#
+			# 	text = MIMEText(textBody, "plain")
+			# 	html = MIMEText(htmlBody, "html")
+			#
+			# 	msg = MIMEMultipart("alternative")
+			#
+			# 	msg["Subject"] = "Quote From {0}".format(quote["source"])
+			# 	msg["From"] = me
+			# 	msg["To"] = to
+			# 	msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S +0000 UTC")
+			#
+			# 	msg.attach(text)
+			# 	msg.attach(html)
+			#
+			# 	server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			# 	server.sendmail(me, [to], msg.as_string())
+			# 	server.quit()
 
 				#time.sleep(2)
 
@@ -147,6 +147,32 @@ if __name__ == "__main__":
 			Encoders.encode_base64(part)
 			part.add_header("Content-Type", "image/png")
 			part.add_header("Content-Disposition", "attachment; filename=\"MailSlurperLogo2.png\"")
+			msg.attach(part)
+
+			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			server.sendmail(me, [to], msg.as_string())
+			server.quit()
+
+			#
+			# Send html+attachment (JSON)
+			#
+			htmlBody = "<p>This is a <strong>HTML</strong> email with a JSON attachment.</p>"
+
+			msg = MIMEMultipart()
+			html = MIMEText(htmlBody, "html")
+
+			msg["Subject"] = "HTML+JSON Attachment Mail"
+			msg["From"] = me
+			msg["To"] = to
+			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+
+			msg.attach(html)
+
+			part = MIMEBase("multipart", "mixed")
+			part.set_payload(open("./config.json", "rb").read())
+			Encoders.encode_base64(part)
+			part.add_header("Content-Type", "application/json")
+			part.add_header("Content-Disposition", "attachment; filename=\"config.json\"")
 			msg.attach(part)
 
 			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))

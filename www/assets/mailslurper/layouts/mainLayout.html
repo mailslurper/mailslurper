@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="MailSlurper Server - Slurps mail into oblivion!" />
+	<meta name="author" content="Adam Presley <adam@adampresley.com>" />
+
+	<link rel="icon" href="/assets/mailslurper/images/favicon.ico" />
+
+	<title>{{.Title}} // MailSlurper</title>
+
+	<link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/assets/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
+	<link href="/assets/lightbox2/dist/css/lightbox.css" rel="stylesheet" />
+	<link href="/assets/bootstrap-dialog/dist/css/bootstrap-dialog.css" rel="stylesheet" />
+	<link href="/assets/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+	<link href="/assets/mailslurper/css/style.css" rel="stylesheet" />
+	{{template "css" .}}
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container nav-container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">MailSlurper</a>
+			</div>
+
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/"><i class="fa fa-home fa-lg"></i></a></li>
+					<li><a href="/savedsearches"><i class="fa fa-filter"></i></a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
+
+	<div class="container body-container">
+		{{template "body" .}}
+	</div><!-- /.container -->
+</body>
+
+<script src="/assets/promiscuous/dist/promiscuous-browser.js"></script>
+<script src="/assets/jquery/dist/jquery.min.js"></script>
+<script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/assets/requirejs/require.js"></script>
+<script src="/assets/mailslurper/js/app.js"></script>
+
+{{template "js" .}}
+
+</html>

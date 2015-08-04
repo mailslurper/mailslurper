@@ -1,0 +1,68 @@
+<div class="row">
+	<div class="col-md-12 padding-right-0" id="mailSearchNav">
+		<nav class="navbar navbar-default mail-list-navbar">
+			<div class="container-fluid">
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li>
+							<button type="button" class="btn btn-default navbar-btn" id="btnSearch">
+								<i class="fa fa-search"></i>&nbsp; Search
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-7" id="mailItemsHeader">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th width="1%">&nbsp;</th>
+					<th width="25%">Date</th>
+					<th width="50%">Subject</th>
+					<th width="20%">From</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+	<div class="col-md-5">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Mail Details</h3>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-7" style="overflow: scroll; height: 400px;" id="mailItemsColumn">
+		<table class="table table-striped">
+			<tbody>
+				{{#each mails}}
+					<tr>
+						<td width="1%"><i class="fa fa-paperclip fa-lg"></i></td>
+						<td width="25%">{{formatDateTime dateSent}}</td>
+						<td width="50%"><a href="#" class="mailSubject" data-id="{{id}}">{{subject}}</a></td>
+						<td width="20%">{{fromAddress}}</td>
+					</tr>
+				{{else}}
+					<tr>
+						<td colspan="4">There is no mail to display, or no mail items match your search criteria.</td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="col-md-5" style="overflow: scroll; height: 400px;" id="mailDetailsColumn">
+		<div class="panel panel-default">
+			<div class="panel-body" id="mailDetails">
+			</div>
+		</div>
+	</div>
+</div>

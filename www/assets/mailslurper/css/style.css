@@ -42,6 +42,10 @@
 	margin-bottom: 2px;
 }
 
+.margin-right-10 {
+	margin-right: 10px;
+}
+
 .nav-container {
 	margin-left: 0px;
 }
@@ -60,6 +64,11 @@
 .pagination {
 	margin-top: 0px;
 	margin-bottom: 0px;
+}
+
+.popover.left {
+	margin-left: -145px;
+	max-width: 425px;
 }
 
 /*

@@ -2,7 +2,7 @@
 	<div class="col-md-12 padding-right-0" id="mailSearchNav">
 		<nav class="navbar navbar-default mail-list-navbar">
 			<div class="container-fluid">
-				<div class="collapse navbar-collapse">
+				<div>
 					<ul class="nav navbar-nav">
 						<li>
 							<button type="button" class="btn btn-default navbar-btn" id="btnRefresh">
@@ -10,6 +10,13 @@
 							</button>
 							<button type="button" class="btn btn-default navbar-btn" id="btnSearch">
 								<i class="fa fa-search"></i>&nbsp; Search
+							</button>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<button type="button" id="showSearchFilters" class="btn btn-default margin-right-10" data-toggle="popover" title="Search Filters" data-content="{{filtersPopover}}">
+								<i class="fa fa-info-circle"></i>
 							</button>
 						</li>
 					</ul>

@@ -30,6 +30,18 @@ require(
 		"use strict";
 
 		/**
+		 * Creates the markup for the filters popover
+		 */
+		var buildFiltersPopoverText = function(context) {
+			var html = "<strong>Current Page:</strong> " + context.page + "<br />";
+			html += "<strong>Message Filter:</strong> " + context.searchMessage + "<br />";
+			html += "<strong>Date Range:</strong> " + moment(context.searchStart).format("MMMM D, YYYY") + " - ";
+			html += moment(context.searchEnd).format("MMMM D, YYYY");
+
+			return html;
+		};
+
+		/**
 		 * Calculates the height of the window minus nav bars and table headers.
 		 */
 		var calculateWindowHeight = function() {
@@ -93,6 +105,8 @@ require(
 				resizeMailItems();
 				resizeMailDetails();
 			});
+
+			$("#showSearchFilters").popover({ html: true, placement: "left", trigger: "click, focus" });
 
 			return Promise.resolve(context);
 		};
@@ -176,7 +190,8 @@ require(
 				hasPreviousButton: (context.page > 1) ? true : false,
 				hasNextButton: (context.page < context.totalPages) ? true : false,
 				previousPage: context.previousPage,
-				nextPage: context.nextPage
+				nextPage: context.nextPage,
+				filtersPopover: buildFiltersPopoverText(context)
 			});
 
 			$("#mailList").html(html);

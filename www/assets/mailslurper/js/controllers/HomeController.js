@@ -76,6 +76,16 @@ require(
 				renderSearchMailModal(context);
 			});
 
+			$("#previousPage").on("click", function() {
+				context.page = context.previousPage;
+				performSearch(context);
+			});
+
+			$("#nextPage").on("click", function() {
+				context.page = context.nextPage;
+				performSearch(context);
+			});
+
 			resizeMailItems();
 			resizeMailDetails();
 
@@ -156,9 +166,20 @@ require(
 		 * Renders the list of mail items.
 		 */
 		var renderMailItems = function(context) {
-			var html = mailListTemplate({mails: context.mails});
-			$("#mailList").html(html);
+			context.nextPage = (context.page < context.totalPages) ? context.page + 1 : context.totalPages;
+			context.previousPage = (context.page > 1) ? context.page - 1 : 1;
 
+			var html = mailListTemplate({
+				mails: context.mails,
+				totalPages: context.totalPages,
+				hasNavigation: (context.totalPages > 1) ? true : false,
+				hasPreviousButton: (context.page > 1) ? true : false,
+				hasNextButton: (context.page < context.totalPages) ? true : false,
+				previousPage: context.previousPage,
+				nextPage: context.nextPage
+			});
+
+			$("#mailList").html(html);
 			return Promise.resolve(context);
 		};
 
@@ -276,6 +297,9 @@ require(
 		var context = {
 			mails: [],
 			message: "Loading",
+			previousPage: 0,
+			nextPage: 0,
+			totalPages: 0,
 			page: 1,
 			searchMessage: "",
 			searchStart: moment().startOf("month"),

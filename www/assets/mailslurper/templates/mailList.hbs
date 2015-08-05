@@ -58,6 +58,31 @@
 						<td colspan="4">There is no mail to display, or no mail items match your search criteria.</td>
 					</tr>
 				{{/each}}
+
+				{{#if hasNavigation}}
+					<tr>
+						<td colspan="4">
+							<nav>
+								<ul class="pagination pagination-lg">
+									{{#if hasPreviousButton}}
+										<li>
+											<a aria-label="Previous" id="previousPage" class="pointer">
+												<span aria-hidden="true">&laquo; Previous</span>
+											</a>
+										</li>
+									{{/if}}
+									{{#if hasNextButton}}
+										<li>
+											<a aria-label="Next" id="nextPage" class="pointer">
+												<span aria-hidden="true">&raquo; Next</span>
+											</a>
+										</li>
+									{{/if}}
+								</ul>
+							</nav>
+						</td>
+					</tr>
+				{{/if}}
 			</tbody>
 		</table>
 	</div>

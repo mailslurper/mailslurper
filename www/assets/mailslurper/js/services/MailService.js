@@ -75,8 +75,11 @@ define(
 						method: "GET",
 						url: url
 					}).then(
-						function(response) {
+						function(response, status, xhr) {
 							context.mails = response.mailItems;
+							context.totalPages = window.parseInt(xhr.getResponseHeader("X-Total-Pages"), 10);
+							context.totalMailCount = window.parseInt(xhr.getResponseHeader("X-Total-Mail-Count"), 10);
+
 							resolve(context);
 						},
 

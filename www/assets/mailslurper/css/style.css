@@ -50,10 +50,17 @@
 	padding-right: 0px;
 }
 
+.pointer {
+	cursor: pointer;
+}
 
 /*
  * Bootstrap
  */
+.pagination {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
 
 /*
  * BlockUI

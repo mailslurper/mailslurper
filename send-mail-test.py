@@ -93,6 +93,23 @@ if __name__ == "__main__":
 				#time.sleep(1)
 
 		#
+		# Send plain text email with no subject
+		#
+		if sendTextOnlyMails:
+			textBody = "Hello,\nI am plain text mail with no subject.\n\nSincerely,\nAdam Presley"
+
+			msg = MIMEText(textBody)
+
+			msg["Subject"] = ""
+			msg["From"] = me
+			msg["To"] = to
+			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+
+			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			server.sendmail(me, [to], msg.as_string())
+			server.quit()
+
+		#
 		# Send text+attachment
 		#
 		if sendAttachmentMails:
@@ -148,6 +165,25 @@ if __name__ == "__main__":
 			part.add_header("Content-Type", "image/png")
 			part.add_header("Content-Disposition", "attachment; filename=\"MailSlurperLogo2.png\"")
 			msg.attach(part)
+
+			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			server.sendmail(me, [to], msg.as_string())
+			server.quit()
+
+			#
+			# Send html with XSS
+			#
+			htmlBody = "<p>This is a <strong>HTML</strong> email with XSS stuff</p><script>alert('gotcha!');</script>"
+
+			msg = MIMEMultipart()
+			html = MIMEText(htmlBody, "html")
+
+			msg["Subject"] = "HTML Mail with XSS"
+			msg["From"] = me
+			msg["To"] = to
+			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+
+			msg.attach(html)
 
 			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
 			server.sendmail(me, [to], msg.as_string())

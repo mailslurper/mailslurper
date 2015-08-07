@@ -218,7 +218,9 @@ require(
 						cssClass: "btn-default",
 						action: function() {
 							var searchCriteria = {
-								searchMessage: $("#txtMessage").val()
+								searchMessage: $("#txtMessage").val(),
+								searchFrom: $("#txtFrom").val(),
+								searchTo: $("#txtTo").val()
 							};
 
 							SavedSearchesWidget.showSaveSearchModal(function(saveSearchName) {
@@ -237,6 +239,8 @@ require(
 							renderDateRangeSpan(context, context.searchStart, context.searchEnd);
 
 							$("#txtMessage").val("");
+							$("#txtFrom").val("");
+							$("#txtTo").val("");
 						}
 					},
 					{
@@ -254,6 +258,9 @@ require(
 						hotkey: 13,
 						action: function(dialogRef) {
 							context.searchMessage = $("#txtMessage").val();
+							context.searchFrom = $("#txtFrom").val();
+							context.searchTo = $("#txtTo").val();
+
 							dialogRef.close();
 							performSearch(context);
 						}
@@ -263,6 +270,9 @@ require(
 					renderDateRangePicker(context);
 					renderDateRangeSpan(context, context.searchStart, context.searchEnd);
 					$("#btnOpenSavedSearches").on("click", function() { showSavedSearchesModal(context); });
+
+					$("#txtFrom").val(context.searchFrom);
+					$("#txtTo").val(context.searchTo);
 					$("#txtMessage").val(context.searchMessage).focus();
 				}
 			});
@@ -290,6 +300,8 @@ require(
 		var showSavedSearchesModal = function(context) {
 			SavedSearchesWidget.showPicker(function(savedSearch) {
 				$("#txtMessage").val(savedSearch.searchMessage);
+				$("#txtFrom").val(savedSearch.searchFrom);
+				$("#txtTo").val(savedSearch.searchTo);
 			});
 		};
 
@@ -318,7 +330,9 @@ require(
 			page: 1,
 			searchMessage: "",
 			searchStart: moment().startOf("month"),
-			searchEnd: moment().endOf("month")
+			searchEnd: moment().endOf("month"),
+			searchFrom: "",
+			searchTo: ""
 		};
 
 		AlertService.block(context)

@@ -71,6 +71,14 @@ define(
 						url += "&end=" + context.searchEnd.format("YYYY-MM-DD");
 					}
 
+					if (context.searchFrom) {
+						url += "&from=" + context.searchFrom;
+					}
+
+					if (context.searchTo) {
+						url += "&to=" + context.searchTo;
+					}
+
 					$.ajax({
 						method: "GET",
 						url: url

@@ -171,6 +171,32 @@ if __name__ == "__main__":
 			server.quit()
 
 			#
+			# Send html+CSV attachment
+			#
+			htmlBody = "<p>This is a <strong>HTML</strong> email with a CSV attachment.</p>"
+
+			msg = MIMEMultipart()
+			html = MIMEText(htmlBody, "html")
+
+			msg["Subject"] = "HTML+CSV Attachment Mail"
+			msg["From"] = me
+			msg["To"] = to
+			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+
+			msg.attach(html)
+
+			part = MIMEBase("multipart", "mixed")
+			part.set_payload(open("./test-files/testcsv.csv", "rb").read())
+			Encoders.encode_base64(part)
+			part.add_header("Content-Type", "text/csv")
+			part.add_header("Content-Disposition", "attachment; filename=\"testcsv.csv\"")
+			msg.attach(part)
+
+			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			server.sendmail(me, [to], msg.as_string())
+			server.quit()
+
+			#
 			# Send html with XSS
 			#
 			htmlBody = "<p>This is a <strong>HTML</strong> email with XSS stuff</p><script>alert('gotcha!');</script>"

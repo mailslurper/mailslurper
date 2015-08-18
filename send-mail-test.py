@@ -187,8 +187,8 @@ if __name__ == "__main__":
 
 			part = MIMEBase("multipart", "mixed")
 			part.set_payload(open("./test-files/testcsv.csv", "rb").read())
-			Encoders.encode_base64(part)
-			part.add_header("Content-Type", "text/csv")
+			#Encoders.encode_base64(part)
+			part.add_header("Content-Type", "application/octet-stream")
 			part.add_header("Content-Disposition", "attachment; filename=\"testcsv.csv\"")
 			msg.attach(part)
 

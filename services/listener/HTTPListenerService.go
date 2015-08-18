@@ -133,6 +133,6 @@ func (service *HTTPListenerService) StartHTTPListener() error {
 		Handler: alice.New().Then(service.Router),
 	}
 
-	log.Printf("SERVER - HTTP listener started on %s:%d\n", service.Address, service.Port)
+	log.Printf("MailSlurper: INFO - HTTP listener started on %s:%d\n", service.Address, service.Port)
 	return listener.ListenAndServe()
 }

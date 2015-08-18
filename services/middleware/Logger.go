@@ -14,6 +14,6 @@ func (ctx *AppContext) Logger(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		startTime := time.Now()
 		h.ServeHTTP(writer, request)
-		log.Printf("SERVER - %s - %s (%v)\n", request.Method, request.URL.String(), time.Since(startTime))
+		log.Printf("MailSlurper: INFO - %s - %s (%v)\n", request.Method, request.URL.String(), time.Since(startTime))
 	})
 }

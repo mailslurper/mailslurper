@@ -5,6 +5,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
@@ -25,7 +26,8 @@ func Index(writer http.ResponseWriter, request *http.Request) {
 
 	err := layout.RenderView(writer, "index", data)
 	if err != nil {
-		GoHttpService.Error(writer, err.Error())
+		log.Println("MailSlurper: ERROR - Problem rendering view 'index' -", err.Error())
+		GoHttpService.Error(writer, "There was an error retrieving and rendering the page 'index'")
 		return
 	}
 }

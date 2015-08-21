@@ -140,7 +140,7 @@ if __name__ == "__main__":
 			#
 			# Send html+attachment
 			#
-			htmlBody = "<p>This is a <strong>HTML</strong> email with an attachment.</p>"
+			htmlBody = "<p>This is a <strong>HTML</strong> email with an attachment.It's got lots of >great text< & special` characters.</p>"
 
 			msg = MIMEMultipart()
 			html = MIMEText(htmlBody, "html")

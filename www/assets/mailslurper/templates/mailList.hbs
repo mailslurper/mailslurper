@@ -55,7 +55,13 @@
 			<tbody>
 				{{#each mails}}
 					<tr>
-						<td width="1%"><i class="fa fa-paperclip fa-lg"></i></td>
+						<td width="1%">
+							{{#if attachments.length}}
+								<i class="fa fa-paperclip fa-lg"></i>
+							{{else}}
+								&nbsp;
+							{{/if}}
+						</td>
 						<td width="25%">{{formatDateTime dateSent}}</td>
 						<td width="50%"><a href="#" class="mailSubject" data-id="{{id}}">{{unescape subject}}</a></td>
 						<td width="20%">{{fromAddress}}</td>

@@ -145,7 +145,7 @@ if __name__ == "__main__":
 			msg = MIMEMultipart()
 			html = MIMEText(htmlBody, "html")
 
-			msg["Subject"] = "HTML+Attachment Mail"
+			msg["Subject"] = "Adam's HTML+Attachment Mail"
 			msg["From"] = me
 			msg["To"] = to
 			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")

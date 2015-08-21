@@ -88,6 +88,11 @@ require(
 				renderSearchMailModal(context);
 			});
 
+			$("#firstPage").on("click", function() {
+				context.page = 1;
+				performSearch(context);
+			});
+
 			$("#previousPage").on("click", function() {
 				context.page = context.previousPage;
 				performSearch(context);
@@ -95,6 +100,11 @@ require(
 
 			$("#nextPage").on("click", function() {
 				context.page = context.nextPage;
+				performSearch(context);
+			});
+
+			$("#lastPage").on("click", function() {
+				context.page = context.totalPages;
 				performSearch(context);
 			});
 
@@ -187,8 +197,10 @@ require(
 				mails: context.mails,
 				totalPages: context.totalPages,
 				hasNavigation: (context.totalPages > 1) ? true : false,
+				hasFirstButton: (context.page > 1) ? true : false,
 				hasPreviousButton: (context.page > 1) ? true : false,
 				hasNextButton: (context.page < context.totalPages) ? true : false,
+				hasLastButton: (context.page < context.totalPages) ? true : false,
 				previousPage: context.previousPage,
 				nextPage: context.nextPage,
 				filtersPopover: buildFiltersPopoverText(context)

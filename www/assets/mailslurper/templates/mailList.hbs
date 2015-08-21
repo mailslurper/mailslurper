@@ -77,6 +77,13 @@
 						<td colspan="4">
 							<nav>
 								<ul class="pagination pagination-lg">
+									{{#if hasFirstButton}}
+										<li>
+											<a aria-label="First" id="firstPage" class="pointer">
+												<span aria-hidde="true">First</span>
+											</a>
+										</li>
+									{{/if}}
 									{{#if hasPreviousButton}}
 										<li>
 											<a aria-label="Previous" id="previousPage" class="pointer">
@@ -88,6 +95,13 @@
 										<li>
 											<a aria-label="Next" id="nextPage" class="pointer">
 												<span aria-hidden="true">&raquo; Next</span>
+											</a>
+										</li>
+									{{/if}}
+									{{#if hasLastButton}}
+										<li>
+											<a aria-label="Last" id="lastPage" class="pointer">
+												<span aria-hidde="true">Last</span>
 											</a>
 										</li>
 									{{/if}}

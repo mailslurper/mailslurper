@@ -13,7 +13,8 @@ func setupRoutes(httpListener *listener.HTTPListenerService, appContext *middlew
 	httpListener.
 		AddStaticRoute("/assets/", "./www/assets").
 		AddRoute("/", controllers.Index, "GET").
+		AddRoute("/admin", controllers.Admin, "GET").
 		AddRoute("/savedsearches", controllers.ManageSavedSearches, "GET").
-		AddRoute("/version", controllers.GetVersion, "GET", "OPTIONS").
-		AddRoute("/servicesettings", controllers.GetServiceSettings, "GET", "OPTIONS")
+		AddRoute("/servicesettings", controllers.GetServiceSettings, "GET", "OPTIONS").
+		AddRoute("/version", controllers.GetVersion, "GET", "OPTIONS")
 }

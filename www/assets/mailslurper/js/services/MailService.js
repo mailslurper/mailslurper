@@ -54,6 +54,28 @@ define(
 			},
 
 			/**
+			 * getMailCount returns the number of mail items in storage. This will put
+			 * the count into a key named "mailCount" in the context object.
+			 */
+			getMailCount: function(context) {
+				return new Promise(function(resolve, reject) {
+					$.ajax({
+						method: "GET",
+						url: context.serviceURL + "/mailcount"
+					}).then(
+						function(response) {
+							context.mailCount = response.mailCount;
+							resolve(context);
+						},
+
+						function(error) {
+							reject(error);
+						}
+					);
+				});
+			},
+
+			/**
 			 * getMails returns a page of stored email. The page number must be a key
 			 * named "page" in the context object. This will return mail items as an
 			 * array in a key named "mails" in the context object.

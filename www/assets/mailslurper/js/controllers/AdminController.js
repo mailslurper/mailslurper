@@ -21,7 +21,21 @@ require(
 		"use strict";
 
 		var initialize = function(context) {
+			$("#btnRemove").on("click", function() { onBtnRemoveClick(context); });
 			return Promise.resolve(context);
+		};
+
+		var onBtnRemoveClick = function(context) {
+			context.pruneCode = $("#pruneRange option:selected").val();
+
+			AlertService.block(context)
+				.then(SeedService.validatePruneCode)
+				.then(MailService.deleteMailItems)
+				.then(MailService.getMailCount)
+				.then(renderPruneTemplate)
+				.then(initialize)
+				.then(AlertService.unblock)
+				.catch(AlertService.error);
 		};
 
 		var renderPruneTemplate = function(context) {

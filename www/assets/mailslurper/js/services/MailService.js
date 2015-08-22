@@ -9,6 +9,34 @@ define(
 
 		var service = {
 			/**
+			 * deleteMailItems deletes a set of mail items. The criteria is defined
+			 * by a "pruneCode", which is one of:
+			 *    * 60plus
+			 *    * 30plus
+			 *    * 2wksplus
+			 *    * all
+			 */
+			deleteMailItems: function(context) {
+				return new Promise(function(resolve, reject) {
+					$.ajax({
+						method: "DELETE",
+						url: context.serviceURL + "/mail",
+						data: JSON.stringify({
+							pruneCode: context.pruneCode
+						})
+					}).then(
+						function() {
+							resolve(context);
+						},
+
+						function(err) {
+							reject(err);
+						}
+					);
+				});
+			},
+
+			/**
 			 * getAttachment retrieves a specified attachment from a given mail ID.
 			 * Context is expected to have "mailID" and "attachmentID". The context
 			 * will store "attachment" when the promise is fullfilled.

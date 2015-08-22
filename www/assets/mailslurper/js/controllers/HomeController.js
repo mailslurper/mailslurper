@@ -36,7 +36,9 @@ require(
 			var html = "<strong>Current Page:</strong> " + context.page + "<br />";
 			html += "<strong>Message Filter:</strong> " + context.searchMessage + "<br />";
 			html += "<strong>Date Range:</strong> " + moment(context.searchStart).format("MMMM D, YYYY") + " - ";
-			html += moment(context.searchEnd).format("MMMM D, YYYY");
+			html += moment(context.searchEnd).format("MMMM D, YYYY") + "<br />";
+			html += "<strong>From:</strong> " + context.searchFrom + "<br />";
+			html += "<strong>To:</strong> " + context.searchTo + "<br />";
 
 			return html;
 		};

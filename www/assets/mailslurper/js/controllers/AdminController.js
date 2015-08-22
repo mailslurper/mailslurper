@@ -26,16 +26,26 @@ require(
 		};
 
 		var onBtnRemoveClick = function(context) {
-			context.pruneCode = $("#pruneRange option:selected").val();
+			Dialog.confirm({
+				message: "Are you sure you wish to prune old emails?",
+				title: "WARNING",
+				type: Dialog.TYPE_WARNING,
+				callback: function(result) {
+					if (result) {
+						context.pruneCode = $("#pruneRange option:selected").val();
 
-			AlertService.block(context)
-				.then(SeedService.validatePruneCode)
-				.then(MailService.deleteMailItems)
-				.then(MailService.getMailCount)
-				.then(renderPruneTemplate)
-				.then(initialize)
-				.then(AlertService.unblock)
-				.catch(AlertService.error);
+						AlertService.block(context)
+							.then(SeedService.validatePruneCode)
+							.then(MailService.deleteMailItems)
+							.then(MailService.getMailCount)
+							.then(renderPruneTemplate)
+							.then(initialize)
+							.then(AlertService.unblock)
+							.then(showPruneSuccessMessage)
+							.catch(AlertService.error);
+					}
+				}
+			});
 		};
 
 		var renderPruneTemplate = function(context) {
@@ -46,6 +56,12 @@ require(
 
 			$("#adminPrune").html(html);
 
+			return Promise.resolve(context);
+		};
+
+		var showPruneSuccessMessage = function(context) {
+			context.message = "Emails pruned successfully!";
+			AlertService.success(context);
 			return Promise.resolve(context);
 		};
 

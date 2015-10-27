@@ -41,11 +41,11 @@ window.loadController = function(controllerName) {
 		[
 			"services/SettingsService"
 		],
-		function(SettingsService) {
-			if (!SettingsService.serviceSettingsExistInLocalStore()) {
-				SettingsService.getServiceSettings().then(
+		function(settingsService) {
+			if (!settingsService.serviceSettingsExistInLocalStore()) {
+				settingsService.getServiceSettings().then(
 					function(serviceSettings) {
-						SettingsService.storeServiceSettings(serviceSettings);
+						settingsService.storeServiceSettings(serviceSettings);
 						require(["controllers/" + controllerName + "Controller"]);
 					}
 				)

@@ -8,8 +8,8 @@ define(
 		var service = {
 			getDateFormatOptions: function() {
 				return [
-					{ dateFormat: "YYYY-MM-DD", description: "International" },
-					{ dateFormat: "MM/DD/YYYY", description: "US" }
+					{ dateFormat: "YYYY-MM-DD HH:mm", description: "International" },
+					{ dateFormat: "MM/DD/YYYY hh:mm A", description: "US" }
 				];
 			},
 

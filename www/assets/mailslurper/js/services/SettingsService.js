@@ -104,7 +104,7 @@ define(
 					return JSON.parse(localStorage["settings"]);
 				} else {
 					return {
-						dateFormat: "YYYY-MM-DD",
+						dateFormat: "YYYY-MM-DD hh:mm A",
 						autoRefresh: false
 					};
 				}

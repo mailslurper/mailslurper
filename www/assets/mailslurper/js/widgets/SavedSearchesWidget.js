@@ -9,14 +9,14 @@ define(
 
 		"bootstrap-dialog"
 	],
-	function($, SettingsService, moment, savedSearchesModalTemplate, saveSearchModalTemplate, Dialog) {
+	function($, settingsService, moment, savedSearchesModalTemplate, saveSearchModalTemplate, Dialog) {
 		"use strict";
 
 		var widget = {
 			showPicker: function(callback) {
 				var dialogRef = Dialog.show({
 					title: "Saved Searches",
-					message: savedSearchesModalTemplate({ savedSearches: SettingsService.retrieveSavedSearches() }),
+					message: savedSearchesModalTemplate({ savedSearches: settingsService.retrieveSavedSearches() }),
 					closable: true,
 					nl2br: false,
 					buttons: [
@@ -41,7 +41,7 @@ define(
 							label: "OK",
 							cssClass: "btn-primary",
 							action: function() {
-								var savedSearch = SettingsService.getSavedSearchByIndex(window.parseInt($("#savedSearchID option:selected").val(), 10));
+								var savedSearch = settingsService.getSavedSearchByIndex(window.parseInt($("#savedSearchID option:selected").val(), 10));
 								callback(savedSearch);
 								dialogRef.close();
 							}
@@ -89,4 +89,4 @@ define(
 
 		return widget;
 	}
-)
+);

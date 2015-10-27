@@ -143,4 +143,4 @@ define(
 
 		return service;
 	}
-)
+);

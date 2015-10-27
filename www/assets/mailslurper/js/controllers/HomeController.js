@@ -2,8 +2,8 @@ require(
 	[
 		"jquery",
 		"services/SettingsService",
-		"services/MailService",
-		"services/AlertService",
+		"services/mailService",
+		"services/alertService",
 		"widgets/SavedSearchesWidget",
 		"bootstrap-dialog",
 		"moment",
@@ -18,8 +18,8 @@ require(
 	function(
 		$,
 		SettingsService,
-		MailService,
-		AlertService,
+		mailService,
+		alertService,
 		SavedSearchesWidget,
 		Dialog,
 		moment,
@@ -32,13 +32,13 @@ require(
 		/**
 		 * Creates the markup for the filters popover
 		 */
-		var buildFiltersPopoverText = function(context) {
-			var html = "<strong>Current Page:</strong> " + context.page + "<br />";
-			html += "<strong>Message Filter:</strong> " + context.searchMessage + "<br />";
-			html += "<strong>Date Range:</strong> " + moment(context.searchStart).format("MMMM D, YYYY") + " - ";
-			html += moment(context.searchEnd).format("MMMM D, YYYY") + "<br />";
-			html += "<strong>From:</strong> " + context.searchFrom + "<br />";
-			html += "<strong>To:</strong> " + context.searchTo + "<br />";
+		var buildFiltersPopoverText = function() {
+			var html = "<strong>Current Page:</strong> " + page + "<br />";
+			html += "<strong>Message Filter:</strong> " + searchCriteria.searchMessage + "<br />";
+			html += "<strong>Date Range:</strong> " + moment(searchCriteria.searchStart).format("MMMM D, YYYY") + " - ";
+			html += moment(searchCriteria.searchEnd).format("MMMM D, YYYY") + "<br />";
+			html += "<strong>From:</strong> " + searchCriteria.searchFrom + "<br />";
+			html += "<strong>To:</strong> " + searchCriteria.searchTo + "<br />";
 
 			return html;
 		};
@@ -57,16 +57,18 @@ require(
 		 * Retrieves an attachment and displays it to the user. This expects the context to
 		 * have "attachmentID" and "mailID".
 		 */
-		var displayAttachment = function(context) {
-			context.message = "Retrieving...";
+		var displayAttachment = function() {
+			alertService.block("Retrieving...");
 
-			AlertService.block(context)
-				.then(MailService.getAttachment)
-				.then(showAttachmentInLightbox)
-				.then(AlertService.unblock)
-				.catch(AlertService.error);
+			mailService.getAttachment(serviceURL, mailID, attachmentID).then(
+				function(response) {
+					alertService.unblock();
+				},
 
-			return Promise.resolve(context);
+				function() {
+					alertService.error("There was a problem retrieving your attachment.");
+				}
+			);
 		};
 
 		/**
@@ -74,40 +76,40 @@ require(
 		 * handle resizing of the window so our scrollable content windows adjust
 		 * correctly.
 		 */
-		var initializeMailItems = function(context) {
+		var initializeMailItems = function() {
 			$(".mailSubject").on("click", function() {
 				var id = $(this).attr("data-id");
-				context.mailID = id;
+				mailID = id;
 
-				viewMailDetails(context);
+				viewMailDetails();
 			});
 
 			$("#btnRefresh").on("click", function() {
-				refreshMailList(context);
+				refreshMailList();
 			});
 
 			$("#btnSearch").on("click", function() {
-				renderSearchMailModal(context);
+				renderSearchMailModal();
 			});
 
 			$("#firstPage").on("click", function() {
-				context.page = 1;
-				performSearch(context);
+				page = 1;
+				performSearch();
 			});
 
 			$("#previousPage").on("click", function() {
-				context.page = context.previousPage;
-				performSearch(context);
+				page = previousPage;
+				performSearch();
 			});
 
 			$("#nextPage").on("click", function() {
-				context.page = context.nextPage;
-				performSearch(context);
+				page = nextPage;
+				performSearch();
 			});
 
 			$("#lastPage").on("click", function() {
-				context.page = context.totalPages;
-				performSearch(context);
+				page = totalPages;
+				performSearch();
 			});
 
 			resizeMailItems();
@@ -118,40 +120,49 @@ require(
 				resizeMailDetails();
 			});
 
-			$("#showSearchFilters").popover({ html: true, placement: "left", trigger: "click, focus" });
-
-			return Promise.resolve(context);
+			$("#showSearchFilters").popover({
+				html: true,
+				placement: "left",
+				trigger: "click, focus"
+			});
 		};
 
 		/**
 		 * Performs a search for mail items, then re-renders the mail items
 		 * window.
 		 */
-		var performSearch = function(context) {
-			context.message = "Searching...";
+		var performSearch = function() {
+			alertService.block("Searching...");
 
-			AlertService.block(context)
-				.then(MailService.getMails)
-				.then(renderMailItems)
-				.then(initializeMailItems)
-				.then(AlertService.unblock)
-				.catch(AlertService.error);
+			mailService.getMails(serviceURL, page, searchCriteria).then(
+				function(response, status, xhr) {
+					mails = response.mailItems;
+					totalPages = window.parseInt(xhr.getResponseHeader("X-Total-Pages"), 10);
+					totalMailCount = window.parseInt(xhr.getResponseHeader("X-Total-Mail-Count"), 10);
 
-			return Promise.resolve(context);
+					renderMailItems();
+					initializeMailItems();
+					alertService.unblock();
+				},
+
+				function() {
+					alertService.error("There was a problem performing your search");
+				}
+			);
 		};
 
 		/**
 		 * Refreshes the mail list view. Basically just
 		 * performs a search again.
 		 */
-		var refreshMailList = function(context) {
-			return performSearch(context);
+		var refreshMailList = function() {
+			return performSearch();
 		};
 
 		/**
 		 * Render the date range picker widget
 		 */
-		var renderDateRangePicker = function(context, dialogRef) {
+		var renderDateRangePicker = function(dialogRef) {
 			$("#dateRange").daterangepicker({
 				ranges: {
 					"Today": [moment(), moment()],
@@ -165,57 +176,54 @@ require(
 				drops: "down",
 				minDate: moment().subtract(1, "month").startOf("month"),
 				maxDate: moment().endOf("month"),
-				startDate: context.searchStart,
-				endDate: context.searchEnd
+				startDate: searchCriteria.searchStart,
+				endDate: searchCriteria.searchEnd
 			}, function(start, end) {
-				renderDateRangeSpan(context, start, end);
+				renderDateRangeSpan(start, end);
 			});
 		};
 
-		var renderDateRangeSpan = function(context, start, end) {
-			context.searchStart = start;
-			context.searchEnd = end;
+		var renderDateRangeSpan = function(start, end) {
+			searchCriteria.searchStart = start;
+			searchCriteria.searchEnd = end;
 			$("#dateRange span").html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
 		};
 
 		/**
 		 * Renders the detail view for a specific mailitem.
 		 */
-		var renderMailDetails = function(context) {
-			var html = mailDetailsTemplate({mail: context.mail.mailItem});
+		var renderMailDetails = function(mail) {
+			var html = mailDetailsTemplate({mail: mail.mailItem});
 			$("#mailDetails").html(html);
-
-			return Promise.resolve(context);
 		};
 
 		/**
 		 * Renders the list of mail items.
 		 */
-		var renderMailItems = function(context) {
-			context.nextPage = (context.page < context.totalPages) ? context.page + 1 : context.totalPages;
-			context.previousPage = (context.page > 1) ? context.page - 1 : 1;
+		var renderMailItems = function() {
+			nextPage = (page < totalPages) ? page + 1 : totalPages;
+			previousPage = (page > 1) ? page - 1 : 1;
 
 			var html = mailListTemplate({
-				mails: context.mails,
-				totalPages: context.totalPages,
-				hasNavigation: (context.totalPages > 1) ? true : false,
-				hasFirstButton: (context.page > 1) ? true : false,
-				hasPreviousButton: (context.page > 1) ? true : false,
-				hasNextButton: (context.page < context.totalPages) ? true : false,
-				hasLastButton: (context.page < context.totalPages) ? true : false,
-				previousPage: context.previousPage,
-				nextPage: context.nextPage,
-				filtersPopover: buildFiltersPopoverText(context)
+				mails: mails,
+				totalPages: totalPages,
+				hasNavigation: (totalPages > 1) ? true : false,
+				hasFirstButton: (page > 1) ? true : false,
+				hasPreviousButton: (page > 1) ? true : false,
+				hasNextButton: (page < totalPages) ? true : false,
+				hasLastButton: (page < totalPages) ? true : false,
+				previousPage: previousPage,
+				nextPage: nextPage,
+				filtersPopover: buildFiltersPopoverText()
 			});
 
 			$("#mailList").html(html);
-			return Promise.resolve(context);
 		};
 
 		/**
 		 * Renders and handles events for the search modal dialog box.
 		 */
-		var renderSearchMailModal = function(context) {
+		var renderSearchMailModal = function() {
 			var dialogRef = Dialog.show({
 				title: "Search Mail",
 				message: searchMailModalTemplate(),
@@ -247,10 +255,10 @@ require(
 						label: "Clear",
 						cssClass: "btn-default",
 						action: function() {
-							context.searchStart = moment().startOf("month");
-							context.searchEnd = moment().endOf("month");
-							renderDateRangePicker(context);
-							renderDateRangeSpan(context, context.searchStart, context.searchEnd);
+							searchCriteria.searchStart = moment().startOf("month");
+							searchCriteria.searchEnd = moment().endOf("month");
+							renderDateRangePicker();
+							renderDateRangeSpan(searchCriteria.searchStart, searchCriteria.searchEnd);
 
 							$("#txtMessage").val("");
 							$("#txtFrom").val("");
@@ -271,27 +279,25 @@ require(
 						cssClass: "btn-primary",
 						hotkey: 13,
 						action: function(dialogRef) {
-							context.searchMessage = $("#txtMessage").val();
-							context.searchFrom = $("#txtFrom").val();
-							context.searchTo = $("#txtTo").val();
+							searchCriteria.searchMessage = $("#txtMessage").val();
+							searchCriteria.searchFrom = $("#txtFrom").val();
+							searchCriteria.searchTo = $("#txtTo").val();
 
 							dialogRef.close();
-							performSearch(context);
+							performSearch();
 						}
 					}
 				],
 				onshown: function(dialogRef) {
-					renderDateRangePicker(context);
-					renderDateRangeSpan(context, context.searchStart, context.searchEnd);
-					$("#btnOpenSavedSearches").on("click", function() { showSavedSearchesModal(context); });
+					renderDateRangePicker();
+					renderDateRangeSpan(searchCriteria.searchStart, searchCriteria.searchEnd);
+					$("#btnOpenSavedSearches").on("click", function() { showSavedSearchesModal(); });
 
-					$("#txtFrom").val(context.searchFrom);
-					$("#txtTo").val(context.searchTo);
-					$("#txtMessage").val(context.searchMessage).focus();
+					$("#txtFrom").val(searchCriteria.searchFrom);
+					$("#txtTo").val(searchCriteria.searchTo);
+					$("#txtMessage").val(searchCriteria.searchMessage).focus();
 				}
 			});
-
-			return Promise.resolve(context);
 		};
 
 		/**
@@ -311,7 +317,7 @@ require(
 		/**
 		 * Displays the saved searches modal
 		 */
-		var showSavedSearchesModal = function(context) {
+		var showSavedSearchesModal = function() {
 			SavedSearchesWidget.showPicker(function(savedSearch) {
 				$("#txtMessage").val(savedSearch.searchMessage);
 				$("#txtFrom").val(savedSearch.searchFrom);
@@ -322,26 +328,32 @@ require(
 		/**
 		 * Loads the details for a selected mail item, then renders them.
 		 */
-		var viewMailDetails = function(context) {
-			context.message = "Getting details...";
+		var viewMailDetails = function() {
+			alertService.block("Getting details...");
 
-			AlertService.block(context)
-				.then(MailService.getMailByID)
-				.then(renderMailDetails)
-				.then(AlertService.unblock)
-				.catch(AlertService.error);
+			mailService.getMailByID(serviceURL, mailID).then(
+				function(response) {
+					renderMailDetails(response);
+					alertService.unblock();
+				},
+
+				function() {
+					alertService.error("There was a problem getting this mail's details");
+				}
+			);
 		};
 
 		/****************************************************************************
 		 * Constructor
 		 ***************************************************************************/
-		var context = {
-			mails: [],
-			message: "Loading",
-			previousPage: 0,
-			nextPage: 0,
-			totalPages: 0,
-			page: 1,
+		var mails = [];
+		var mailID = 0;
+		var previousPage = 0;
+		var nextPage = 0;
+		var totalPages = 0;
+		var totalMailCount = 0;
+		var page = 1;
+		var searchCriteria = {
 			searchMessage: "",
 			searchStart: moment().startOf("month"),
 			searchEnd: moment().endOf("month"),
@@ -349,12 +361,24 @@ require(
 			searchTo: ""
 		};
 
-		AlertService.block(context)
-			.then(SettingsService.getServiceURL)
-			.then(MailService.getMails)
-			.then(renderMailItems)
-			.then(initializeMailItems)
-			.then(AlertService.unblock)
-			.catch(AlertService.error);
+		var serviceURL = SettingsService.getServiceURL();
+
+		alertService.block("Loading");
+
+		mailService.getMails(serviceURL, page, searchCriteria).then(
+			function(response, status, xhr) {
+				mails = response.mailItems;
+				totalPages = window.parseInt(xhr.getResponseHeader("X-Total-Pages"), 10);
+				totalMailCount = window.parseInt(xhr.getResponseHeader("X-Total-Mail-Count"), 10);
+
+				renderMailItems();
+				initializeMailItems();
+				alertService.unblock();
+			},
+
+			function() {
+				alertService.error("There was an error getting mail items!");
+			}
+		);
 	}
 );

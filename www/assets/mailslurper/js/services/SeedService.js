@@ -6,25 +6,21 @@ define(
 		"use strict";
 
 		var service = {
+			getDateFormatOptions: function() {
+				return [
+					{ dateFormat: "YYYY-MM-DD", description: "International" },
+					{ dateFormat: "MM/DD/YYYY", description: "US" }
+				];
+			},
+
 			/**
 			 * getPruneOptions returns email pruning options. This will place the array of
 			 * options in the context with a key of "pruneOptions".
 			 */
-			getPruneOptions: function(context) {
-				return new Promise(function(resolve, reject) {
-					$.ajax({
-						url: context.serviceURL + "/pruneoptions",
-						method: "GET"
-					}).then(
-						function(pruneOptions) {
-							context.pruneOptions = pruneOptions;
-							resolve(context);
-						},
-
-						function(err) {
-							reject(err);
-						}
-					);
+			getPruneOptions: function(serviceURL) {
+				return $.ajax({
+					url: serviceURL + "/pruneoptions",
+					method: "GET"
 				});
 			},
 
@@ -35,20 +31,14 @@ define(
 			 * an AJAX call to get prune options should have occurred
 			 * prior to this. It compare it to a key named "pruneCode".
 			 */
-			validatePruneCode: function(context) {
-				if (!context.hasOwnProperty("pruneOptions")) {
-					context.message = "Prune codes not retrieved!";
-					return Promise.reject(context);
-				} else {
-					for (var index = 0; index < context.pruneOptions.length; index++) {
-						if (context.pruneOptions[index].pruneCode === context.pruneCode) {
-							return Promise.resolve(context);
-						}
+			validatePruneCode: function(pruneOptions, pruneCode) {
+				for (var index = 0; index < pruneOptions.length; index++) {
+					if (pruneOptions[index].pruneCode === pruneCode) {
+						return true;
 					}
-
-					context.message = "Invalid option for pruning emails";
-					return Promise.reject(context);
 				}
+
+				return false;
 			}
 		};
 

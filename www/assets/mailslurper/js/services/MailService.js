@@ -16,23 +16,13 @@ define(
 			 *    * 2wksplus
 			 *    * all
 			 */
-			deleteMailItems: function(context) {
-				return new Promise(function(resolve, reject) {
-					$.ajax({
-						method: "DELETE",
-						url: context.serviceURL + "/mail",
-						data: JSON.stringify({
-							pruneCode: context.pruneCode
-						})
-					}).then(
-						function() {
-							resolve(context);
-						},
-
-						function(err) {
-							reject(err);
-						}
-					);
+			deleteMailItems: function(serviceURL, pruneCode) {
+				return $.ajax({
+					method: "DELETE",
+					url: serviceURL + "/mail",
+					data: JSON.stringify({
+						pruneCode: pruneCode
+					})
 				});
 			},
 
@@ -41,21 +31,10 @@ define(
 			 * Context is expected to have "mailID" and "attachmentID". The context
 			 * will store "attachment" when the promise is fullfilled.
 			 */
-			getAttachment: function(context) {
-				return new Promise(function(resolve, reject) {
-					$.ajax({
-						method: "GET",
-						url: context.serviceURL + "/mail/" + context.mailID + "/attachment/" + context.attachmentID
-					}).then(
-						function(response) {
-							context.attachment = response;
-							resolve(context);
-						},
-
-						function(error) {
-							reject(error);
-						}
-					)
+			getAttachment: function(serviceURL, mailID, attachmentID) {
+				return $.ajax({
+					method: "GET",
+					url: serviceURL + "/mail/" + mailID + "/attachment/" + attachmentID
 				});
 			},
 
@@ -63,21 +42,10 @@ define(
 			 * getMailByID returns a specific mail item. The context must contain
 			 * a key named "mailID" and will return a key named "mail".
 			 */
-			getMailByID: function(context) {
-				return new Promise(function(resolve, reject) {
-					$.ajax({
-						method: "GET",
-						url: context.serviceURL + "/mail/" + context.mailID
-					}).then(
-						function(response) {
-							context.mail = response;
-							resolve(context);
-						},
-
-						function(error) {
-							reject(error);
-						}
-					);
+			getMailByID: function(serviceURL, mailID) {
+				return $.ajax({
+					method: "GET",
+					url: serviceURL + "/mail/" + mailID
 				});
 			},
 
@@ -85,21 +53,10 @@ define(
 			 * getMailCount returns the number of mail items in storage. This will put
 			 * the count into a key named "mailCount" in the context object.
 			 */
-			getMailCount: function(context) {
-				return new Promise(function(resolve, reject) {
-					$.ajax({
-						method: "GET",
-						url: context.serviceURL + "/mailcount"
-					}).then(
-						function(response) {
-							context.mailCount = response.mailCount;
-							resolve(context);
-						},
-
-						function(error) {
-							reject(error);
-						}
-					);
+			getMailCount: function(serviceURL) {
+				return $.ajax({
+					method: "GET",
+					url: serviceURL + "/mailcount"
 				});
 			},
 
@@ -108,44 +65,29 @@ define(
 			 * named "page" in the context object. This will return mail items as an
 			 * array in a key named "mails" in the context object.
 			 */
-			getMails: function(context) {
-				return new Promise(function(resolve, reject) {
-					var url = context.serviceURL + "/mails/" + context.page + "?";
-					url += "message=" + (context.searchMessage || "");
+			getMails: function(serviceURL, page, searchCriteria) {
+				var url = serviceURL + "/mails/" + page + "?";
+				url += "message=" + (searchCriteria.searchMessage || "");
 
-					if (context.searchStart) {
-						url += "&start=" + context.searchStart.format("YYYY-MM-DD");
-					}
+				if (searchCriteria.searchStart) {
+					url += "&start=" + searchCriteria.searchStart.format("YYYY-MM-DD");
+				}
 
-					if (context.searchEnd) {
-						url += "&end=" + context.searchEnd.format("YYYY-MM-DD");
-					}
+				if (searchCriteria.searchEnd) {
+					url += "&end=" + searchCriteria.searchEnd.format("YYYY-MM-DD");
+				}
 
-					if (context.searchFrom) {
-						url += "&from=" + context.searchFrom;
-					}
+				if (searchCriteria.searchFrom) {
+					url += "&from=" + searchCriteria.searchFrom;
+				}
 
-					if (context.searchTo) {
-						url += "&to=" + context.searchTo;
-					}
+				if (searchCriteria.searchTo) {
+					url += "&to=" + searchCriteria.searchTo;
+				}
 
-					$.ajax({
-						method: "GET",
-						url: url
-					}).then(
-						function(response, status, xhr) {
-							context.mails = response.mailItems;
-							context.totalPages = window.parseInt(xhr.getResponseHeader("X-Total-Pages"), 10);
-							context.totalMailCount = window.parseInt(xhr.getResponseHeader("X-Total-Mail-Count"), 10);
-
-							resolve(context);
-						},
-
-						function(error) {
-							context.message = error;
-							reject(context);
-						}
-					);
+				return $.ajax({
+					method: "GET",
+					url: url
 				});
 			}
 		};

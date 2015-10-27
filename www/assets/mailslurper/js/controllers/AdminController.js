@@ -4,81 +4,128 @@ require(
 		"services/SettingsService",
 		"services/MailService",
 		"services/SeedService",
-		"services/AlertService",
+		"services/alertService",
 		"bootstrap-dialog",
 
-		"hbs!templates/adminPrune"
+		"hbs!templates/adminPrune",
+		"hbs!templates/adminSettings"
 	],
 	function(
 		$,
 		SettingsService,
 		MailService,
 		SeedService,
-		AlertService,
+		alertService,
 		Dialog,
-		adminPruneTemplate
+		adminPruneTemplate,
+		adminSettings
 	) {
 		"use strict";
 
-		var initialize = function(context) {
-			$("#btnRemove").on("click", function() { onBtnRemoveClick(context); });
-			return Promise.resolve(context);
+		var getSettingsFromForm = function() {
+			var settings = {
+				dateFormat: $("#dateFormat option:selected").val(),
+				autoRefresh: ($("#autoRefreshOn:checked").length > 0) ? true : false
+			};
+
+			return settings;
 		};
 
-		var onBtnRemoveClick = function(context) {
+		var initialize = function() {
+			$("#btnRemove").on("click", function() { onBtnRemoveClick(); });
+			$("#btnSaveSettings").on("click", function() { onBtnSaveSettings(); });
+		};
+
+		var onBtnRemoveClick = function() {
 			Dialog.confirm({
 				message: "Are you sure you wish to prune old emails?",
 				title: "WARNING",
 				type: Dialog.TYPE_WARNING,
 				callback: function(result) {
 					if (result) {
-						context.pruneCode = $("#pruneRange option:selected").val();
+						var pruneCode = $("#pruneRange option:selected").val();
 
-						AlertService.block(context)
-							.then(SeedService.validatePruneCode)
-							.then(MailService.deleteMailItems)
-							.then(MailService.getMailCount)
-							.then(renderPruneTemplate)
-							.then(initialize)
-							.then(AlertService.unblock)
-							.then(showPruneSuccessMessage)
-							.catch(AlertService.error);
+						alertService.block("Pruning...");
+
+						if (!SeedService.validatePruneCode(pruneOptions, pruneCode)) {
+							alertService.error("There was an error with the selected prune option.");
+							return;
+						}
+
+						MailService.deleteMailItems(serviceURL, pruneCode).then(
+							function() {
+								MailService.getMailCount(serviceURL).then(function(response) {
+									renderPruneTemplate(pruneOptions, response.mailCount);
+									initialize();
+
+									alertService.unblock();
+									showPruneSuccessMessage();
+								});
+							},
+
+							function() {
+								alertService.error("There was an error deleting mail items.");
+							}
+						);
 					}
 				}
 			});
 		};
 
-		var renderPruneTemplate = function(context) {
+		var onBtnSaveSettings = function() {
+			var settings = getSettingsFromForm();
+			SettingsService.storeSettings(settings);
+
+			alertService.success("Settings saved!");
+		};
+
+		var renderPruneTemplate = function(pruneOptions, mailCount) {
 			var html = adminPruneTemplate({
-				totalEmailCount: context.mailCount,
-				pruneOptions: context.pruneOptions
+				totalEmailCount: mailCount,
+				pruneOptions: pruneOptions
 			});
 
 			$("#adminPrune").html(html);
-
-			return Promise.resolve(context);
 		};
 
-		var showPruneSuccessMessage = function(context) {
-			context.message = "Emails pruned successfully!";
-			AlertService.success(context);
-			return Promise.resolve(context);
+		var renderSettingsTemplate = function(settings, dateFormatOptions) {
+			var html = adminSettings({
+				dateFormat: settings.dateFormat,
+				dateFormatOptions: dateFormatOptions,
+				autoRefreshOff: (!settings.autoRefresh) ? true : false,
+				autoRefreshOn: (settings.autoRefresh) ? true : false
+			});
+
+			$("#adminSettings").html(html);
+		};
+
+		var showPruneSuccessMessage = function() {
+			alertService.success("Emails pruned successfully!");
 		};
 
 		/****************************************************************************
 		 * Constructor
 		 ***************************************************************************/
-		var context = {
-			message: "Loading"
-		};
+		var serviceURL = SettingsService.getServiceURL();
+		var pruneOptions = [];
 
-		AlertService.block(context)
-			.then(SettingsService.getServiceURL)
-			.then(SeedService.getPruneOptions)
-			.then(MailService.getMailCount)
-			.then(renderPruneTemplate)
-			.then(initialize)
-			.then(AlertService.unblock)
-			.catch(AlertService.error);
+		SeedService.getPruneOptions(serviceURL).then(
+			function(response) {
+				pruneOptions = response;
+
+				MailService.getMailCount(serviceURL).then(
+					function(response) {
+						var settings = SettingsService.retrieveSettings();
+						var dateFormatOptions = SeedService.getDateFormatOptions();
+
+						renderPruneTemplate(pruneOptions, response.mailCount);
+						renderSettingsTemplate(settings, dateFormatOptions);
+						initialize();
+
+						alertService.unblock();
+					}
+				);
+			}
+		);
 	}
 );

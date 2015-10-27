@@ -1,27 +1,25 @@
-<div class="row">
-	<div class="col-md-6 col-sm-12">
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				<h3 class="panel-title">Prune Emails</h3>
-			</div>
-			<div class="panel-body">
-				Your system currently has <strong>{{totalEmailCount}}</strong> email(s). The selection below
-				allows you to choose a set of emails you wish to remove permanently. Once you've
-				chosen a range of email to remove click the <strong>Remove</strong> button
-				below. <em>Warning! This operation cannot be undone!</em>
+<div class="col-md-6 col-sm-12">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">Prune Emails</h3>
+		</div>
+		<div class="panel-body">
+			Your system currently has <strong>{{totalEmailCount}}</strong> email(s). The selection below
+			allows you to choose a set of emails you wish to remove permanently. Once you've
+			chosen a range of email to remove click the <strong>Remove</strong> button
+			below. <em>Warning! This operation cannot be undone!</em>
 
-				<br /><br/>
+			<br /><br/>
 
-				Remove emails:<br/>
-				<select id="pruneRange" class="form-control">
-					{{#each pruneOptions}}
-						<option value="{{pruneCode}}">{{description}}</option>
-					{{/each}}
-				</select>
-			</div>
-			<div class="panel-footer">
-				<button type="button" class="btn btn-danger" id="btnRemove">Remove</button>
-			</div>
+			Remove emails:<br/>
+			<select id="pruneRange" class="form-control">
+				{{#each pruneOptions}}
+					<option value="{{pruneCode}}">{{description}}</option>
+				{{/each}}
+			</select>
+		</div>
+		<div class="panel-footer">
+			<button type="button" class="btn btn-danger" id="btnRemove">Remove</button>
 		</div>
 	</div>
 </div>

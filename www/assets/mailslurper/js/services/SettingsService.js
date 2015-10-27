@@ -50,19 +50,9 @@ define(
 			 * and port.
 			 */
 			getServiceSettings: function() {
-				return new Promise(function(resolve, reject) {
-					$.ajax({
-						method: "GET",
-						url: "/servicesettings"
-					}).then(
-						function(response) {
-							resolve(response);
-						},
-
-						function(error) {
-							reject(error);
-						}
-					);
+				return $.ajax({
+					method: "GET",
+					url: "/servicesettings"
 				});
 			},
 
@@ -72,10 +62,7 @@ define(
 			 */
 			getServiceURL: function(context) {
 				var serviceSettings = service.retrieveServiceSettings();
-
-				context.serviceURL = "http://" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort + "/" + serviceSettings.version;
-
-				return Promise.resolve(context);
+				return "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort + "/" + serviceSettings.version;
 			},
 
 			/**
@@ -110,6 +97,20 @@ define(
 			},
 
 			/**
+			 * retrieveSettings reads user settings from local storage.
+			 */
+			retrieveSettings: function() {
+				if (localStorage["settings"]) {
+					return JSON.parse(localStorage["settings"]);
+				} else {
+					return {
+						dateFormat: "YYYY-MM-DD",
+						autoRefresh: false
+					};
+				}
+			},
+
+			/**
 			 * serviceSettingsExistInLocalStore returns true/false if the
 			 * MailSlurper service settings are in the user's local storage.
 			 */
@@ -130,6 +131,13 @@ define(
 			 */
 			storeServiceSettings: function(serviceSettings) {
 				localStorage["serviceSettings"] = JSON.stringify(serviceSettings);
+			},
+
+			/**
+			 * storeSettings writes user settings to local storage
+			 */
+			storeSettings: function(settings) {
+				localStorage["settings"] = JSON.stringify(settings);
 			}
 		};
 

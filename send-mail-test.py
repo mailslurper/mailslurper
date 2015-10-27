@@ -40,7 +40,9 @@ if __name__ == "__main__":
 	smtpPort = 2500
 
 	me = "someone@another.com"
+	me2 = "different@another.com"
 	to = "bob@bobtestingmailslurper.com"
+	to2 = "jim@bobtestingmailslurper.com"
 
 	try:
 		#
@@ -83,11 +85,11 @@ if __name__ == "__main__":
 
 				msg["Subject"] = "Text Mail #{0}".format(index,)
 				msg["From"] = me
-				msg["To"] = to
+				msg["To"] = to2
 				msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
 
 				server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-				server.sendmail(me, [to], msg.as_string())
+				server.sendmail(me, [to2], msg.as_string())
 				server.quit()
 
 				#time.sleep(1)
@@ -101,12 +103,12 @@ if __name__ == "__main__":
 			msg = MIMEText(textBody)
 
 			msg["Subject"] = ""
-			msg["From"] = me
+			msg["From"] = me2
 			msg["To"] = to
 			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
 
 			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
+			server.sendmail(me2, [to], msg.as_string())
 			server.quit()
 
 		#
@@ -147,7 +149,7 @@ if __name__ == "__main__":
 
 			msg["Subject"] = "Adam's HTML+Attachment Mail"
 			msg["From"] = me
-			msg["To"] = to
+			msg["To"] = to2
 			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
 
 			msg.attach(html)
@@ -167,7 +169,7 @@ if __name__ == "__main__":
 			msg.attach(part)
 
 			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
+			server.sendmail(me, [to2], msg.as_string())
 			server.quit()
 
 			#
@@ -179,7 +181,7 @@ if __name__ == "__main__":
 			html = MIMEText(htmlBody, "html")
 
 			msg["Subject"] = "HTML+CSV Attachment Mail"
-			msg["From"] = me
+			msg["From"] = me2
 			msg["To"] = to
 			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
 
@@ -193,7 +195,7 @@ if __name__ == "__main__":
 			msg.attach(part)
 
 			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
+			server.sendmail(me2, [to], msg.as_string())
 			server.quit()
 
 			#

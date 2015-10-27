@@ -3,12 +3,12 @@ define(
 		"hbs/handlebars",
 		"services/SeedService"
 	],
-	function(Handlebars, SeedService) {
+	function(Handlebars, seedService) {
 		"use strict";
 
 		var helper = function(elementName, selectedDateFormat) {
 			var html = "<select id=\"" + elementName + "\" class=\"form-control\">";
-			var dateFormatOptions = SeedService.getDateFormatOptions();
+			var dateFormatOptions = seedService.getDateFormatOptions();
 
 			for (var index = 0; index < dateFormatOptions.length; index++) {
 				html += "<option value=\"" + dateFormatOptions[index].dateFormat + "\"";

@@ -12,8 +12,7 @@
 
 				<div class="form-group">
 					<label for="autoRefresh">Auto Refresh</label>
-					<input type="radio" name="autoRefresh" id="autoRefreshOff" value="0"{{#if autoRefreshOff}} checked="checked"{{/if}} /> Off
-					<input type="radio" name="autoRefresh" id="autoRefreshOn" value="1"{{#if autoRefreshOn}} checked="checked"{{/if}} /> On
+					{{{autoRefreshSelector "autoRefresh" autoRefresh}}}
 				</div>
 			</form>
 		</div>

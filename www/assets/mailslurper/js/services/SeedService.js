@@ -6,6 +6,15 @@ define(
 		"use strict";
 
 		var service = {
+			getAutoRefreshOptions: function() {
+				return [
+					{ value: 0, description: "Don't auto refresh" },
+					{ value: 1, description: "Every minute" },
+					{ value: 5, description: "Every 5 minutes" },
+					{ value: 10, description: "Every 10 minutes" }
+				];
+			},
+
 			getDateFormatOptions: function() {
 				return [
 					{ dateFormat: "YYYY-MM-DD HH:mm", description: "International" },

@@ -17,7 +17,7 @@ require(
 	],
 	function(
 		$,
-		SettingsService,
+		settingsService,
 		mailService,
 		alertService,
 		SavedSearchesWidget,
@@ -143,6 +143,8 @@ require(
 					renderMailItems();
 					initializeMailItems();
 					alertService.unblock();
+
+					setRefreshTimeLeft();
 				},
 
 				function() {
@@ -246,7 +248,7 @@ require(
 							};
 
 							SavedSearchesWidget.showSaveSearchModal(function(saveSearchName) {
-								SettingsService.addSavedSearch(saveSearchName, searchCriteria);
+								settingsService.addSavedSearch(saveSearchName, searchCriteria);
 							});
 						}
 					},
@@ -314,6 +316,29 @@ require(
 			$("#mailItemsColumn").innerHeight(calculateWindowHeight());
 		};
 
+		var setRefreshTimeLeft = function() {
+			var settings = settingsService.retrieveSettings();
+			refreshTime = moment.duration(settings.autoRefresh, "minutes");
+		};
+
+		/*
+		 * Sets up the auto refresh timer
+		 */
+		var setupAutoRefresh = function() {
+			var settings = settingsService.retrieveSettings();
+
+			if (settings.autoRefresh > 0) {
+				alertService.logMessage("Auto refresh set to " + settings.autoRefresh + " minute(s)", "info");
+
+				var timeLeft = settings.autoRefresh * 60 * 1000;
+				setRefreshTimeLeft();
+				updateAutoRefreshCountdown();
+
+				window.setInterval(updateAutoRefreshCountdown, 10000);
+				window.setInterval(performSearch, timeLeft);
+			}
+		};
+
 		/**
 		 * Displays the saved searches modal
 		 */
@@ -323,6 +348,14 @@ require(
 				$("#txtFrom").val(savedSearch.searchFrom);
 				$("#txtTo").val(savedSearch.searchTo);
 			});
+		};
+
+		/*
+		 * Updates the auto-refresh countdown timer
+		 */
+		var updateAutoRefreshCountdown = function() {
+			$("#refreshCountdownText").html("(" + refreshTime.humanize() + ")");
+			refreshTime = moment.duration(refreshTime.asSeconds() - 10, "seconds");
 		};
 
 		/**
@@ -350,6 +383,7 @@ require(
 		var mailID = 0;
 		var previousPage = 0;
 		var nextPage = 0;
+		var refreshTime = 0;
 		var totalPages = 0;
 		var totalMailCount = 0;
 		var page = 1;
@@ -361,7 +395,7 @@ require(
 			searchTo: ""
 		};
 
-		var serviceURL = SettingsService.getServiceURL();
+		var serviceURL = settingsService.getServiceURL();
 
 		alertService.block("Loading");
 
@@ -374,6 +408,8 @@ require(
 				renderMailItems();
 				initializeMailItems();
 				alertService.unblock();
+
+				setupAutoRefresh();
 			},
 
 			function() {

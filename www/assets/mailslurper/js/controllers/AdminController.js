@@ -12,7 +12,7 @@ require(
 	],
 	function(
 		$,
-		SettingsService,
+		settingsService,
 		MailService,
 		SeedService,
 		alertService,
@@ -25,7 +25,7 @@ require(
 		var getSettingsFromForm = function() {
 			var settings = {
 				dateFormat: $("#dateFormat option:selected").val(),
-				autoRefresh: ($("#autoRefreshOn:checked").length > 0) ? true : false
+				autoRefresh: window.parseInt($("#autoRefresh option:selected").val(), 10)
 			};
 
 			return settings;
@@ -74,7 +74,7 @@ require(
 
 		var onBtnSaveSettings = function() {
 			var settings = getSettingsFromForm();
-			SettingsService.storeSettings(settings);
+			settingsService.storeSettings(settings);
 
 			alertService.success("Settings saved!");
 		};
@@ -92,8 +92,7 @@ require(
 			var html = adminSettings({
 				dateFormat: settings.dateFormat,
 				dateFormatOptions: dateFormatOptions,
-				autoRefreshOff: (!settings.autoRefresh) ? true : false,
-				autoRefreshOn: (settings.autoRefresh) ? true : false
+				autoRefresh: settings.autoRefresh
 			});
 
 			$("#adminSettings").html(html);
@@ -106,7 +105,7 @@ require(
 		/****************************************************************************
 		 * Constructor
 		 ***************************************************************************/
-		var serviceURL = SettingsService.getServiceURL();
+		var serviceURL = settingsService.getServiceURL();
 		var pruneOptions = [];
 
 		SeedService.getPruneOptions(serviceURL).then(
@@ -115,7 +114,7 @@ require(
 
 				MailService.getMailCount(serviceURL).then(
 					function(response) {
-						var settings = SettingsService.retrieveSettings();
+						var settings = settingsService.retrieveSettings();
 						var dateFormatOptions = SeedService.getDateFormatOptions();
 
 						renderPruneTemplate(pruneOptions, response.mailCount);

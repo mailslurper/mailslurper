@@ -105,7 +105,7 @@ define(
 				} else {
 					return {
 						dateFormat: "YYYY-MM-DD hh:mm A",
-						autoRefresh: false
+						autoRefresh: 0
 					};
 				}
 			},

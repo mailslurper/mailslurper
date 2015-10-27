@@ -8,20 +8,19 @@ require(
 	],
 	function(
 		$,
-		SettingsService,
-		AlertService,
+		settingsService,
+		alertService,
 		Dialog,
 		manageSavedSearchesTemplate
 	) {
 		"use strict";
 
-		var deleteSavedSearch = function(context) {
-			SettingsService.deleteSavedSearch(context.savedSearchIndex);
-			return Promise.resolve(context);
+		var deleteSavedSearch = function(savedSearchIndex) {
+			settingsService.deleteSavedSearch(savedSearchIndex);
 		};
 
-		var getSavedSearches = function(context) {
-			var savedSearches = SettingsService.retrieveSavedSearches();
+		var getSavedSearches = function() {
+			var savedSearches = settingsService.retrieveSavedSearches();
 			var grouped = [];
 
 			for (var outerIndex = 0; outerIndex < savedSearches.length; outerIndex += 2) {
@@ -38,42 +37,30 @@ require(
 				grouped.push(innerGroup);
 			}
 
-			context.savedSearches = grouped;
-			return Promise.resolve(context);
+			return grouped;
 		};
 
-		var initialize = function(context) {
+		var initialize = function() {
 			$(".deleteSavedSearch").on("click", function() {
-				context.savedSearchIndex = window.parseInt($(this).attr("data-index"), 10);
-				deleteSavedSearch(context)
-					.then(getSavedSearches)
-					.then(renderSavedSearches)
-					.then(initialize)
-					.catch(AlertService.error);
-			});
+				var savedSearchIndex = window.parseInt($(this).attr("data-index"), 10);
+				deleteSavedSearch(savedSearchIndex);
 
-			return Promise.resolve(context);
+				renderSavedSearches(getSavedSearches());
+				initialize();
+			});
 		};
 
-		var renderSavedSearches = function(context) {
-			$("#savedSearches").html(manageSavedSearchesTemplate({ savedSearches: context.savedSearches }));
-			return Promise.resolve(context);
+		var renderSavedSearches = function(savedSearches) {
+			$("#savedSearches").html(manageSavedSearchesTemplate({ savedSearches: savedSearches }));
 		};
 
 		/****************************************************************************
 		 * Constructor
 		 ***************************************************************************/
-		var context = {
-			savedSearches: [],
-			message: "Loading"
-		};
+		alertService.block("Loading...");
+		renderSavedSearches(getSavedSearches());
+		initialize();
 
-		AlertService.block(context)
-			.then(getSavedSearches)
-			.then(renderSavedSearches)
-			.then(initialize)
-			.then(AlertService.unblock)
-			.catch(AlertService.error);
-
+		alertService.unblock();
 	}
 );

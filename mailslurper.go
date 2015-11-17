@@ -81,7 +81,7 @@ func main() {
 	/*
 	 * Start the SMTP dispatcher
 	 */
-	go server.Dispatcher(pool, smtpServer, receivers)
+	go server.Dispatch(pool, smtpServer, receivers)
 
 	/*
 	 * Pre-load layout information

@@ -8,6 +8,7 @@ _obj
 _test
 cache
 tmp
+.DS_Store
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -28,3 +29,5 @@ mailslurper
 node_modules
 www/assets/*
 !www/assets/mailslurper
+www/assets/mailslurper/.DS_Store
+

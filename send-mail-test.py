@@ -271,6 +271,25 @@ if __name__ == "__main__":
 			server.sendmail(me, [to], msg.as_string())
 			server.quit()
 
+			#
+			# Send html with 4th form date format
+			#
+			htmlBody = "<p>This is a <strong>HTML</strong>. This has a weird date in the header.</p>"
+
+			msg = MIMEMultipart()
+			html = MIMEText(htmlBody, "html")
+
+			msg["Subject"] = "Adam's HTML+4th Format Date in Header"
+			msg["From"] = me
+			msg["To"] = to
+			msg["Date"] = datetime.datetime.now().strftime("%d %b %Y %H:%M:%S -0800")
+
+			msg.attach(html)
+
+			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			server.sendmail(me, [to], msg.as_string())
+			server.quit()
+
 
 
 	except Exception as e:

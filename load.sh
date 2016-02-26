@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COUNTER=0
-LIMIT=10
+LIMIT=50
 
 while [ $COUNTER -lt $LIMIT ]; do
 	python ./send-mail-test.py

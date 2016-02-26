@@ -72,7 +72,7 @@ define(
 			getServiceURLNow: function() {
 				var serviceSettings = service.retrieveServiceSettings();
 
-				var serviceURL = "http://" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort + "/" + serviceSettings.version;
+				var serviceURL = "http://" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort;
 
 				return serviceURL;
 			},

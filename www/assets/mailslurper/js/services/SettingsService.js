@@ -62,7 +62,7 @@ define(
 			 */
 			getServiceURL: function(context) {
 				var serviceSettings = service.retrieveServiceSettings();
-				return "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort + "/" + serviceSettings.version;
+				return "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort;
 			},
 
 			/**

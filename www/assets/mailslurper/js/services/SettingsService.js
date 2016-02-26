@@ -1,3 +1,7 @@
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+
 define(
 	[
 		"jquery",
@@ -62,7 +66,7 @@ define(
 			 */
 			getServiceURL: function(context) {
 				var serviceSettings = service.retrieveServiceSettings();
-				return "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort + "/" + serviceSettings.version;
+				return "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort;
 			},
 
 			/**
@@ -72,7 +76,7 @@ define(
 			getServiceURLNow: function() {
 				var serviceSettings = service.retrieveServiceSettings();
 
-				var serviceURL = "http://" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort + "/" + serviceSettings.version;
+				var serviceURL = "http://" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort;
 
 				return serviceURL;
 			},

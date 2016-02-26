@@ -1,3 +1,7 @@
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+
 require(
 	[
 		"jquery",
@@ -137,8 +141,8 @@ require(
 			mailService.getMails(serviceURL, page, searchCriteria).then(
 				function(response, status, xhr) {
 					mails = response.mailItems;
-					totalPages = window.parseInt(xhr.getResponseHeader("X-Total-Pages"), 10);
-					totalMailCount = window.parseInt(xhr.getResponseHeader("X-Total-Mail-Count"), 10);
+					totalPages = response.totalPages;
+					totalMailCount = response.totalRecordCount;
 
 					renderMailItems();
 					initializeMailItems();
@@ -402,8 +406,8 @@ require(
 		mailService.getMails(serviceURL, page, searchCriteria).then(
 			function(response, status, xhr) {
 				mails = response.mailItems;
-				totalPages = window.parseInt(xhr.getResponseHeader("X-Total-Pages"), 10);
-				totalMailCount = window.parseInt(xhr.getResponseHeader("X-Total-Mail-Count"), 10);
+				totalPages = response.totalPages;
+				totalMailCount = response.totalRecordCount;
 
 				renderMailItems();
 				initializeMailItems();

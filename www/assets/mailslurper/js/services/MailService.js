@@ -1,3 +1,7 @@
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+
 define(
 	[
 		"jquery",
@@ -66,8 +70,11 @@ define(
 			 * array in a key named "mails" in the context object.
 			 */
 			getMails: function(serviceURL, page, searchCriteria) {
-				var url = serviceURL + "/mails/" + page + "?";
-				url += "message=" + (searchCriteria.searchMessage || "");
+				var url = serviceURL + "/mail?pageNumber=" + page;
+
+				if (searchCriteria.message != "") {
+					url += "&message=" + searchCriteria.searchMessage;
+				}
 
 				if (searchCriteria.searchStart) {
 					url += "&start=" + searchCriteria.searchStart.format("YYYY-MM-DD");

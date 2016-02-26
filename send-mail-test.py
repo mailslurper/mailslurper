@@ -46,33 +46,23 @@ if __name__ == "__main__":
 
 	try:
 		#
-		# Send text+html emails
+		# Send html with "data" in "to"
 		#
-		#if sendMultipartMails:
-			# for index in range(numMails):
-			# 	quote = getQuote()
-			#
-			# 	textBody = "Hello,\nHere is today's quote.\n\n{0}\n  -- {1}\n\nSincerely,\nAdam Presley".format(quote["quote"], quote["source"])
-			# 	htmlBody = "<p>Hello,</p><p>Here is today's quote.</p><p><em>{0}</em><br />&nbsp;&nbsp;-- {1}</p><p>Sincerely,<br />Adam Presley</p>".format(quote["quote"], quote["source"],)
-			#
-			# 	text = MIMEText(textBody, "plain")
-			# 	html = MIMEText(htmlBody, "html")
-			#
-			# 	msg = MIMEMultipart("alternative")
-			#
-			# 	msg["Subject"] = "Quote From {0}".format(quote["source"])
-			# 	msg["From"] = me
-			# 	msg["To"] = to
-			# 	msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S +0000 UTC")
-			#
-			# 	msg.attach(text)
-			# 	msg.attach(html)
-			#
-			# 	server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			# 	server.sendmail(me, [to], msg.as_string())
-			# 	server.quit()
+		htmlBody = "<p>This is an email sent to an address with 'data' in the TO field.</p>"
 
-				#time.sleep(2)
+		msg = MIMEMultipart()
+		html = MIMEText(htmlBody, "html")
+
+		msg["Subject"] = "Weird TO Address"
+		msg["From"] = me
+		msg["To"] = "data@foo.com"
+		msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+
+		msg.attach(html)
+
+		server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+		server.sendmail(me, ["data@foo.com"], msg.as_string())
+		server.quit()
 
 		#
 		# Send plain text emails
@@ -266,6 +256,25 @@ if __name__ == "__main__":
 			part.add_header("Content-Type", "image/png; name=MailSlurperLogo.png")
 			part.add_header("Content-Disposition", "attachment;")
 			msg.attach(part)
+
+			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
+			server.sendmail(me, [to], msg.as_string())
+			server.quit()
+
+			#
+			# Send html with 4th form date format
+			#
+			htmlBody = "<p>This is a <strong>HTML</strong>. This has a weird date in the header.</p>"
+
+			msg = MIMEMultipart()
+			html = MIMEText(htmlBody, "html")
+
+			msg["Subject"] = "Adam's HTML+4th Format Date in Header"
+			msg["From"] = me
+			msg["To"] = to
+			msg["Date"] = datetime.datetime.now().strftime("%d %b %Y %H:%M:%S -0800")
+
+			msg.attach(html)
 
 			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
 			server.sendmail(me, [to], msg.as_string())

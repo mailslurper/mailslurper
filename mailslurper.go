@@ -13,12 +13,12 @@ import (
 	"github.com/mailslurper/mailslurper/services/listener"
 	"github.com/mailslurper/mailslurper/services/middleware"
 
+	"github.com/mailslurper/libmailslurper"
 	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/libmailslurper/receiver"
 	"github.com/mailslurper/libmailslurper/server"
 	"github.com/mailslurper/libmailslurper/storage"
 	"github.com/mailslurper/mailslurper/global"
-	serviceListener "github.com/mailslurper/mailslurperservice/listener"
 )
 
 func main() {
@@ -46,14 +46,14 @@ func main() {
 	/*
 	 * Setup global database connection handle
 	 */
-	databaseConnection := config.GetDatabaseConfiguration()
+	storageType, databaseConnection := config.GetDatabaseConfiguration()
 
-	if err = storage.ConnectToStorage(databaseConnection); err != nil {
-		log.Println("MailSlurper: ERROR - There was an error connecting to your data storage:", err)
+	if global.Database, err = storage.ConnectToStorage(storageType, databaseConnection); err != nil {
+		log.Println("MailSlurper: ERROR - There was an error connecting to your data storage:", err.Error())
 		os.Exit(0)
 	}
 
-	defer storage.DisconnectFromStorage()
+	defer global.Database.Disconnect()
 
 	/*
 	 * Setup the server pool
@@ -75,7 +75,7 @@ func main() {
 	 * Setup receivers (subscribers) to handle new mail items.
 	 */
 	receivers := []receiver.IMailItemReceiver{
-		receiver.DatabaseReceiver{},
+		receiver.NewDatabaseReceiver(global.Database),
 	}
 
 	/*
@@ -121,9 +121,14 @@ func main() {
 	/*
 	 * Start the services server
 	 */
-	err = serviceListener.StartHttpListener(serviceListener.NewHttpListener(config.ServiceAddress, config.ServicePort))
+	serviceTierConfiguration := &configuration.ServiceTierConfiguration{
+		Address:  config.ServiceAddress,
+		Port:     config.ServicePort,
+		Database: global.Database,
+	}
 
-	if err != nil {
+	if err = libmailslurper.StartServiceTier(serviceTierConfiguration); err != nil {
 		log.Printf("MailSlurper: ERROR - Error starting MailSlurper services server: %s\n", err.Error())
+		os.Exit(1)
 	}
 }

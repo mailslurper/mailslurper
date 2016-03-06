@@ -6,8 +6,8 @@ require(
 	[
 		"jquery",
 		"services/SettingsService",
-		"services/mailService",
-		"services/alertService",
+		"services/MailService",
+		"services/AlertService",
 		"widgets/SavedSearchesWidget",
 		"bootstrap-dialog",
 		"moment",

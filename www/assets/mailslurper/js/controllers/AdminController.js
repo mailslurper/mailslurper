@@ -8,7 +8,7 @@ require(
 		"services/SettingsService",
 		"services/MailService",
 		"services/SeedService",
-		"services/alertService",
+		"services/AlertService",
 		"bootstrap-dialog",
 
 		"hbs!templates/adminPrune",

@@ -48,6 +48,11 @@
 	margin-bottom: 2px;
 }
 
+.mail-list-row-highlight {
+	background-color: aliceblue !important;
+	font-weight: bold !important;
+}
+
 .margin-right-10 {
 	margin-right: 10px;
 }

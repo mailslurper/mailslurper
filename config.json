@@ -11,5 +11,6 @@
 	"dbDatabase": "./mailslurper.db",
 	"dbUserName": "",
 	"dbPassword": "",
-	"maxWorkers": 1000
+	"maxWorkers": 1000,
+	"autoStartBrowser": false
 }

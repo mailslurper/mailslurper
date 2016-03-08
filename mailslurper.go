@@ -4,26 +4,26 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"runtime"
+	"time"
 
 	"github.com/adampresley/GoHttpService"
 	"github.com/adampresley/sigint"
-	"github.com/mailslurper/mailslurper/services/listener"
-	"github.com/mailslurper/mailslurper/services/middleware"
-
 	"github.com/mailslurper/libmailslurper"
 	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/libmailslurper/receiver"
 	"github.com/mailslurper/libmailslurper/server"
 	"github.com/mailslurper/libmailslurper/storage"
 	"github.com/mailslurper/mailslurper/global"
+	"github.com/mailslurper/mailslurper/services/listener"
+	"github.com/mailslurper/mailslurper/services/middleware"
+	"github.com/skratchdot/open-golang/open"
 )
 
 func main() {
 	var err error
-	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	log.Printf("MailSlurper: INFO - Starting MailSlurper Server v%s\n", global.SERVER_VERSION)
 	/*
@@ -118,6 +118,10 @@ func main() {
 		}
 	}()
 
+	if config.AutoStartBrowser {
+		startBrowser(config)
+	}
+
 	/*
 	 * Start the services server
 	 */
@@ -131,4 +135,16 @@ func main() {
 		log.Printf("MailSlurper: ERROR - Error starting MailSlurper services server: %s\n", err.Error())
 		os.Exit(1)
 	}
+}
+
+func startBrowser(config *configuration.Configuration) {
+	timer := time.NewTimer(time.Second)
+	go func() {
+		<-timer.C
+		log.Printf("Opening web browser to http://%s:%d\n", config.WWWAddress, config.WWWPort)
+		err := open.Start(fmt.Sprintf("http://%s:%d", config.WWWAddress, config.WWWPort))
+		if err != nil {
+			log.Printf("ERROR - Could not open browser - %s\n", err.Error())
+		}
+	}()
 }

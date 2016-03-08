@@ -60,7 +60,8 @@ define(
 			getMailCount: function(serviceURL) {
 				return $.ajax({
 					method: "GET",
-					url: serviceURL + "/mailcount"
+					url: serviceURL + "/mailcount",
+					cache: false
 				});
 			},
 
@@ -94,7 +95,8 @@ define(
 
 				return $.ajax({
 					method: "GET",
-					url: url
+					url: url,
+					cache: false
 				});
 			}
 		};

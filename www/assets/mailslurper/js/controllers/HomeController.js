@@ -143,6 +143,11 @@ require(
 				performSearch();
 			});
 
+			$("#sortSubject").on("click", function() {
+				changeSortBy("subject");
+				performSearch();
+			});
+
 			resizeMailItems();
 			resizeMailDetails();
 

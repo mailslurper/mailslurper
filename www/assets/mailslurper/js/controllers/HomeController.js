@@ -148,6 +148,11 @@ require(
 				performSearch();
 			});
 
+			$("#sortFrom").on("click", function() {
+				changeSortBy("from");
+				performSearch();
+			});
+
 			resizeMailItems();
 			resizeMailDetails();
 

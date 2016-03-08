@@ -76,6 +76,13 @@ require(
 		};
 
 		/**
+		 * Highlights a mail row.
+		 */
+		var highlightMailRow = function(rowID) {
+			$("#" + rowID).addClass("mail-list-row-highlight");
+		};
+
+		/**
 		 * Initialize the list of mail items. This will attach click events and
 		 * handle resizing of the window so our scrollable content windows adjust
 		 * correctly.
@@ -83,8 +90,11 @@ require(
 		var initializeMailItems = function() {
 			$(".mailSubject").on("click", function() {
 				var id = $(this).attr("data-id");
-				mailID = id;
 
+				removeAllMailRowHighlights();
+				highlightMailRow(id);
+
+				mailID = id;
 				viewMailDetails();
 			});
 
@@ -163,6 +173,13 @@ require(
 		 */
 		var refreshMailList = function() {
 			return performSearch();
+		};
+
+		/**
+		 * Removes highlights from all mail rows
+		 */
+		var removeAllMailRowHighlights = function() {
+			$(".mailRow").removeClass("mail-list-row-highlight");
 		};
 
 		/**

@@ -70,7 +70,7 @@ define(
 			 * named "page" in the context object. This will return mail items as an
 			 * array in a key named "mails" in the context object.
 			 */
-			getMails: function(serviceURL, page, searchCriteria) {
+			getMails: function(serviceURL, page, searchCriteria, sortCriteria) {
 				var url = serviceURL + "/mail?pageNumber=" + page;
 
 				if (searchCriteria.message != "") {
@@ -91,6 +91,14 @@ define(
 
 				if (searchCriteria.searchTo) {
 					url += "&to=" + searchCriteria.searchTo;
+				}
+
+				if (sortCriteria.orderByField) {
+					url += "&orderby=" + sortCriteria.orderByField;
+				}
+
+				if (sortCriteria.orderByDirection) {
+					url += "&dir=" + sortCriteria.orderByDirection;
 				}
 
 				return $.ajax({

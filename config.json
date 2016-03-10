@@ -1,9 +1,9 @@
 {
-	"wwwAddress": "127.0.0.1",
+	"wwwAddress": "localhost",
 	"wwwPort": 8080,
-	"serviceAddress": "127.0.0.1",
+	"serviceAddress": "localhost",
 	"servicePort": 8085,
-	"smtpAddress": "127.0.0.1",
+	"smtpAddress": "localhost",
 	"smtpPort": 2500,
 	"dbEngine": "SQLite",
 	"dbHost": "",
@@ -12,5 +12,7 @@
 	"dbUserName": "",
 	"dbPassword": "",
 	"maxWorkers": 1000,
-	"autoStartBrowser": false
+	"autoStartBrowser": false,
+	"keyFile": "",
+	"certFile": ""
 }

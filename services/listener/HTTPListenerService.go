@@ -138,11 +138,11 @@ func (service *HTTPListenerService) StartHTTPListener(config *configuration.Conf
 		Handler: alice.New().Then(service.Router),
 	}
 
-	log.Printf("MailSlurper: INFO - HTTP listener started on %s:%d\n", service.Address, service.Port)
-
-	if config.CertFile == "" && config.KeyFile == "" {
-		return listener.ListenAndServe()
-	} else {
+	if config.CertFile != "" && config.KeyFile != "" {
+		log.Printf("MailSlurper: INFO - HTTPS listener started on %s:%d\n", service.Address, service.Port)
 		return listener.ListenAndServeTLS(config.CertFile, config.KeyFile)
 	}
+
+	log.Printf("MailSlurper: INFO - HTTP listener started on %s:%d\n", service.Address, service.Port)
+	return listener.ListenAndServe()
 }

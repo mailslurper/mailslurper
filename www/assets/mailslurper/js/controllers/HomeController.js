@@ -58,6 +58,18 @@ require(
 		};
 
 		/**
+		 * Changes sort field and/or direction
+		 */
+		var changeSortBy = function(field) {
+			if (field === sortCriteria.orderByField) {
+				sortCriteria.orderByDirection = (sortCriteria.orderByDirection === "asc") ? "desc" : "asc";
+			} else {
+				sortCriteria.orderByField = field;
+				sortCriteria.orderByDirection = "asc";
+			}
+		};
+
+		/**
 		 * Retrieves an attachment and displays it to the user. This expects the context to
 		 * have "attachmentID" and "mailID".
 		 */
@@ -76,6 +88,13 @@ require(
 		};
 
 		/**
+		 * Highlights a mail row.
+		 */
+		var highlightMailRow = function(rowID) {
+			$("#" + rowID).addClass("mail-list-row-highlight");
+		};
+
+		/**
 		 * Initialize the list of mail items. This will attach click events and
 		 * handle resizing of the window so our scrollable content windows adjust
 		 * correctly.
@@ -83,8 +102,11 @@ require(
 		var initializeMailItems = function() {
 			$(".mailSubject").on("click", function() {
 				var id = $(this).attr("data-id");
-				mailID = id;
 
+				removeAllMailRowHighlights();
+				highlightMailRow(id);
+
+				mailID = id;
 				viewMailDetails();
 			});
 
@@ -116,6 +138,21 @@ require(
 				performSearch();
 			});
 
+			$("#sortDate").on("click", function() {
+				changeSortBy("date");
+				performSearch();
+			});
+
+			$("#sortSubject").on("click", function() {
+				changeSortBy("subject");
+				performSearch();
+			});
+
+			$("#sortFrom").on("click", function() {
+				changeSortBy("from");
+				performSearch();
+			});
+
 			resizeMailItems();
 			resizeMailDetails();
 
@@ -138,7 +175,7 @@ require(
 		var performSearch = function() {
 			alertService.block("Searching...");
 
-			mailService.getMails(serviceURL, page, searchCriteria).then(
+			mailService.getMails(serviceURL, page, searchCriteria, sortCriteria).then(
 				function(response, status, xhr) {
 					mails = response.mailItems;
 					totalPages = response.totalPages;
@@ -163,6 +200,13 @@ require(
 		 */
 		var refreshMailList = function() {
 			return performSearch();
+		};
+
+		/**
+		 * Removes highlights from all mail rows
+		 */
+		var removeAllMailRowHighlights = function() {
+			$(".mailRow").removeClass("mail-list-row-highlight");
 		};
 
 		/**
@@ -210,6 +254,24 @@ require(
 			nextPage = (page < totalPages) ? page + 1 : totalPages;
 			previousPage = (page > 1) ? page - 1 : 1;
 
+			var chevron = (sortCriteria.orderByDirection === "desc") ? "fa fa-chevron-down" : "fa fa-chevron-up";
+
+			var dateSortIcon = "";
+			var subjectSortIcon = "";
+			var fromSortIcon = "";
+
+			if (sortCriteria.orderByField === "date") {
+				dateSortIcon = " <i class=\"" + chevron + "\"></i>";
+			}
+
+			if (sortCriteria.orderByField === "subject") {
+				subjectSortIcon = " <i class=\"" + chevron + "\"></i>";
+			}
+
+			if (sortCriteria.orderByField === "from") {
+				fromSortIcon = " <i class=\"" + chevron + "\"></i>";
+			}
+
 			var html = mailListTemplate({
 				mails: mails,
 				totalPages: totalPages,
@@ -220,7 +282,11 @@ require(
 				hasLastButton: (page < totalPages) ? true : false,
 				previousPage: previousPage,
 				nextPage: nextPage,
-				filtersPopover: buildFiltersPopoverText()
+				filtersPopover: buildFiltersPopoverText(),
+				dateSortIcon: dateSortIcon,
+				subjectSortIcon: subjectSortIcon,
+				fromSortIcon: fromSortIcon,
+				direction: sortCriteria.orderByDirection
 			});
 
 			$("#mailList").html(html);
@@ -398,12 +464,16 @@ require(
 			searchFrom: "",
 			searchTo: ""
 		};
+		var sortCriteria = {
+			orderByField: "date",
+			orderByDirection: "desc"
+		};
 
 		var serviceURL = settingsService.getServiceURL();
 
 		alertService.block("Loading");
 
-		mailService.getMails(serviceURL, page, searchCriteria).then(
+		mailService.getMails(serviceURL, page, searchCriteria, sortCriteria).then(
 			function(response, status, xhr) {
 				mails = response.mailItems;
 				totalPages = response.totalPages;

@@ -4,26 +4,26 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"runtime"
+	"time"
 
 	"github.com/adampresley/GoHttpService"
 	"github.com/adampresley/sigint"
-	"github.com/mailslurper/mailslurper/services/listener"
-	"github.com/mailslurper/mailslurper/services/middleware"
-
 	"github.com/mailslurper/libmailslurper"
 	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/libmailslurper/receiver"
 	"github.com/mailslurper/libmailslurper/server"
 	"github.com/mailslurper/libmailslurper/storage"
 	"github.com/mailslurper/mailslurper/global"
+	"github.com/mailslurper/mailslurper/services/listener"
+	"github.com/mailslurper/mailslurper/services/middleware"
+	"github.com/skratchdot/open-golang/open"
 )
 
 func main() {
 	var err error
-	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	log.Printf("MailSlurper: INFO - Starting MailSlurper Server v%s\n", global.SERVER_VERSION)
 	/*
@@ -63,13 +63,13 @@ func main() {
 	/*
 	 * Setup the SMTP listener
 	 */
-	smtpServer, err := server.SetupSmtpServerListener(config.GetFullSmtpBindingAddress())
+	smtpServer, err := server.SetupSMTPServerListener(config)
 	if err != nil {
 		log.Println("MailSlurper: ERROR - There was a problem starting the SMTP listener:", err)
 		os.Exit(0)
 	}
 
-	defer server.CloseSmtpServerListener(smtpServer)
+	defer server.CloseSMTPServerListener(smtpServer)
 
 	/*
 	 * Setup receivers (subscribers) to handle new mail items.
@@ -112,11 +112,15 @@ func main() {
 	 * Setup the app HTTP listener
 	 */
 	go func() {
-		if err := httpListener.StartHTTPListener(); err != nil {
+		if err := httpListener.StartHTTPListener(config); err != nil {
 			log.Printf("MailSlurper: ERROR - Error starting HTTP listener: %s\n", err.Error())
 			os.Exit(1)
 		}
 	}()
+
+	if config.AutoStartBrowser {
+		startBrowser(config)
+	}
 
 	/*
 	 * Start the services server
@@ -125,10 +129,24 @@ func main() {
 		Address:  config.ServiceAddress,
 		Port:     config.ServicePort,
 		Database: global.Database,
+		CertFile: config.CertFile,
+		KeyFile:  config.KeyFile,
 	}
 
 	if err = libmailslurper.StartServiceTier(serviceTierConfiguration); err != nil {
 		log.Printf("MailSlurper: ERROR - Error starting MailSlurper services server: %s\n", err.Error())
 		os.Exit(1)
 	}
+}
+
+func startBrowser(config *configuration.Configuration) {
+	timer := time.NewTimer(time.Second)
+	go func() {
+		<-timer.C
+		log.Printf("Opening web browser to http://%s:%d\n", config.WWWAddress, config.WWWPort)
+		err := open.Start(fmt.Sprintf("http://%s:%d", config.WWWAddress, config.WWWPort))
+		if err != nil {
+			log.Printf("ERROR - Could not open browser - %s\n", err.Error())
+		}
+	}()
 }

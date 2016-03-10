@@ -1,287 +1,267 @@
 #
 # Use this script to quickly send a bunch of mails. Useful for testing.
 #
+import os
 import sys
 import json
 import time
 import smtplib
-import urllib2
 import datetime
+import random
 
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email import Encoders
 
-def getQuote():
-	response = urllib2.urlopen("http://www.iheartquotes.com/api/v1/random?format=json")
-	obj = json.loads(response.read())
+fromAddresses = (
+	"adam@adampresley.com",
+	"test@adampresley.com",
+	"test@gmail.com",
+	"fabio@yahoo.com",
+)
 
-	quoteLines = obj["quote"].split("--")
+toAddresses = (
+	"adam@adampresley.com",
+	"recipient1@gmail.com",
+	"recipient2@gmail.com",
+	"test@altavista.com",
+)
 
-	if len(quoteLines) > 0:
-		return {
-			"quote": quoteLines[0].strip(),
-			"source": "Unknown" if len(quoteLines) <= 1 else quoteLines[1].strip(),
-		}
-	else:
-		return {
-			"quote": "No quote",
-			"source": "Adam Presley"
-		}
+DATE_FORMAT_1 = "%a, %d %b %Y %H:%M:%S -0700 (UTC)"
+DATE_FORMAT_2 = "%d %b %Y %H:%M:%S -0800"
+DATE_FORMAT_3 = "%-d %b %Y %H:%M:%S -0800"
+DATE_FORMAT_4 = "%a, %d %b %Y %H:%M:%S -0700"
+DATE_FORMAT_5 = "%a, %d %b %Y %H:%M:%S -0700 UTC"
+DATE_FORMAT_6 = "%a, %-d %b %Y %H:%M:%S -0700 (UTC)"
 
-if __name__ == "__main__":
-	sendMultipartMails = True
-	sendTextOnlyMails = True
-	sendAttachmentMails = True
+useSSL = False
+address = "127.0.0.1"
+smtpPort = 2500
 
-	numMails = 5
-	address = "127.0.0.1"
-	smtpPort = 2500
+def makeHTMLMessage(subject, date, dateFormat, body):
+	msg = MIMEMultipart()
+	html = MIMEText(body, "html")
 
-	me = "someone@another.com"
-	me2 = "different@another.com"
-	to = "bob@bobtestingmailslurper.com"
-	to2 = "jim@bobtestingmailslurper.com"
+	msg["Subject"] = subject
+	msg["From"] = getRandomFrom()
+	msg["To"] = getRandomTo()
+	msg["Date"] = date.strftime(dateFormat)
 
-	try:
-		#
-		# Send html with "data" in "to"
-		#
-		htmlBody = "<p>This is an email sent to an address with 'data' in the TO field.</p>"
+	msg.attach(html)
+	return msg
 
+def makeTextMessage(subject, date, dateFormat, body, multipart=False):
+	if multipart:
 		msg = MIMEMultipart()
-		html = MIMEText(htmlBody, "html")
+		msg.attach(MIMEText(body))
+	else:
+		msg = MIMEText(body)
 
-		msg["Subject"] = "Weird TO Address"
-		msg["From"] = me
-		msg["To"] = "data@foo.com"
-		msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+	msg["Subject"] = subject
+	msg["From"] = getRandomFrom()
+	msg["To"] = getRandomTo()
+	msg["Date"] = date.strftime(dateFormat)
 
-		msg.attach(html)
+	return msg
 
+def makeMultipartMessage(subject, date, dateFormat, textBody, htmlBody):
+	msg = MIMEMultipart()
+	html = MIMEText(htmlBody, "html")
+	text = MIMEText(textBody)
+
+	msg["Subject"] = subject
+	msg["From"] = getRandomFrom()
+	msg["To"] = getRandomTo()
+	msg["Date"] = date.strftime(dateFormat)
+
+	msg.attach(text)
+	msg.attach(html)
+	return msg
+
+def addAttachment(msg, filename, contentType, base64Encode=True):
+	part = MIMEBase("multipart", "mixed")
+	part.set_payload(open(filename, "rb").read())
+	Encoders.encode_base64(part)
+	part.add_header("Content-Type", contentType)
+	part.add_header("Content-Disposition", "attachment; filename=\"{0}\"".format(os.path.basename(filename)))
+
+	msg.attach(part)
+	return msg
+
+def getRandomFrom():
+	return fromAddresses[random.randint(0, len(fromAddresses) - 1)]
+
+def getRandomTo():
+	return toAddresses[random.randint(0, len(toAddresses) - 1)]
+
+def sendMail(msg):
+	if not useSSL:
 		server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-		server.sendmail(me, ["data@foo.com"], msg.as_string())
-		server.quit()
+	else:
+		server = smtplib.SMTP_SSL("{0}:{1}".format(address, smtpPort))
 
-		#
-		# Send plain text emails
-		#
-		if sendTextOnlyMails:
-			for index in range(numMails):
-				textBody = "Hello,\nI am plain text mail #{0}.\n\nSincerely,\nAdam Presley".format(index,)
+	fromAddress = msg["From"]
+	to = [msg["To"]]
 
-				msg = MIMEText(textBody)
+	server.sendmail(fromAddress, to, msg.as_string())
+	server.quit()
 
-				msg["Subject"] = "Text Mail #{0}".format(index,)
-				msg["From"] = me
-				msg["To"] = to2
-				msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+#
+# Seed the random generator
+#
+random.seed(datetime.datetime.now())
 
-				server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-				server.sendmail(me, [to2], msg.as_string())
-				server.quit()
+try:
+	#
+	# Send html with "data" in "to". This is to ensure parsing data blocks
+	# do not fail.
+	#
+	msg = makeHTMLMessage(
+		"Weird TO Address",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"<p>This is an email sent to an address with 'data' in the TO field.</p>"
+	)
 
-				#time.sleep(1)
+	sendMail(msg)
 
-		#
-		# Send plain text email with no subject
-		#
-		if sendTextOnlyMails:
-			textBody = "Hello,\nI am plain text mail with no subject.\n\nSincerely,\nAdam Presley"
+	#
+	# Send plain text email
+	#
+	msg = makeTextMessage(
+		"Plain Text Email",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"This is a plain text email.\n\nSincerely,\nAdam Presley"
+	)
 
-			msg = MIMEText(textBody)
+	sendMail(msg)
 
-			msg["Subject"] = ""
-			msg["From"] = me2
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+	#
+	# Send text+attachment
+	#
+	msg = makeTextMessage(
+		"Text + Attachment Email",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"Plain text email with an attachment.",
+		multipart=True
+	)
 
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me2, [to], msg.as_string())
-			server.quit()
+	msg = addAttachment(msg, "./MailSlurperLogo.png", "image/png")
+	sendMail(msg)
 
-		#
-		# Send text+attachment
-		#
-		if sendAttachmentMails:
-			textBody = "Hello,\nI am plain text mail with an attachment.\n\nSincerely,\nAdam Presley"
+	#
+	# Send html+attachment
+	#
+	msg = makeMultipartMessage(
+		"HTML + Attachment Email",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"This is an HTML email with an attachment. It's got logs of >great text< & special characters.",
+		"<p>This is a <strong>HTML</strong> email with an attachment. It's got lots of >great text< & special` characters.</p>"
+	)
 
-			msg = MIMEMultipart()
+	msg = addAttachment(msg, "./MailSlurperLogo.png", "image/png")
+	msg = addAttachment(msg, "./MailSlurperLogo.png", "image/png")
 
-			msg["Subject"] = "Text+Attachment Mail"
-			msg["From"] = me
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+	sendMail(msg)
 
-			msg.attach(MIMEText(textBody))
+	#
+	# Send html+CSV attachment
+	#
+	msg = makeMultipartMessage(
+		"HTML + CSV Attachment Email",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"This is an HTML email with a CSV attachment.",
+		"<p>This is a <strong>HTML</strong> email with a CSV attachment.</p>"
+	)
 
-			part = MIMEBase("multipart", "mixed")
-			part.set_payload(open("./MailSlurperLogo.png", "rb").read())
-			Encoders.encode_base64(part)
-			part.add_header("Content-Type", "image/png")
-			part.add_header("Content-Disposition", "attachment; filename=\"MailSlurperLogo.png\"")
-			msg.attach(part)
+	msg = addAttachment(msg, "./test-files/testcsv.csv", "application/octet-stream", base64Encode=False)
+	sendMail(msg)
 
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
-			server.quit()
+	#
+	# Send html with XSS
+	#
+	msg = makeMultipartMessage(
+		"HTML Email with XSS",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"",
+		"<p>This is a <strong>HTML</strong> email with XSS stuff</p><script>alert('gotcha!');</script>"
+	)
 
-			#time.sleep(1)
+	sendMail(msg)
 
-			#
-			# Send html+attachment
-			#
-			htmlBody = "<p>This is a <strong>HTML</strong> email with an attachment.It's got lots of >great text< & special` characters.</p>"
+	#
+	# Send html+JSON attachment
+	#
+	msg = makeMultipartMessage(
+		"HTML + JSON Attachment Email",
+		datetime.datetime.now(),
+		DATE_FORMAT_1,
+		"This is an HTML email with a JSON attachment.",
+		"<p>This is a <strong>HTML</strong> email with a CSV attachment.</p>"
+	)
 
-			msg = MIMEMultipart()
-			html = MIMEText(htmlBody, "html")
+	msg = addAttachment(msg, "./config.json", "application/json")
+	sendMail(msg)
 
-			msg["Subject"] = "Adam's HTML+Attachment Mail"
-			msg["From"] = me
-			msg["To"] = to2
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+	#
+	# Send HTML with various date formats
+	#
+	msg = makeMultipartMessage(
+		"HTML Email with Date Format 2",
+		datetime.datetime.now(),
+		DATE_FORMAT_2,
+		"",
+		"<p>This is an email where the date in the header is formatted with {0}</p>".format(DATE_FORMAT_2)
+	)
 
-			msg.attach(html)
+	sendMail(msg)
 
-			part = MIMEBase("multipart", "mixed")
-			part.set_payload(open("./MailSlurperLogo.png", "rb").read())
-			Encoders.encode_base64(part)
-			part.add_header("Content-Type", "image/png")
-			part.add_header("Content-Disposition", "attachment; filename=\"MailSlurperLogo1.png\"")
-			msg.attach(part)
+	msg = makeMultipartMessage(
+		"HTML Email with Date Format 3",
+		datetime.datetime.now(),
+		DATE_FORMAT_3,
+		"",
+		"<p>This is an email where the date in the header is formatted with {0}</p>".format(DATE_FORMAT_3)
+	)
 
-			part = MIMEBase("multipart", "mixed")
-			part.set_payload(open("./MailSlurperLogo.png", "rb").read())
-			Encoders.encode_base64(part)
-			part.add_header("Content-Type", "image/png")
-			part.add_header("Content-Disposition", "attachment; filename=\"MailSlurperLogo2.png\"")
-			msg.attach(part)
+	sendMail(msg)
 
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to2], msg.as_string())
-			server.quit()
+	msg = makeMultipartMessage(
+		"HTML Email with Date Format 4",
+		datetime.datetime.now(),
+		DATE_FORMAT_4,
+		"",
+		"<p>This is an email where the date in the header is formatted with {0}</p>".format(DATE_FORMAT_4)
+	)
 
-			#
-			# Send html+CSV attachment
-			#
-			htmlBody = "<p>This is a <strong>HTML</strong> email with a CSV attachment.</p>"
+	sendMail(msg)
 
-			msg = MIMEMultipart()
-			html = MIMEText(htmlBody, "html")
+	msg = makeMultipartMessage(
+		"HTML Email with Date Format 5",
+		datetime.datetime.now(),
+		DATE_FORMAT_5,
+		"",
+		"<p>This is an email where the date in the header is formatted with {0}</p>".format(DATE_FORMAT_5)
+	)
 
-			msg["Subject"] = "HTML+CSV Attachment Mail"
-			msg["From"] = me2
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
+	sendMail(msg)
 
-			msg.attach(html)
+	msg = makeMultipartMessage(
+		"HTML Email with Date Format 6",
+		datetime.datetime.now(),
+		DATE_FORMAT_6,
+		"",
+		"<p>This is an email where the date in the header is formatted with {0}</p>".format(DATE_FORMAT_6)
+	)
 
-			part = MIMEBase("multipart", "mixed")
-			part.set_payload(open("./test-files/testcsv.csv", "rb").read())
-			#Encoders.encode_base64(part)
-			part.add_header("Content-Type", "application/octet-stream")
-			part.add_header("Content-Disposition", "attachment; filename=\"testcsv.csv\"")
-			msg.attach(part)
+	sendMail(msg)
 
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me2, [to], msg.as_string())
-			server.quit()
-
-			#
-			# Send html with XSS
-			#
-			htmlBody = "<p>This is a <strong>HTML</strong> email with XSS stuff</p><script>alert('gotcha!');</script>"
-
-			msg = MIMEMultipart()
-			html = MIMEText(htmlBody, "html")
-
-			msg["Subject"] = "HTML Mail with XSS"
-			msg["From"] = me
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
-
-			msg.attach(html)
-
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
-			server.quit()
-
-			#
-			# Send html+attachment (JSON)
-			#
-			htmlBody = "<p>This is a <strong>HTML</strong> email with a JSON attachment.</p>"
-
-			msg = MIMEMultipart()
-			html = MIMEText(htmlBody, "html")
-
-			msg["Subject"] = "HTML+JSON Attachment Mail"
-			msg["From"] = me
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
-
-			msg.attach(html)
-
-			part = MIMEBase("multipart", "mixed")
-			part.set_payload(open("./config.json", "rb").read())
-			Encoders.encode_base64(part)
-			part.add_header("Content-Type", "application/json")
-			part.add_header("Content-Disposition", "attachment; filename=\"config.json\"")
-			msg.attach(part)
-
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
-			server.quit()
-
-			#time.sleep(1)
-
-			#
-			# Send html+attachment with filename in content-type as "name"
-			#
-			htmlBody = "<p>This is a <strong>HTML</strong> email with an attachment done differently.</p>"
-
-			msg = MIMEMultipart()
-			html = MIMEText(htmlBody, "html")
-
-			msg["Subject"] = "HTML+Attachment Mail 2"
-			msg["From"] = me
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S -0700 (UTC)")
-
-			msg.attach(html)
-
-			part = MIMEBase("multipart", "mixed")
-			part.set_payload(open("./MailSlurperLogo.png", "rb").read())
-			Encoders.encode_base64(part)
-			part.add_header("Content-Type", "image/png; name=MailSlurperLogo.png")
-			part.add_header("Content-Disposition", "attachment;")
-			msg.attach(part)
-
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
-			server.quit()
-
-			#
-			# Send html with 4th form date format
-			#
-			htmlBody = "<p>This is a <strong>HTML</strong>. This has a weird date in the header.</p>"
-
-			msg = MIMEMultipart()
-			html = MIMEText(htmlBody, "html")
-
-			msg["Subject"] = "Adam's HTML+4th Format Date in Header"
-			msg["From"] = me
-			msg["To"] = to
-			msg["Date"] = datetime.datetime.now().strftime("%d %b %Y %H:%M:%S -0800")
-
-			msg.attach(html)
-
-			server = smtplib.SMTP("{0}:{1}".format(address, smtpPort))
-			server.sendmail(me, [to], msg.as_string())
-			server.quit()
-
-
-
-	except Exception as e:
-		print("An error occurred while trying to connect and send the email: {0}".format(e.message))
-		print(sys.exc_info())
+except Exception as e:
+	print("An error occurred while trying to connect and send the email: {0}".format(e.message))
+	print(sys.exc_info())

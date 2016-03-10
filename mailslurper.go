@@ -112,7 +112,7 @@ func main() {
 	 * Setup the app HTTP listener
 	 */
 	go func() {
-		if err := httpListener.StartHTTPListener(); err != nil {
+		if err := httpListener.StartHTTPListener(config); err != nil {
 			log.Printf("MailSlurper: ERROR - Error starting HTTP listener: %s\n", err.Error())
 			os.Exit(1)
 		}
@@ -126,9 +126,12 @@ func main() {
 	 * Start the services server
 	 */
 	serviceTierConfiguration := &configuration.ServiceTierConfiguration{
-		Address:  config.ServiceAddress,
-		Port:     config.ServicePort,
-		Database: global.Database,
+		Address:          config.ServiceAddress,
+		Port:             config.ServicePort,
+		Database:         global.Database,
+		CertIsSelfSigned: config.CertIsSelfSigned,
+		CertFile:         config.CertFile,
+		KeyFile:          config.KeyFile,
 	}
 
 	if err = libmailslurper.StartServiceTier(serviceTierConfiguration); err != nil {

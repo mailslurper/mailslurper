@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/mailslurper/libmailslurper/configuration"
 	"github.com/mailslurper/mailslurper/services/middleware"
 
 	"github.com/gorilla/mux"
@@ -131,12 +132,17 @@ func (service *HTTPListenerService) gzipFileServer(dir http.FileSystem) http.Han
 /*
 StartHTTPListener starts the HTTP listener and servicing requests.
 */
-func (service *HTTPListenerService) StartHTTPListener() error {
+func (service *HTTPListenerService) StartHTTPListener(config *configuration.Configuration) error {
 	listener := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", service.Address, service.Port),
 		Handler: alice.New().Then(service.Router),
 	}
 
 	log.Printf("MailSlurper: INFO - HTTP listener started on %s:%d\n", service.Address, service.Port)
-	return listener.ListenAndServe()
+
+	if config.CertFile == "" && config.KeyFile == "" {
+		return listener.ListenAndServe()
+	} else {
+		return listener.ListenAndServeTLS(config.CertFile, config.KeyFile)
+	}
 }

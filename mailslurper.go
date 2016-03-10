@@ -126,12 +126,11 @@ func main() {
 	 * Start the services server
 	 */
 	serviceTierConfiguration := &configuration.ServiceTierConfiguration{
-		Address:          config.ServiceAddress,
-		Port:             config.ServicePort,
-		Database:         global.Database,
-		CertIsSelfSigned: config.CertIsSelfSigned,
-		CertFile:         config.CertFile,
-		KeyFile:          config.KeyFile,
+		Address:  config.ServiceAddress,
+		Port:     config.ServicePort,
+		Database: global.Database,
+		CertFile: config.CertFile,
+		KeyFile:  config.KeyFile,
 	}
 
 	if err = libmailslurper.StartServiceTier(serviceTierConfiguration); err != nil {

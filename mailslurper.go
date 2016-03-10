@@ -63,13 +63,13 @@ func main() {
 	/*
 	 * Setup the SMTP listener
 	 */
-	smtpServer, err := server.SetupSmtpServerListener(config.GetFullSmtpBindingAddress())
+	smtpServer, err := server.SetupSMTPServerListener(config)
 	if err != nil {
 		log.Println("MailSlurper: ERROR - There was a problem starting the SMTP listener:", err)
 		os.Exit(0)
 	}
 
-	defer server.CloseSmtpServerListener(smtpServer)
+	defer server.CloseSMTPServerListener(smtpServer)
 
 	/*
 	 * Setup receivers (subscribers) to handle new mail items.

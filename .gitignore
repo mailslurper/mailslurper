@@ -30,4 +30,5 @@ node_modules
 www/assets/*
 !www/assets/mailslurper
 www/assets/mailslurper/.DS_Store
-
+scripts/*.pem
+scripts/*.csr

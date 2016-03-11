@@ -1,6 +1,9 @@
 // Copyright 2013-2016 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
+
+//go:generate esc -o ./www/www.go -pkg www -ignore DS_Store -prefix /www/ ./www
+
 package main
 
 import (
@@ -87,7 +90,7 @@ func main() {
 	 * Pre-load layout information
 	 */
 	layout, err := GoHttpService.NewLayout("./www/", []string{
-		"assets/mailslurper/layouts/mainLayout",
+		"mailslurper/layouts/mainLayout",
 	})
 
 	if err != nil {

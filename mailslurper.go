@@ -12,7 +12,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/adampresley/GoHttpService"
 	"github.com/adampresley/sigint"
 	"github.com/mailslurper/libmailslurper"
 	"github.com/mailslurper/libmailslurper/configuration"
@@ -22,6 +21,7 @@ import (
 	"github.com/mailslurper/mailslurper/global"
 	"github.com/mailslurper/mailslurper/services/listener"
 	"github.com/mailslurper/mailslurper/services/middleware"
+	"github.com/mailslurper/mailslurper/www"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -89,10 +89,7 @@ func main() {
 	/*
 	 * Pre-load layout information
 	 */
-	layout, err := GoHttpService.NewLayout("./www/", []string{
-		"mailslurper/layouts/mainLayout",
-	})
-
+	layout, err := www.FSString(false, "/www/mailslurper/layouts/mainLayout")
 	if err != nil {
 		log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
 		os.Exit(1)

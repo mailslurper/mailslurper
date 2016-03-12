@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 
-//go:generate esc -o ./www/www.go -pkg www -ignore DS_Store -prefix /www/ ./www
+//go:generate esc -o ./www/www.go -pkg www -ignore DS_Store|README\.md|LICENSE -prefix /www/ ./www
 
 package main
 

@@ -15,7 +15,7 @@ Add routes here using AddRoute and AddRouteWithMiddleware.
 */
 func setupRoutes(httpListener *listener.HTTPListenerService, appContext *middleware.AppContext) {
 	httpListener.
-		AddStaticRoute("/assets/", "./www/assets").
+		AddStaticRoute("/www/", "./www").
 		AddRoute("/", controllers.Index, "GET").
 		AddRoute("/admin", controllers.Admin, "GET").
 		AddRoute("/savedsearches", controllers.ManageSavedSearches, "GET").

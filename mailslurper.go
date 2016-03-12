@@ -1,15 +1,18 @@
 // Copyright 2013-2016 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
+
+//go:generate esc -o ./www/www.go -pkg www -ignore DS_Store|README\.md|LICENSE -prefix /www/ ./www
+
 package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
 
-	"github.com/adampresley/GoHttpService"
 	"github.com/adampresley/sigint"
 	"github.com/mailslurper/libmailslurper"
 	"github.com/mailslurper/libmailslurper/configuration"
@@ -19,6 +22,7 @@ import (
 	"github.com/mailslurper/mailslurper/global"
 	"github.com/mailslurper/mailslurper/services/listener"
 	"github.com/mailslurper/mailslurper/services/middleware"
+	"github.com/mailslurper/mailslurper/www"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -86,13 +90,22 @@ func main() {
 	/*
 	 * Pre-load layout information
 	 */
-	layout, err := GoHttpService.NewLayout("./www/", []string{
-		"assets/mailslurper/layouts/mainLayout",
-	})
+	var layout string
 
-	if err != nil {
-		log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
-		os.Exit(1)
+	if global.DEBUG_ASSETS {
+		var bytes []byte
+
+		if bytes, err = ioutil.ReadFile("./www/mailslurper/layouts/mainLayout.html"); err != nil {
+			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
+			os.Exit(1)
+		}
+
+		layout = string(bytes)
+	} else {
+		if layout, err = www.FSString(false, "/www/mailslurper/layouts/mainLayout.html"); err != nil {
+			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
+			os.Exit(1)
+		}
 	}
 
 	/*

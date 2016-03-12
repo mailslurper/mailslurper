@@ -5,18 +5,17 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
-	"github.com/gorilla/context"
+	"github.com/mailslurper/mailslurper/services/layout"
 )
 
 /*
 Admin is the page for performing administrative tasks in MailSlurper
 */
 func Admin(writer http.ResponseWriter, request *http.Request) {
-	layout := (context.Get(request, "layout")).(GoHttpService.Layout)
+	var err error
 
 	data := struct {
 		Title string
@@ -24,10 +23,7 @@ func Admin(writer http.ResponseWriter, request *http.Request) {
 		"Admin",
 	}
 
-	err := layout.RenderView(writer, "admin", data)
-	if err != nil {
-		log.Println("MailSlurper: ERROR - Problem rendering view 'admin' -", err.Error())
-		GoHttpService.Error(writer, "There was an error retrieving and rendering the page 'admin'")
-		return
+	if err = layout.RenderMainLayout(writer, request, "admin.html", data); err != nil {
+		GoHttpService.Error(writer, err.Error())
 	}
 }

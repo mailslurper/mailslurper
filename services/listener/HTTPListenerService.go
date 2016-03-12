@@ -16,7 +16,9 @@ import (
 	"strings"
 
 	"github.com/mailslurper/libmailslurper/configuration"
+	"github.com/mailslurper/mailslurper/global"
 	"github.com/mailslurper/mailslurper/services/middleware"
+	"github.com/mailslurper/mailslurper/www"
 
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
@@ -95,9 +97,12 @@ func (service *HTTPListenerService) AddRouteWithMiddleware(
 AddStaticRoute adds a HTTP handler route for static assets.
 */
 func (service *HTTPListenerService) AddStaticRoute(pathPrefix string, directory string) *HTTPListenerService {
-	fileServer := http.FileServer(http.Dir("./www/assets"))
-	//fileServer := service.gzipFileServer(http.Dir("./www/assets"))
-	service.Router.PathPrefix(pathPrefix).Handler(http.StripPrefix(pathPrefix, fileServer))
+	if global.DEBUG_ASSETS {
+		fileServer := http.FileServer(http.Dir("./www"))
+		service.Router.PathPrefix(pathPrefix).Handler(http.StripPrefix(pathPrefix, fileServer))
+	} else {
+		service.Router.PathPrefix(pathPrefix).Handler(http.FileServer(www.FS(false)))
+	}
 
 	return service
 }

@@ -8,6 +8,7 @@ _obj
 _test
 cache
 tmp
+deploy
 .DS_Store
 
 # Architecture specific extensions/prefixes

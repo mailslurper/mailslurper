@@ -7,7 +7,6 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/adampresley/GoHttpService"
 	"github.com/gorilla/context"
 	"github.com/mailslurper/libmailslurper/configuration"
 )
@@ -20,7 +19,7 @@ handlers.
 */
 type AppContext struct {
 	Config *configuration.Configuration
-	Layout GoHttpService.Layout
+	Layout string
 }
 
 /*

@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -89,10 +90,22 @@ func main() {
 	/*
 	 * Pre-load layout information
 	 */
-	layout, err := www.FSString(false, "/www/mailslurper/layouts/mainLayout.html")
-	if err != nil {
-		log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
-		os.Exit(1)
+	var layout string
+
+	if global.DEBUG_ASSETS {
+		var bytes []byte
+
+		if bytes, err = ioutil.ReadFile("./www/mailslurper/layouts/mainLayout.html"); err != nil {
+			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
+			os.Exit(1)
+		}
+
+		layout = string(bytes)
+	} else {
+		if layout, err = www.FSString(false, "/www/mailslurper/layouts/mainLayout.html"); err != nil {
+			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
+			os.Exit(1)
+		}
 	}
 
 	/*

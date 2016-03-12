@@ -3,21 +3,41 @@ package layout
 import (
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/mailslurper/mailslurper/global"
+	"github.com/mailslurper/mailslurper/model"
 	"github.com/mailslurper/mailslurper/www"
-
-	"github.com/gorilla/context"
 )
 
-func RenderMainLayout(writer http.ResponseWriter, request *http.Request, htmlFileName string, data interface{}) error {
-	layout := (context.Get(request, "layout")).(string)
+func RenderMainLayout(writer http.ResponseWriter, request *http.Request, htmlFileName string, data model.Page) error {
+	var layout string
 	var err error
 	var tmpl *template.Template
 	var pageString string
 
 	writer.Header().Set("Content-Type", "text/html; charset=UTF-8")
+
+	/*
+	 * Pre-load layout information
+	 */
+	if global.DEBUG_ASSETS {
+		var bytes []byte
+
+		if bytes, err = ioutil.ReadFile("./www/mailslurper/layouts/mainLayout.html"); err != nil {
+			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
+			os.Exit(1)
+		}
+
+		layout = string(bytes)
+	} else {
+		if layout, err = www.FSString(false, "/www/mailslurper/layouts/mainLayout.html"); err != nil {
+			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
+			os.Exit(1)
+		}
+	}
 
 	if tmpl, err = template.New("layout").Parse(layout); err != nil {
 		return err

@@ -53,6 +53,8 @@ This application uses a lot of great open source libraries.
 * [RequireJS Handlebars Plugin](https://github.com/SlexAxton/require-handlebars-plugin) - WTFPL License
 * [RequireJS](http://requirejs.org) - MIT
 
+Themes by Thomas Park at [Bootswatch](http://bootswatch.com/).
+
 License
 -------
 The MIT License (MIT)

@@ -19,7 +19,6 @@ handlers.
 */
 type AppContext struct {
 	Config *configuration.Configuration
-	Layout string
 }
 
 /*
@@ -30,7 +29,6 @@ Context which comes across in the request.
 func (ctx *AppContext) StartAppContext(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		context.Set(request, "config", ctx.Config)
-		context.Set(request, "layout", ctx.Layout)
 
 		h.ServeHTTP(writer, request)
 	})

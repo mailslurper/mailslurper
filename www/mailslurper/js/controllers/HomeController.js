@@ -8,6 +8,7 @@ require(
 		"services/SettingsService",
 		"services/MailService",
 		"services/AlertService",
+		"services/ThemeService",
 		"widgets/SavedSearchesWidget",
 		"bootstrap-dialog",
 		"moment",
@@ -24,6 +25,7 @@ require(
 		settingsService,
 		mailService,
 		alertService,
+		ThemeService,
 		SavedSearchesWidget,
 		Dialog,
 		moment,
@@ -471,6 +473,7 @@ require(
 
 		var serviceURL = settingsService.getServiceURL();
 
+		ThemeService.applySavedTheme();
 		alertService.block("Loading");
 
 		mailService.getMails(serviceURL, page, searchCriteria, sortCriteria).then(

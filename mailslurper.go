@@ -8,7 +8,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -22,7 +21,6 @@ import (
 	"github.com/mailslurper/mailslurper/global"
 	"github.com/mailslurper/mailslurper/services/listener"
 	"github.com/mailslurper/mailslurper/services/middleware"
-	"github.com/mailslurper/mailslurper/www"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -88,32 +86,10 @@ func main() {
 	go server.Dispatch(pool, smtpServer, receivers)
 
 	/*
-	 * Pre-load layout information
-	 */
-	var layout string
-
-	if global.DEBUG_ASSETS {
-		var bytes []byte
-
-		if bytes, err = ioutil.ReadFile("./www/mailslurper/layouts/mainLayout.html"); err != nil {
-			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
-			os.Exit(1)
-		}
-
-		layout = string(bytes)
-	} else {
-		if layout, err = www.FSString(false, "/www/mailslurper/layouts/mainLayout.html"); err != nil {
-			log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
-			os.Exit(1)
-		}
-	}
-
-	/*
 	 * Application context gets passed around all over the place
 	 */
 	appContext := &middleware.AppContext{
 		Config: config,
-		Layout: layout,
 	}
 
 	httpListener := listener.NewHTTPListenerService(config.WWWAddress, config.WWWPort, appContext)

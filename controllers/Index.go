@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
+	"github.com/mailslurper/mailslurper/model"
 	"github.com/mailslurper/mailslurper/services/layout"
 )
 
@@ -18,10 +19,8 @@ views.
 func Index(writer http.ResponseWriter, request *http.Request) {
 	var err error
 
-	data := struct {
-		Title string
-	}{
-		"Mail",
+	data := model.Page{
+		Title: "Mail",
 	}
 
 	if err = layout.RenderMainLayout(writer, request, "index.html", data); err != nil {

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
+	"github.com/mailslurper/mailslurper/model"
 	"github.com/mailslurper/mailslurper/services/layout"
 )
 
@@ -17,10 +18,8 @@ ManageSavedSearches is the page for managing saved searches
 func ManageSavedSearches(writer http.ResponseWriter, request *http.Request) {
 	var err error
 
-	data := struct {
-		Title string
-	}{
-		"Manage Saved Searches",
+	data := model.Page{
+		Title: "Manage Saved Searches",
 	}
 
 	if err = layout.RenderMainLayout(writer, request, "manageSavedSearches.html", data); err != nil {

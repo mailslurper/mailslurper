@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
+	"github.com/mailslurper/mailslurper/model"
 	"github.com/mailslurper/mailslurper/services/layout"
 )
 
@@ -17,10 +18,8 @@ Admin is the page for performing administrative tasks in MailSlurper
 func Admin(writer http.ResponseWriter, request *http.Request) {
 	var err error
 
-	data := struct {
-		Title string
-	}{
-		"Admin",
+	data := model.Page{
+		Title: "Admin",
 	}
 
 	if err = layout.RenderMainLayout(writer, request, "admin.html", data); err != nil {

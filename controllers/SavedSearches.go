@@ -5,18 +5,17 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
-	"github.com/gorilla/context"
+	"github.com/mailslurper/mailslurper/services/layout"
 )
 
 /*
 ManageSavedSearches is the page for managing saved searches
 */
 func ManageSavedSearches(writer http.ResponseWriter, request *http.Request) {
-	layout := (context.Get(request, "layout")).(GoHttpService.Layout)
+	var err error
 
 	data := struct {
 		Title string
@@ -24,10 +23,7 @@ func ManageSavedSearches(writer http.ResponseWriter, request *http.Request) {
 		"Manage Saved Searches",
 	}
 
-	err := layout.RenderView(writer, "manageSavedSearches", data)
-	if err != nil {
-		log.Println("MailSlurper: ERROR - Problem rendering view 'manageSavedSearches' -", err.Error())
-		GoHttpService.Error(writer, "There was an error retrieving and rendering the page 'manageSavedSearches'")
-		return
+	if err = layout.RenderMainLayout(writer, request, "manageSavedSearches.html", data); err != nil {
+		GoHttpService.Error(writer, err.Error())
 	}
 }

@@ -89,7 +89,7 @@ func main() {
 	/*
 	 * Pre-load layout information
 	 */
-	layout, err := www.FSString(false, "/www/mailslurper/layouts/mainLayout")
+	layout, err := www.FSString(false, "/www/mailslurper/layouts/mainLayout.html")
 	if err != nil {
 		log.Printf("MailSlurper: ERROR - Error setting up layout: %s\n", err.Error())
 		os.Exit(1)

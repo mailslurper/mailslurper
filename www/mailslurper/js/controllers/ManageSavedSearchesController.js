@@ -7,6 +7,7 @@ require(
 		"jquery",
 		"services/SettingsService",
 		"services/AlertService",
+		"services/ThemeService",
 		"bootstrap-dialog",
 		"hbs!templates/manageSavedSearches"
 	],
@@ -14,6 +15,7 @@ require(
 		$,
 		settingsService,
 		alertService,
+		ThemeService,
 		Dialog,
 		manageSavedSearchesTemplate
 	) {
@@ -61,6 +63,8 @@ require(
 		/****************************************************************************
 		 * Constructor
 		 ***************************************************************************/
+		ThemeService.applySavedTheme();
+
 		alertService.block("Loading...");
 		renderSavedSearches(getSavedSearches());
 		initialize();

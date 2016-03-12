@@ -9,6 +9,7 @@ require(
 		"services/MailService",
 		"services/SeedService",
 		"services/AlertService",
+		"services/ThemeService",
 		"bootstrap-dialog",
 
 		"hbs!templates/adminPrune",
@@ -20,6 +21,7 @@ require(
 		MailService,
 		SeedService,
 		alertService,
+		ThemeService,
 		Dialog,
 		adminPruneTemplate,
 		adminSettings
@@ -29,7 +31,8 @@ require(
 		var getSettingsFromForm = function() {
 			var settings = {
 				dateFormat: $("#dateFormat option:selected").val(),
-				autoRefresh: window.parseInt($("#autoRefresh option:selected").val(), 10)
+				autoRefresh: window.parseInt($("#autoRefresh option:selected").val(), 10),
+				theme: $("#theme option:selected").val()
 			};
 
 			return settings;
@@ -80,6 +83,10 @@ require(
 			var settings = getSettingsFromForm();
 			settingsService.storeSettings(settings);
 
+			if (settings.theme != currentTheme) {
+				ThemeService.applySavedTheme();
+			}
+
 			alertService.success("Settings saved!");
 		};
 
@@ -96,7 +103,8 @@ require(
 			var html = adminSettings({
 				dateFormat: settings.dateFormat,
 				dateFormatOptions: dateFormatOptions,
-				autoRefresh: settings.autoRefresh
+				autoRefresh: settings.autoRefresh,
+				theme: settings.theme
 			});
 
 			$("#adminSettings").html(html);
@@ -111,6 +119,9 @@ require(
 		 ***************************************************************************/
 		var serviceURL = settingsService.getServiceURL();
 		var pruneOptions = [];
+		var currentTheme = "";
+
+		ThemeService.applySavedTheme();
 
 		SeedService.getPruneOptions(serviceURL).then(
 			function(response) {
@@ -120,6 +131,8 @@ require(
 					function(response) {
 						var settings = settingsService.retrieveSettings();
 						var dateFormatOptions = SeedService.getDateFormatOptions();
+
+						currentTheme = settings.theme;
 
 						renderPruneTemplate(pruneOptions, response.mailCount);
 						renderSettingsTemplate(settings, dateFormatOptions);

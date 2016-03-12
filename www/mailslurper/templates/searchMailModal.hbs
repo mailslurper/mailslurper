@@ -1,0 +1,36 @@
+<!--
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+-->
+<div class="form-group">
+	<label for="txtMessage">Subject or Message:</label>
+	<input type="text" id="txtMessage" maxlength="255" class="form-control" />
+</div>
+
+<div class="row">
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label for="txtFrom" class="control-label">From:</label>
+			<input type="text" id="txtFrom" class="form-control" maxlength="255" />
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="form-gorup">
+			<label for="txtTo" class="control-label">To:</label>
+			<input type="text" id="txtTo" class="form-control" maxlength="255" />
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="dateRange">Date Range:</label>
+	<div id="dateRange" class="date-range-picker">
+		<i class="fa fa-calendar"></i>&nbsp;
+		<span></span><b class="caret"></b>
+	</div>
+</div>
+
+<hr />
+
+<button type="button" id="btnOpenSavedSearches" class="btn btn-default"><i class="fa fa-filter"></i> Saved Searches</button>

@@ -1,0 +1,128 @@
+<!--
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+-->
+<div class="row">
+	<div class="col-md-12 padding-right-0" id="mailSearchNav">
+		<nav class="navbar navbar-default mail-list-navbar">
+			<div class="container-fluid">
+				<div>
+					<ul class="nav navbar-nav">
+						<li>
+							<button type="button" class="btn btn-default navbar-btn" id="btnRefresh">
+								<i class="fa fa-refresh"></i>&nbsp; Refresh <span id="refreshCountdownText"></span>
+							</button>
+							<button type="button" class="btn btn-default navbar-btn" id="btnSearch">
+								<i class="fa fa-search"></i>&nbsp; Search
+							</button>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<button type="button" id="showSearchFilters" class="btn btn-default margin-right-10" data-toggle="popover" title="Search Filters" data-content="{{filtersPopover}}">
+								<i class="fa fa-info-circle"></i>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-7 col-sm-6" id="mailItemsHeader">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th width="1%">&nbsp;</th>
+					<th width="25%"><a href="#" id="sortDate" data-direction="{{direction}}">Date{{{dateSortIcon}}}</a></th>
+					<th width="50%"><a href="#" id="sortSubject" data-direction="{{direction}}">Subject{{{subjectSortIcon}}}</a></th>
+					<th width="20%"><a href="#" id="sortFrom" data-direction="{{direction}}">From{{{fromSortIcon}}}</a></th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+	<div class="col-md-5 col-sm-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Mail Details</h3>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-7 col-sm-6" style="overflow: scroll; height: 400px;" id="mailItemsColumn">
+		<table class="table table-striped">
+			<tbody>
+				{{#each mails}}
+					<tr class="mailRow" id="{{id}}">
+						<td width="1%">
+							{{#if attachments.length}}
+								<i class="fa fa-paperclip fa-lg"></i>
+							{{else}}
+								&nbsp;
+							{{/if}}
+						</td>
+						<td width="25%">{{formatDateTime dateSent}}</td>
+						<td width="50%"><a href="#" class="mailSubject" data-id="{{id}}">{{unescape subject}}</a></td>
+						<td width="20%">{{fromAddress}}</td>
+					</tr>
+				{{else}}
+					<tr>
+						<td colspan="4">There is no mail to display, or no mail items match your search criteria.</td>
+					</tr>
+				{{/each}}
+
+				{{#if hasNavigation}}
+					<tr>
+						<td colspan="4">
+							<nav>
+								<ul class="pagination pagination-lg">
+									{{#if hasFirstButton}}
+										<li>
+											<a aria-label="First" id="firstPage" class="pointer">
+												<span aria-hidde="true">First</span>
+											</a>
+										</li>
+									{{/if}}
+									{{#if hasPreviousButton}}
+										<li>
+											<a aria-label="Previous" id="previousPage" class="pointer">
+												<span aria-hidden="true">&laquo; Previous</span>
+											</a>
+										</li>
+									{{/if}}
+									{{#if hasNextButton}}
+										<li>
+											<a aria-label="Next" id="nextPage" class="pointer">
+												<span aria-hidden="true">&raquo; Next</span>
+											</a>
+										</li>
+									{{/if}}
+									{{#if hasLastButton}}
+										<li>
+											<a aria-label="Last" id="lastPage" class="pointer">
+												<span aria-hidde="true">Last</span>
+											</a>
+										</li>
+									{{/if}}
+								</ul>
+							</nav>
+						</td>
+					</tr>
+				{{/if}}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="col-md-5 col-sm-6" style="overflow: scroll; height: 400px;" id="mailDetailsColumn">
+		<div class="panel panel-default">
+			<div class="panel-body" id="mailDetails">
+			</div>
+		</div>
+	</div>
+</div>

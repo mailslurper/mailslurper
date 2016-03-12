@@ -1,0 +1,100 @@
+/*
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+*/
+
+/*
+ * MailSlurper Server
+ */
+.body-container {
+	padding: 0px;
+	margin: 55px 0px 0px 0px;
+	width: 99%;
+}
+
+.date-range-picker {
+	background-color: #fff;
+	cursor: pointer;
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	width: 100%;
+}
+
+.downloadAttachment {
+	color: white;
+}
+
+.downloadAttachment:hover {
+	color: white;
+}
+
+.downloadAttachment:visited {
+	color: white;
+}
+
+.label-right-margin {
+	margin-right: 10px;
+}
+
+.mail-list-navbar {
+	margin-bottom: 0px;
+	padding: 0px;
+	min-height: 1px;
+}
+
+.mail-list-navbar .navbar-btn {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.mail-list-row-highlight {
+	background-color: aliceblue !important;
+	font-weight: bold !important;
+}
+
+.margin-right-10 {
+	margin-right: 10px;
+}
+
+.nav-container {
+	margin-left: 0px;
+}
+
+.padding-right-0 {
+	padding-right: 0px;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+/*
+ * Bootstrap
+ */
+.pagination {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.popover.left {
+	margin-left: -145px;
+	max-width: 425px;
+}
+
+/*
+ * BlockUI
+ */
+.blockMsg {
+	display: inline-block;
+	background-color: #333 !important;
+	color: #f5f5f5 !important;
+	padding: 20px !important;
+	border-radius: 4px !important;
+	font-size: 20px;
+	font-weight: bold;
+	border: 1px solid #888 !important;
+	/* needed for IE */
+
+	filter: alpha(opacity=100);
+}

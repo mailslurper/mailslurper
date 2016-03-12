@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 requirejs.config({
-	  baseUrl: '/assets',
+	  baseUrl: '/www',
 	  paths: {
 			"controllers": "mailslurper/js/controllers",
 			"models": "mailslurper/js/models",
@@ -12,13 +12,13 @@ requirejs.config({
 			"widgets": "mailslurper/js/widgets",
 
 			"blockui": "blockui/jquery.blockUI",
-			"bootstrap": "bootstrap/dist/js/bootstrap",
+			"bootstrap": "bootstrap/js/bootstrap",
 			"bootstrap-daterangepicker": "bootstrap-daterangepicker/daterangepicker",
-			"bootstrap-dialog": "bootstrap-dialog/dist/js/bootstrap-dialog",
+			"bootstrap-dialog": "bootstrap-dialog/js/bootstrap-dialog",
 			"bootstrap-growl": "bootstrap-growl/jquery.bootstrap-growl",
 			"hbs": "require-handlebars-plugin/hbs",
-			"jquery": "jquery/dist/jquery",
-			"lightbox": "lightbox2/dist/js/lightbox.min",
+			"jquery": "jquery/jquery",
+			"lightbox": "lightbox2/js/lightbox",
 			"moment": "moment/moment",
 			"handlebars": "handlebars/handlebars"
 	  },

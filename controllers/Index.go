@@ -5,18 +5,18 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/adampresley/GoHttpService"
-	"github.com/gorilla/context"
+	"github.com/mailslurper/mailslurper/services/layout"
 )
 
 /*
-Index is the main view. Here you look at mail.
+Index is the main view. This endpoint provides the email list and email detail
+views.
 */
 func Index(writer http.ResponseWriter, request *http.Request) {
-	layout := (context.Get(request, "layout")).(GoHttpService.Layout)
+	var err error
 
 	data := struct {
 		Title string
@@ -24,10 +24,7 @@ func Index(writer http.ResponseWriter, request *http.Request) {
 		"Mail",
 	}
 
-	err := layout.RenderView(writer, "index", data)
-	if err != nil {
-		log.Println("MailSlurper: ERROR - Problem rendering view 'index' -", err.Error())
-		GoHttpService.Error(writer, "There was an error retrieving and rendering the page 'index'")
-		return
+	if err = layout.RenderMainLayout(writer, request, "index.html", data); err != nil {
+		GoHttpService.Error(writer, err.Error())
 	}
 }

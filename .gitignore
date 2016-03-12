@@ -8,6 +8,7 @@ _obj
 _test
 cache
 tmp
+deploy
 .DS_Store
 
 # Architecture specific extensions/prefixes
@@ -25,10 +26,6 @@ _testmain.go
 *.exe
 mail.db
 mailslurper.db
-mailslurper
-node_modules
-www/assets/*
-!www/assets/mailslurper
 www/assets/mailslurper/.DS_Store
 scripts/*.pem
 scripts/*.csr

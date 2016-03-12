@@ -38,6 +38,19 @@ define(
 			},
 
 			/**
+			 * getThemes returns themes
+			 */
+			getThemes: function() {
+				return [
+					{ name: "Default", "theme": "default" },
+					{ name: "Lumen", "theme": "lumen" },
+					{ name: "Readable", "theme": "readable" },
+					{ name: "Slate", "theme": "slate" },
+					{ name: "SpaceLab", "theme": "spacelab" }
+				];
+			},
+
+			/**
 			 * validatePruneCode will reject the promise if the prune code
 			 * is invalid. This function expects that the context to have
 			 * a key named "pruneOptions" to validate against. Basically

@@ -8,7 +8,7 @@ import "github.com/mailslurper/libmailslurper/storage"
 
 const (
 	// Version of the MailSlurper Server application
-	SERVER_VERSION string = "1.9"
+	SERVER_VERSION string = "1.11.1"
 	DEBUG_ASSETS   bool   = false
 )
 

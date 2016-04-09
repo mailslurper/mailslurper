@@ -2,6 +2,11 @@
 {{end}}
 
 {{define "body"}}
+<div class="alert alert-danger hidden" id="versionMessage">
+	Your version of MailSlurper (<span id="yourVersion"></span>) is out of date! The current version is
+	<span id="currentVersion"></span>. Get the <a href="http://mailslurper.com" target="_blank">latest version</a>!
+</div>
+
 <div class="row">
 	<div id="adminSettings"></div>
 	<div id="adminPrune"></div>

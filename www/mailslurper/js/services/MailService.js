@@ -66,6 +66,13 @@ define(
 			},
 
 			/**
+			 * getMailMessageURL returns the full service URL to get a mail's message body
+			 */
+			getMailMessageURL: function(serviceURL, mailID) {
+				return serviceURL + "/mail/" + mailID + "/message";
+			},
+
+			/**
 			 * getMails returns a page of stored email. The page number must be a key
 			 * named "page" in the context object. This will return mail items as an
 			 * array in a key named "mails" in the context object.

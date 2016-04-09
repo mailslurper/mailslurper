@@ -10,6 +10,8 @@ require(
 		"services/SeedService",
 		"services/AlertService",
 		"services/ThemeService",
+		"services/VersionService",
+
 		"bootstrap-dialog",
 
 		"hbs!templates/adminPrune",
@@ -22,11 +24,22 @@ require(
 		SeedService,
 		alertService,
 		ThemeService,
+		VersionService,
 		Dialog,
 		adminPruneTemplate,
 		adminSettings
 	) {
 		"use strict";
+
+		ThemeService.applySavedTheme();
+
+		var checkVersion = function() {
+			if (currentMailSlurperVersion !== thisMailSlurperVersion) {
+				$("#yourVersion").html(thisMailSlurperVersion);
+				$("#currentVersion").html(currentMailSlurperVersion);
+				$("#versionMessage").removeClass("hidden");
+			}
+		};
 
 		var getSettingsFromForm = function() {
 			var settings = {
@@ -41,6 +54,8 @@ require(
 		var initialize = function() {
 			$("#btnRemove").on("click", function() { onBtnRemoveClick(); });
 			$("#btnSaveSettings").on("click", function() { onBtnSaveSettings(); });
+
+			checkVersion();
 		};
 
 		var onBtnRemoveClick = function() {
@@ -120,8 +135,16 @@ require(
 		var serviceURL = settingsService.getServiceURL();
 		var pruneOptions = [];
 		var currentTheme = "";
+		var thisMailSlurperVersion = "";
+		var currentMailSlurperVersion = "";
 
-		ThemeService.applySavedTheme();
+		VersionService.getServerVersion().then(function(data) {
+			thisMailSlurperVersion = data.version;
+		});
+
+		VersionService.getVersionFromGithub(serviceURL).then(function(data) {
+			currentMailSlurperVersion = data.version;
+		});
 
 		SeedService.getPruneOptions(serviceURL).then(
 			function(response) {

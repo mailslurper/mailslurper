@@ -168,6 +168,17 @@ require(
 				placement: "left",
 				trigger: "click, focus"
 			});
+
+			$("#openInTab").on("click", function() {
+				var id = $(this).attr("data-id");
+
+				if (id === "") {
+					return;
+				}
+
+				var url = mailService.getMailMessageURL(serviceURL, id);
+				window.open(url);
+			});
 		};
 
 		/**
@@ -247,6 +258,7 @@ require(
 		var renderMailDetails = function(mail) {
 			var html = mailDetailsTemplate({mail: mail.mailItem});
 			$("#mailDetails").html(html);
+			$("#openInTab").attr("data-id", mail.mailItem.id);
 		};
 
 		/**

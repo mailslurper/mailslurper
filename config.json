@@ -1,9 +1,9 @@
 {
-	"wwwAddress": "mail.erguotou.me",
+	"wwwAddress": "localhost",
 	"wwwPort": 8080,
-	"serviceAddress": "mail.erguotou.me",
+	"serviceAddress": "localhost",
 	"servicePort": 8085,
-	"smtpAddress": "mail.erguotou.me",
+	"smtpAddress": "localhost",
 	"smtpPort": 2500,
 	"dbEngine": "SQLite",
 	"dbHost": "",

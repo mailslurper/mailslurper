@@ -27,6 +27,6 @@ WORKDIR /home/go/src/github.com/mailslurper/mailslurper
 
 VOLUME /home/go/src/github.com/mailslurper/mailslurper
 
-EXPOSE 8080
+EXPOSE 8080 8085 2500
 
 CMD /home/go/src/github.com/mailslurper/mailslurper/mailslurper

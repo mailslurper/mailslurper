@@ -80,7 +80,7 @@ define(
 				var serviceSettings = service.retrieveServiceSettings();
 				var serviceAddress = serviceSettings.serviceAddress;
 				if (serviceAddress === "0.0.0.0") { serviceAddress = window.location.hostname; }
-				var serviceURL = "//" + serviceAddres + ":" + serviceSettings.servicePort;
+				var serviceURL = "//" + serviceAddress + ":" + serviceSettings.servicePort;
 				return serviceURL;
 			},
 

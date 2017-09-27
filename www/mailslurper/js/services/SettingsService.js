@@ -66,7 +66,10 @@ define(
 			 */
 			getServiceURL: function(context) {
 				var serviceSettings = service.retrieveServiceSettings();
-				return "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort;
+				var serviceAddress = serviceSettings.serviceAddress;
+				if (serviceAddress === "0.0.0.0") { serviceAddress = window.location.hostname; }
+				var serviceURL = "//" + serviceAddress + ":" + serviceSettings.servicePort;
+				return serviceURL;
 			},
 
 			/**
@@ -75,9 +78,9 @@ define(
 			 */
 			getServiceURLNow: function() {
 				var serviceSettings = service.retrieveServiceSettings();
-
-				var serviceURL = "//" + serviceSettings.serviceAddress + ":" + serviceSettings.servicePort;
-
+				var serviceAddress = serviceSettings.serviceAddress;
+				if (serviceAddress === "0.0.0.0") { serviceAddress = window.location.hostname; }
+				var serviceURL = "//" + serviceAddres + ":" + serviceSettings.servicePort;
 				return serviceURL;
 			},
 

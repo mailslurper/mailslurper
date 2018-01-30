@@ -48,7 +48,6 @@ ZIPFILENAME="mailslurper-$VERSION-$TARGET.zip"
 #
 # Generate compiled assets
 #
-rm ./www/www.go
 go generate
 
 #

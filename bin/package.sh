@@ -48,7 +48,9 @@ ZIPFILENAME="mailslurper-$VERSION-$TARGET.zip"
 #
 # Generate compiled assets
 #
+cd ../cmd/mailslurper
 go generate
+cd ../../bin
 
 #
 # Create deploy directory
@@ -67,50 +69,46 @@ fi
 #
 # Copy non-executable assets to the deploy folder
 #
-cp ./LICENSE ./deploy
-cp ./config.json ./deploy
-cp ./MailSlurperLogo.ico ./deploy
-cp ./MailSlurperLogo.png ./deploy
-cp ./README.md ./deploy
-cp -R ./scripts ./deploy
+cp ../LICENSE ./deploy
+cp ../cmd/mailslurper/config.json ./deploy
+cp ../assets/MailSlurperLogo.ico ./deploy
+cp ../assets/MailSlurperLogo.png ./deploy
+cp ../README.md ./deploy
+cp ./create-mssql.sql ./deploy
+cp ./create-mysql.sql ./deploy
 
 #
 # Compile for the various targets. Copy to the deploy folder
 #
+cd ../cmd/mailslurper
 
 # OSX
 if [ $TARGET = "osx" ]; then
 	env GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w"
-	mv ./mailslurper ./deploy
+	mv ./mailslurper ../../bin/deploy
 
-	cd deploy
+	cd ../../bin/deploy
 	zip -r -X $ZIPFILENAME *
-
-	rm ./mailslurper
 	cd ..
 fi
 
 # Linux
 if [ $TARGET = "linux" ]; then
 	env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"
-	mv ./mailslurper ./deploy
+	mv ./mailslurper ../../bin/deploy
 
-	cd deploy
+	cd ../../bin/deploy
 	zip -r -X $ZIPFILENAME *
-
-	rm ./mailslurper
 	cd ..
 fi
 
 # Windows
 if [ $TARGET = "windows" ]; then
 	env GOOS=windows GOARCH=amd64 go build -ldflags="-s -w"
-	mv ./mailslurper.exe ./deploy
+	mv ./mailslurper.exe ../../bin/deploy
 
-	cd deploy
+	cd ../../bin/deploy
 	zip -r -X $ZIPFILENAME *
-
-	rm ./mailslurper.exe
 	cd ..
 fi
 
@@ -122,6 +120,15 @@ rm ./deploy/config.json
 rm ./deploy/MailSlurperLogo.ico
 rm ./deploy/MailSlurperLogo.png
 rm ./deploy/README.md
-rm -R ./deploy/scripts
+rm ./deploy/create-mssql.sql
+rm ./deploy/create-mysql.sql
+
+if [ -f "./deploy/mailslurper.exe" ]; then
+	rm ./deploy/mailslurper.exe
+fi
+
+if [ -f "./deploy/mailsurper" ]; then
+	rm ./deploy/mailslurper
+fi
 
 echo "Package complete."

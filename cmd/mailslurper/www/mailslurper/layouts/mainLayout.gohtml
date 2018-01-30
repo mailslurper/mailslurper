@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--
+// Copyright 2013-2016 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+-->
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="MailSlurper Server - Slurps mail into oblivion!" />
+	<meta name="author" content="Adam Presley <adam@adampresley.com>" />
+
+	<link rel="icon" href="/www/mailslurper/images/favicon.ico" />
+
+	<title>{{.Title}} // MailSlurper</title>
+
+	<link href="/www/mailslurper/themes/{{.Theme}}/bootstrap.css" rel="stylesheet" id="themeBootstrapStylesheet" />
+	<link href="/www/fontawesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="/www/lightbox2/css/lightbox.css" rel="stylesheet" />
+	<link href="/www/bootstrap-dialog/css/bootstrap-dialog.css" rel="stylesheet" />
+	<link href="/www/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+	<link href="/www/mailslurper/css/style.css" rel="stylesheet" />
+	<link href="/www/mailslurper/themes/{{.Theme}}/style.css" rel="stylesheet" id="themeStylesheet" />
+	{{template "css" .}}
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container nav-container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+				 aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">MailSlurper</a>
+			</div>
+
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="/">
+							<i class="fa fa-home fa-lg"></i>
+						</a>
+					</li>
+					<li>
+						<a href="/savedsearches">
+							<i class="fa fa-filter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="/admin">
+							<i class="fa fa-cog"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</nav>
+
+	<div class="container body-container">
+		{{template "body" .}}
+	</div>
+	<!-- /.container -->
+</body>
+
+<script src="/www/npo/npo.js"></script>
+<script src="/www/moment/moment.js"></script>
+<script src="/www/handlebars/handlebars.js"></script>
+<script src="/www/mailslurper/templates/helpers/attachmentURL.js"></script>
+<script src="/www/mailslurper/templates/helpers/autoRefreshSelector.js"></script>
+<script src="/www/mailslurper/templates/helpers/dateFormatSelector.js"></script>
+<script src="/www/mailslurper/templates/helpers/formatDateTime.js"></script>
+<script src="/www/mailslurper/templates/helpers/ifIsImageAttachment.js"></script>
+<script src="/www/mailslurper/templates/helpers/themeSelector.js"></script>
+<script src="/www/mailslurper/templates/helpers/pageSelector.js"></script>
+<script src="/www/mailslurper/templates/helpers/unescape.js"></script>
+<script src="/www/jquery/jquery.js"></script>
+<script src="/www/blockui/jquery.blockUI.js"></script>
+<script src="/www/bootstrap/js/bootstrap.js"></script>
+<script src="/www/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="/www/bootstrap-dialog/js/bootstrap-dialog.js"></script>
+<script src="/www/bootstrap-growl/jquery.bootstrap-growl.js"></script>
+<script src="/www/lightbox2/js/lightbox.js"></script>
+
+<script src="/www/mailslurper/js/services/SettingsService.js"></script>
+<script src="/www/mailslurper/js/services/AlertService.js"></script>
+<script src="/www/mailslurper/js/services/MailService.js"></script>
+<script src="/www/mailslurper/js/services/SeedService.js"></script>
+<script src="/www/mailslurper/js/services/VersionService.js"></script>
+<script src="/www/mailslurper/js/services/TemplateService.js"></script>
+
+<script src="/www/mailslurper/js/widgets/SavedSearchesWidget.js"></script>
+<script src="/www/mailslurper/js/app.js"></script>
+{{template "js" .}}
+
+</html>

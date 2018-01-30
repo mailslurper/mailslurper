@@ -20,12 +20,16 @@ deploy
 _cgo_defun.c
 _cgo_gotypes.go
 _cgo_export.*
+tmp.log
 
 _testmain.go
 
 *.exe
+cmd/mailslurper/debug
+cmd/mailslurper/mailslurper
 mail.db
 mailslurper.db
 www/assets/mailslurper/.DS_Store
 scripts/*.pem
 scripts/*.csr
+temp.db

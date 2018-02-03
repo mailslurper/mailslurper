@@ -147,9 +147,6 @@ func main() {
 	service.HideBanner = true
 
 	service.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{
-			config.GetCORSWWWAddress(),
-		},
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
 	}))
 

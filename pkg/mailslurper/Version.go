@@ -23,7 +23,7 @@ func GetServerVersionFromMaster() (*Version, error) {
 	var result *Version
 
 	client := http.Client{}
-	response, err := client.Get("https://raw.githubusercontent.com/mailslurper/mailslurper/master/version.json")
+	response, err := client.Get("https://raw.githubusercontent.com/mailslurper/mailslurper/master/cmd/mailslurper/version.json")
 
 	if err != nil {
 		return result, err

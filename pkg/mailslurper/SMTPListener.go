@@ -21,6 +21,7 @@ the mail on this connection
 type SMTPListener struct {
 	certificate         tls.Certificate
 	config              *Configuration
+	connectionManager   IConnectionManager
 	killListenerChannel chan bool
 	killRecieverChannel chan bool
 	listener            net.Listener
@@ -33,15 +34,16 @@ type SMTPListener struct {
 /*
 NewSMTPListener creates an SMTPListener struct
 */
-func NewSMTPListener(logger *logrus.Entry, config *Configuration, serverPool *ServerPool, receivers []IMailItemReceiver) (*SMTPListener, error) {
+func NewSMTPListener(logger *logrus.Entry, config *Configuration, mailItemChannel chan *MailItem, serverPool *ServerPool, receivers []IMailItemReceiver, connectionManager IConnectionManager) (*SMTPListener, error) {
 	var err error
 
 	result := &SMTPListener{
 		config:              config,
+		connectionManager:   connectionManager,
 		killListenerChannel: make(chan bool, 1),
 		killRecieverChannel: make(chan bool, 1),
 		logger:              logger,
-		mailItemChannel:     make(chan *MailItem, 1000),
+		mailItemChannel:     mailItemChannel,
 		receivers:           receivers,
 		serverPool:          serverPool,
 	}
@@ -103,8 +105,6 @@ func (s *SMTPListener) Dispatch(ctx context.Context) {
 	 * Setup our receivers. These guys are basically subscribers to
 	 * the MailItem channel.
 	 */
-	var worker *SMTPWorker
-
 	go func() {
 		s.logger.Infof("%d receiver(s) listening", len(s.receivers))
 
@@ -138,13 +138,10 @@ func (s *SMTPListener) Dispatch(ctx context.Context) {
 					break
 				}
 
-				if worker, err = s.serverPool.NextWorker(connection, s.mailItemChannel); err != nil {
+				if err = s.connectionManager.New(connection); err != nil {
+					s.logger.WithError(err).Errorf("Error adding connection '%s' to connection manager", connection.RemoteAddr().String())
 					connection.Close()
-					s.logger.Errorf("Error getting next SMTP worker: %s", err.Error())
-					continue
 				}
-
-				go worker.Work()
 			}
 		}
 	}()

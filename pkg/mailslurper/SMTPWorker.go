@@ -5,13 +5,13 @@
 package mailslurper
 
 import (
+	"context"
 	"net"
 	"strings"
 	"time"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/adampresley/webframework/sanitizer"
+	"github.com/sirupsen/logrus"
 )
 
 /*
@@ -29,8 +29,10 @@ type SMTPWorker struct {
 	Writer                 *SMTPWriter
 	XSSService             sanitizer.IXSSServiceProvider
 
-	pool   *ServerPool
-	logger *logrus.Entry
+	connectionCloseChannel chan string
+	ctx                    context.Context
+	pool                   *ServerPool
+	logger                 *logrus.Entry
 }
 
 /*
@@ -84,6 +86,8 @@ func (smtpWorker *SMTPWorker) Prepare(
 	receiver chan *MailItem,
 	reader *SMTPReader,
 	writer *SMTPWriter,
+	ctx context.Context,
+	connectionCloseChannel chan string,
 ) {
 	smtpWorker.State = SMTP_WORKER_WORKING
 
@@ -92,6 +96,9 @@ func (smtpWorker *SMTPWorker) Prepare(
 
 	smtpWorker.Reader = reader
 	smtpWorker.Writer = writer
+
+	smtpWorker.connectionCloseChannel = connectionCloseChannel
+	smtpWorker.ctx = ctx
 }
 
 func (smtpWorker *SMTPWorker) rejoinWorkerQueue() {

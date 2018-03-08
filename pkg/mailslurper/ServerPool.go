@@ -5,6 +5,7 @@
 package mailslurper
 
 import (
+	"context"
 	"net"
 	"time"
 
@@ -61,7 +62,7 @@ func NewServerPool(logger *logrus.Entry, maxWorkers int) *ServerPool {
 /*
 NextWorker retrieves the next available worker from the queue.
 */
-func (pool *ServerPool) NextWorker(connection net.Conn, receiver chan *MailItem) (*SMTPWorker, error) {
+func (pool *ServerPool) NextWorker(connection net.Conn, receiver chan *MailItem, ctx context.Context, connectionCloseChannel chan string) (*SMTPWorker, error) {
 	select {
 	case worker := <-pool.pool:
 		worker.Prepare(
@@ -69,6 +70,7 @@ func (pool *ServerPool) NextWorker(connection net.Conn, receiver chan *MailItem)
 			receiver,
 			&SMTPReader{Connection: connection, logger: pool.logger},
 			&SMTPWriter{Connection: connection, logger: pool.logger},
+			ctx,
 		)
 
 		pool.logger.Infof("Worker %d queued to handle connections from %s", worker.WorkerID, connection.RemoteAddr().String())

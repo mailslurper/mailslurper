@@ -294,6 +294,17 @@ try:
 
     sendMail(msg)
 
+    msg = makeMultipartMessage(
+        "",
+        datetime.datetime.now() - timedelta(days=1),
+        DATE_FORMAT_7,
+        "",
+        "<p>This is an email with no subject</p>"
+    )
+
+    sendMail(msg)
+
+
 except Exception as e:
     print("An error occurred while trying to connect and send the email: {0}".format(
         e.message))

@@ -2,7 +2,9 @@ package mailslurper
 
 import (
 	"context"
+	"io"
 	"net"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -45,12 +47,13 @@ func NewConnectionManager(logger *logrus.Entry, config *Configuration, killServe
 		for {
 			select {
 			case connection := <-closeChannel:
-				if err = result.Close(connection); err != nil {
+				err = result.Close(connection)
+
+				if err != nil && err != io.EOF {
 					logger.WithError(err).Errorf("Error closing connection")
-				} else {
-					logger.WithField("connection", connection.RemoteAddr().String()).Infof("Connection closed")
 				}
 
+				logger.WithField("connection", connection.RemoteAddr().String()).Infof("Connection closed")
 				break
 
 			case <-killServerContext.Done():
@@ -68,8 +71,12 @@ is only used for logging purposes
 */
 func (m *ConnectionManager) Close(connection net.Conn) error {
 	if m.connectionExistsInPool(connection) {
-		m.logger.Infof("Closing connection %s", connection.RemoteAddr().String())
-		return m.connectionPool[connection.RemoteAddr().String()].Connection.Close()
+		if !m.isConnectionClosed(connection) {
+			m.logger.Infof("Closing connection %s", connection.RemoteAddr().String())
+			return m.connectionPool[connection.RemoteAddr().String()].Connection.Close()
+		}
+
+		return nil
 	}
 
 	return ConnectionNotExists(connection.RemoteAddr().String())
@@ -77,6 +84,22 @@ func (m *ConnectionManager) Close(connection net.Conn) error {
 
 func (m *ConnectionManager) connectionExistsInPool(connection net.Conn) bool {
 	if _, ok := m.connectionPool[connection.RemoteAddr().String()]; ok {
+		return true
+	}
+
+	return false
+}
+
+func (m *ConnectionManager) isConnectionClosed(connection net.Conn) bool {
+	var err error
+
+	temp := []byte{}
+
+	if err = connection.SetReadDeadline(time.Now()); err != nil {
+		return true
+	}
+
+	if _, err = connection.Read(temp); err == io.EOF {
 		return true
 	}
 

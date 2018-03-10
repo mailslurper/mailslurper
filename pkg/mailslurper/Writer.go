@@ -6,6 +6,7 @@ package mailslurper
 
 import (
 	"net"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -58,7 +59,9 @@ func (smtpWriter *SMTPWriter) SendResponse(response string) error {
 	var err error
 
 	if err = smtpWriter.Connection.SetWriteDeadline(time.Now().Add(time.Second * 2)); err != nil {
-		smtpWriter.logger.Errorf("Problem setting write deadline: %s", err.Error())
+		if !strings.Contains(err.Error(), "use of closed network connection") {
+			smtpWriter.logger.Errorf("Problem setting write deadline: %s", err.Error())
+		}
 	}
 
 	_, err = smtpWriter.Connection.Write([]byte(string(response + SMTP_CRLF)))

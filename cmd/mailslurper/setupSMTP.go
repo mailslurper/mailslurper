@@ -17,7 +17,7 @@ func setupSMTP() {
 	/*
 	 * Setup the server pool
 	 */
-	pool := mailslurper.NewServerPool(mailslurper.GetLogger(*logLevel, *logFormat, "SMTP Server Pool"), config.MaxWorkers)
+	pool := mailslurper.NewServerPool(mailslurper.GetLogger(*logLevel, *logFormat, "SMTP Server Pool"), config.MaxWorkers, *logLevel, *logFormat)
 
 	/*
 	 * Setup receivers (subscribers) to handle new mail items.

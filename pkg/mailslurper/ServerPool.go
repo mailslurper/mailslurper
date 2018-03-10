@@ -6,6 +6,7 @@ package mailslurper
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"time"
 
@@ -20,8 +21,10 @@ manage how many workers may respond to SMTP client requests
 and allocation of those workers.
 */
 type ServerPool struct {
-	logger *logrus.Entry
-	pool   chan *SMTPWorker
+	logger    *logrus.Entry
+	logFormat string
+	logLevel  string
+	pool      chan *SMTPWorker
 }
 
 /*
@@ -36,13 +39,15 @@ NewServerPool creates a new server pool with a maximum number of SMTP
 workers. An array of workers is initialized with an ID
 and an initial state of SMTP_WORKER_IDLE.
 */
-func NewServerPool(logger *logrus.Entry, maxWorkers int) *ServerPool {
+func NewServerPool(logger *logrus.Entry, maxWorkers int, logLevel, logFormat string) *ServerPool {
 	xssService := sanitizer.NewXSSService()
 	emailValidationService := NewEmailValidationService()
 
 	pool := &ServerPool{
-		pool:   make(chan *SMTPWorker, maxWorkers),
-		logger: logger,
+		pool:      make(chan *SMTPWorker, maxWorkers),
+		logger:    logger,
+		logLevel:  logLevel,
+		logFormat: logFormat,
 	}
 
 	for index := 0; index < maxWorkers; index++ {
@@ -51,7 +56,7 @@ func NewServerPool(logger *logrus.Entry, maxWorkers int) *ServerPool {
 			pool,
 			emailValidationService,
 			xssService,
-			logger,
+			GetLogger(logLevel, logFormat, fmt.Sprintf("SMTP Worker %d", index+1)),
 		))
 	}
 
@@ -68,8 +73,15 @@ func (pool *ServerPool) NextWorker(connection net.Conn, receiver chan *MailItem,
 		worker.Prepare(
 			connection,
 			receiver,
-			&SMTPReader{Connection: connection, logger: pool.logger, killServerContext: killServerContext},
-			&SMTPWriter{Connection: connection, logger: pool.logger},
+			&SMTPReader{
+				Connection:        connection,
+				logger:            GetLogger(pool.logLevel, pool.logFormat, fmt.Sprintf("SMTP Reader %d", worker.WorkerID)),
+				killServerContext: killServerContext,
+			},
+			&SMTPWriter{
+				Connection: connection,
+				logger:     GetLogger(pool.logLevel, pool.logFormat, fmt.Sprintf("SMTP Writer %d", worker.WorkerID)),
+			},
 			killServerContext,
 			connectionCloseChannel,
 		)

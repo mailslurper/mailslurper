@@ -36,6 +36,7 @@ the socket to read. The final value is stored and returned as a string.
 func (smtpReader *SMTPReader) Read() (string, error) {
 	var raw bytes.Buffer
 	var bytesRead int
+	var err error
 
 	bytesRead = 1
 
@@ -45,10 +46,12 @@ func (smtpReader *SMTPReader) Read() (string, error) {
 			return "", nil
 
 		default:
-			smtpReader.Connection.SetReadDeadline(time.Now().Add(time.Minute * CONNECTION_TIMEOUT_MINUTES))
+			if err = smtpReader.Connection.SetReadDeadline(time.Now().Add(time.Minute * CONNECTION_TIMEOUT_MINUTES)); err != nil {
+				return raw.String(), nil
+			}
 
 			buffer := make([]byte, RECEIVE_BUFFER_LEN)
-			bytesRead, err := smtpReader.Connection.Read(buffer)
+			bytesRead, err = smtpReader.Connection.Read(buffer)
 
 			if err != nil {
 				return raw.String(), err

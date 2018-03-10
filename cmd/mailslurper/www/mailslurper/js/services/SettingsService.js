@@ -1,4 +1,4 @@
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 
@@ -59,7 +59,7 @@ window.SettingsService = {
 				function (err) {
 					return reject(err);
 				}
-				);
+			);
 		})
 	},
 
@@ -175,7 +175,7 @@ window.SettingsService = {
 				function (xhr, errorType, err) {
 					return reject(err);
 				}
-				);
+			);
 		});
 	}
 };

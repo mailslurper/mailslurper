@@ -1,10 +1,11 @@
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 
 package mailslurper
 
 import (
+	"context"
 	"net"
 	"time"
 
@@ -61,14 +62,16 @@ func NewServerPool(logger *logrus.Entry, maxWorkers int) *ServerPool {
 /*
 NextWorker retrieves the next available worker from the queue.
 */
-func (pool *ServerPool) NextWorker(connection net.Conn, receiver chan *MailItem) (*SMTPWorker, error) {
+func (pool *ServerPool) NextWorker(connection net.Conn, receiver chan *MailItem, killServerContext context.Context, connectionCloseChannel chan net.Conn) (*SMTPWorker, error) {
 	select {
 	case worker := <-pool.pool:
 		worker.Prepare(
 			connection,
 			receiver,
-			&SMTPReader{Connection: connection, logger: pool.logger},
+			&SMTPReader{Connection: connection, logger: pool.logger, killServerContext: killServerContext},
 			&SMTPWriter{Connection: connection, logger: pool.logger},
+			killServerContext,
+			connectionCloseChannel,
 		)
 
 		pool.logger.Infof("Worker %d queued to handle connections from %s", worker.WorkerID, connection.RemoteAddr().String())

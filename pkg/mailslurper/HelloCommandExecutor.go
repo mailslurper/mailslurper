@@ -44,5 +44,4 @@ func (e *HelloCommandExecutor) Process(streamInput string, mailItem *MailItem) e
 	}
 
 	return e.writer.SendHELOResponse()
-
 }

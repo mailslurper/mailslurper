@@ -1,4 +1,4 @@
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 
@@ -28,6 +28,22 @@ type MailItem struct {
 	InlineAttachments []*Attachment
 	TextBody          string
 	HTMLBody          string
+}
+
+/*
+NewEmptyMailItem creates an empty mail object
+*/
+func NewEmptyMailItem(logger *logrus.Entry) *MailItem {
+	id, _ := GenerateID()
+
+	result := &MailItem{
+		ID:          id,
+		ToAddresses: NewMailAddressCollection(),
+		Attachments: make([]*Attachment, 0, 5),
+		Message:     NewSMTPMessagePart(logger),
+	}
+
+	return result
 }
 
 /*

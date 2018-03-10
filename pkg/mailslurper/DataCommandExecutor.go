@@ -3,6 +3,7 @@ package mailslurper
 import (
 	"bufio"
 	"fmt"
+	"mime"
 	"net/textproto"
 	"strings"
 
@@ -110,7 +111,7 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 		return errors.Wrap(err, "Problem parsing message contents")
 	}
 
-	mailItem.Subject = mailItem.Message.GetHeader("Subject")
+	mailItem.Subject = e.getSubjectFromPart(mailItem.Message)
 	mailItem.DateSent = ParseDateTime(mailItem.Message.GetHeader("Date"), e.logger)
 	mailItem.ContentType = mailItem.Message.GetHeader("Content-Type")
 
@@ -134,26 +135,90 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 	return nil
 }
 
-func (e *DataCommandExecutor) processTextMail(headers textproto.MIMEHeader, contents string, mailItem *MailItem) error {
-	var err error
+func (e *DataCommandExecutor) addAttachment(messagePart ISMTPMessagePart, mailItem *MailItem) error {
+	headers := &AttachmentHeader{
+		ContentType:             messagePart.GetHeader("Content-Type"),
+		MIMEVersion:             messagePart.GetHeader("MIME-Version"),
+		ContentTransferEncoding: messagePart.GetHeader("Content-Transfer-Encoding"),
+		ContentDisposition:      messagePart.GetContentDisposition(),
+		FileName:                messagePart.GetFilenameFromContentDisposition(),
+	}
 
-	mailItem.Subject = headers.Get("Subject")
-	mailItem.DateSent = ParseDateTime(headers.Get("Date"), e.logger)
-	mailItem.ContentType = headers.Get("Content-Type")
-	mailItem.TextBody, err = e.getBodyContent(contents)
-	mailItem.Body = mailItem.TextBody
+	e.logger.Debugf("Adding attachment: %v", headers)
 
-	return err
+	attachment := NewAttachment(headers, messagePart.GetBody())
+
+	if e.messagePartIsAttachment(messagePart) {
+		mailItem.Attachments = append(mailItem.Attachments, attachment)
+	} else {
+		mailItem.InlineAttachments = append(mailItem.InlineAttachments, attachment)
+	}
+
+	return nil
+}
+
+func (e *DataCommandExecutor) getBodyContent(contents string) (string, error) {
+	/*
+	 * Split the DATA content by CRLF CRLF. The first item will be the data
+	 * headers. Everything past that is body/message.
+	 */
+	headerBodySplit := strings.Split(contents, "\r\n\r\n")
+	if len(headerBodySplit) < 2 {
+		return "", errors.New("Expected DATA block to contain a header section and a body section")
+	}
+
+	return strings.Join(headerBodySplit[1:], "\r\n\r\n"), nil
+}
+
+func (e *DataCommandExecutor) getSubjectFromHeaders(headers textproto.MIMEHeader) string {
+	decoder := new(mime.WordDecoder)
+	result, _ := decoder.DecodeHeader(headers.Get("Subject"))
+
+	if strings.Compare(result, "") == 0 {
+		result = "(No Subject)"
+	}
+
+	return result
+}
+
+func (e *DataCommandExecutor) getSubjectFromPart(part *SMTPMessagePart) string {
+	result := part.GetHeader("Subject")
+
+	if strings.Compare(result, "") == 0 {
+		result = "(No Subject)"
+	}
+
+	return result
+}
+
+func (e *DataCommandExecutor) isMIMEType(messagePart ISMTPMessagePart, mimeType string) bool {
+	return strings.HasPrefix(messagePart.GetContentType(), mimeType)
+}
+
+func (e *DataCommandExecutor) messagePartIsAttachment(messagePart ISMTPMessagePart) bool {
+	return strings.Contains(messagePart.GetContentDisposition(), "attachment")
 }
 
 func (e *DataCommandExecutor) processHTMLMail(headers textproto.MIMEHeader, contents string, mailItem *MailItem) error {
 	var err error
 
-	mailItem.Subject = headers.Get("Subject")
+	mailItem.Subject = e.getSubjectFromHeaders(headers)
 	mailItem.DateSent = ParseDateTime(headers.Get("Date"), e.logger)
 	mailItem.ContentType = headers.Get("Content-Type")
 	mailItem.HTMLBody, err = e.getBodyContent(contents)
 	mailItem.Body = mailItem.HTMLBody
+
+	return err
+}
+
+func (e *DataCommandExecutor) processTextMail(headers textproto.MIMEHeader, contents string, mailItem *MailItem) error {
+	var err error
+
+	mailItem.Subject = e.getSubjectFromHeaders(headers)
+	mailItem.DateSent = ParseDateTime(headers.Get("Date"), e.logger)
+	mailItem.ContentType = headers.Get("Content-Type")
+	mailItem.TextBody, err = e.getBodyContent(contents)
+	mailItem.Body = mailItem.TextBody
 
 	return err
 }
@@ -173,49 +238,6 @@ func (e *DataCommandExecutor) recordMessagePart(message ISMTPMessagePart, mailIt
 				e.addAttachment(message, mailItem)
 			}
 		}
-	}
-
-	return nil
-}
-
-func (e *DataCommandExecutor) getBodyContent(contents string) (string, error) {
-	/*
-	 * Split the DATA content by CRLF CRLF. The first item will be the data
-	 * headers. Everything past that is body/message.
-	 */
-	headerBodySplit := strings.Split(contents, "\r\n\r\n")
-	if len(headerBodySplit) < 2 {
-		return "", errors.New("Expected DATA block to contain a header section and a body section")
-	}
-
-	return strings.Join(headerBodySplit[1:], "\r\n\r\n"), nil
-}
-
-func (e *DataCommandExecutor) isMIMEType(messagePart ISMTPMessagePart, mimeType string) bool {
-	return strings.HasPrefix(messagePart.GetContentType(), mimeType)
-}
-
-func (e *DataCommandExecutor) messagePartIsAttachment(messagePart ISMTPMessagePart) bool {
-	return strings.Contains(messagePart.GetContentDisposition(), "attachment")
-}
-
-func (e *DataCommandExecutor) addAttachment(messagePart ISMTPMessagePart, mailItem *MailItem) error {
-	headers := &AttachmentHeader{
-		ContentType:             messagePart.GetHeader("Content-Type"),
-		MIMEVersion:             messagePart.GetHeader("MIME-Version"),
-		ContentTransferEncoding: messagePart.GetHeader("Content-Transfer-Encoding"),
-		ContentDisposition:      messagePart.GetContentDisposition(),
-		FileName:                messagePart.GetFilenameFromContentDisposition(),
-	}
-
-	e.logger.Debugf("Adding attachment: %v", headers)
-
-	attachment := NewAttachment(headers, messagePart.GetBody())
-
-	if e.messagePartIsAttachment(messagePart) {
-		mailItem.Attachments = append(mailItem.Attachments, attachment)
-	} else {
-		mailItem.InlineAttachments = append(mailItem.InlineAttachments, attachment)
 	}
 
 	return nil

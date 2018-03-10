@@ -1,5 +1,5 @@
 <!--
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 -->
@@ -9,14 +9,15 @@
 			<h3 class="panel-title">Prune Emails</h3>
 		</div>
 		<div class="panel-body">
-			Your system currently has <strong>{{totalEmailCount}}</strong> email(s). The selection below
-			allows you to choose a set of emails you wish to remove permanently. Once you've
-			chosen a range of email to remove click the <strong>Remove</strong> button
-			below. <em>Warning! This operation cannot be undone!</em>
+			Your system currently has
+			<strong>{{totalEmailCount}}</strong> email(s). The selection below allows you to choose a set of emails you wish to remove permanently.
+			Once you've chosen a range of email to remove click the
+			<strong>Remove</strong> button below.
+			<em>Warning! This operation cannot be undone!</em>
 
-			<br /><br/>
-
-			Remove emails:<br/>
+			<br />
+			<br/> Remove emails:
+			<br/>
 			<select id="pruneRange" class="form-control">
 				{{#each pruneOptions}}
 					<option value="{{pruneCode}}">{{description}}</option>

@@ -14,44 +14,61 @@ client connections. For every connection there is a worker. After an idle
 timeout period the manager will forceably close a client connection.
 */
 type ConnectionManager struct {
-	closeChannel    chan string
-	config          *Configuration
-	connectionPool  ConnectionPool
-	ctx             context.Context
-	logger          *logrus.Entry
-	mailItemChannel chan *MailItem
-	serverPool      *ServerPool
+	closeChannel      chan net.Conn
+	config            *Configuration
+	connectionPool    ConnectionPool
+	killServerContext context.Context
+	logger            *logrus.Entry
+	mailItemChannel   chan *MailItem
+	serverPool        *ServerPool
 }
 
 /*
 NewConnectionManager creates a new struct
 */
-func NewConnectionManager(logger *logrus.Entry, config *Configuration, ctx context.Context, mailItemChannel chan *MailItem, serverPool *ServerPool) *ConnectionManager {
-	return &ConnectionManager{
-		closeChannel:    make(chan string, 5),
-		config:          config,
-		connectionPool:  NewConnectionPool(),
-		ctx:             ctx,
-		logger:          logger,
-		mailItemChannel: mailItemChannel,
-		serverPool:      serverPool,
-	}
-}
+func NewConnectionManager(logger *logrus.Entry, config *Configuration, killServerContext context.Context, mailItemChannel chan *MailItem, serverPool *ServerPool) *ConnectionManager {
+	closeChannel := make(chan net.Conn, 5)
 
-/*
-CleanIdle cleans up client connections that have exceeded the
-idle timeout period. It does this by forcably closing them
-*/
-func (m *ConnectionManager) CleanIdle() error {
-	return nil
+	result := &ConnectionManager{
+		closeChannel:      closeChannel,
+		config:            config,
+		connectionPool:    NewConnectionPool(),
+		killServerContext: killServerContext,
+		logger:            logger,
+		mailItemChannel:   mailItemChannel,
+		serverPool:        serverPool,
+	}
+
+	go func() {
+		var err error
+
+		for {
+			select {
+			case connection := <-closeChannel:
+				if err = result.Close(connection); err != nil {
+					logger.WithError(err).Errorf("Error closing connection")
+				} else {
+					logger.WithField("connection", connection.RemoteAddr().String()).Infof("Connection closed")
+				}
+
+				break
+
+			case <-killServerContext.Done():
+				return
+			}
+		}
+	}()
+
+	return result
 }
 
 /*
 Close will close a client connection. The state of the worker
 is only used for logging purposes
 */
-func (m *ConnectionManager) Close(connection net.Conn, state SMTPWorkerState) error {
+func (m *ConnectionManager) Close(connection net.Conn) error {
 	if m.connectionExistsInPool(connection) {
+		m.logger.Infof("Closing connection %s", connection.RemoteAddr().String())
 		return m.connectionPool[connection.RemoteAddr().String()].Connection.Close()
 	}
 
@@ -78,7 +95,7 @@ func (m *ConnectionManager) New(connection net.Conn) error {
 		return ConnectionExists(connection.RemoteAddr().String())
 	}
 
-	if worker, err = m.serverPool.NextWorker(connection, m.mailItemChannel, m.ctx, m.closeChannel); err != nil {
+	if worker, err = m.serverPool.NextWorker(connection, m.mailItemChannel, m.killServerContext, m.closeChannel); err != nil {
 		connection.Close()
 		m.logger.WithError(err).Errorf("Error getting next SMTP worker")
 		return errors.Wrapf(err, "Error getting work in ConnectionManager")

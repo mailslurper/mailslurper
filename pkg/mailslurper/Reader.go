@@ -6,10 +6,12 @@ package mailslurper
 
 import (
 	"bytes"
+	"context"
 	"net"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,7 +22,8 @@ from a connected TCP client
 type SMTPReader struct {
 	Connection net.Conn
 
-	logger *logrus.Entry
+	logger            *logrus.Entry
+	killServerContext context.Context
 }
 
 /*
@@ -30,57 +33,63 @@ This method blocks the socket for the number of milliseconds defined in CONN_TIM
 It then records what has been read in that time, then blocks again until there is nothing left on
 the socket to read. The final value is stored and returned as a string.
 */
-func (smtpReader *SMTPReader) Read() string {
+func (smtpReader *SMTPReader) Read() (string, error) {
 	var raw bytes.Buffer
 	var bytesRead int
 
 	bytesRead = 1
 
 	for bytesRead > 0 {
-		smtpReader.Connection.SetReadDeadline(time.Now().Add(time.Millisecond * CONN_TIMEOUT_MILLISECONDS))
+		select {
+		case <-smtpReader.killServerContext.Done():
+			return "", nil
 
-		buffer := make([]byte, RECEIVE_BUFFER_LEN)
-		bytesRead, err := smtpReader.Connection.Read(buffer)
+		default:
+			smtpReader.Connection.SetReadDeadline(time.Now().Add(time.Minute * CONNECTION_TIMEOUT_MINUTES))
 
-		if err != nil {
-			break
-		}
+			buffer := make([]byte, RECEIVE_BUFFER_LEN)
+			bytesRead, err := smtpReader.Connection.Read(buffer)
 
-		if bytesRead > 0 {
-			raw.WriteString(string(buffer[:bytesRead]))
+			if err != nil {
+				return raw.String(), err
+			}
+
+			if bytesRead > 0 {
+				raw.WriteString(string(buffer[:bytesRead]))
+				if strings.HasSuffix(raw.String(), "\r\n") {
+					return raw.String(), nil
+				}
+			}
 		}
 	}
 
-	return raw.String()
+	return raw.String(), nil
 }
 
 /*
 ReadDataBlock is used by the SMTP DATA command. It will read data from the connection
 until the terminator is sent.
 */
-func (smtpReader *SMTPReader) ReadDataBlock() string {
+func (smtpReader *SMTPReader) ReadDataBlock() (string, error) {
 	var dataBuffer bytes.Buffer
-	timeLimit := time.Now().Add(time.Second * COMMAND_TIMEOUT_SECONDS)
 
 	for {
-		dataResponse := smtpReader.Read()
-
-		if len(dataResponse) > 0 {
-			timeLimit = time.Now().Add(time.Second * COMMAND_TIMEOUT_SECONDS)
+		dataResponse, err := smtpReader.Read()
+		if err != nil {
+			smtpReader.logger.WithError(err).Errorf("Error reading in DATA block")
+			return dataBuffer.String(), errors.Wrapf(err, "Error reading in DATA block")
 		}
 
-		if time.Now().After(timeLimit) {
-			break
-		}
+		dataBuffer.WriteString(dataResponse)
+		terminatorPos := strings.Index(dataBuffer.String(), SMTP_DATA_TERMINATOR)
 
-		terminatorPos := strings.Index(dataResponse, SMTP_DATA_TERMINATOR)
-		if terminatorPos <= -1 {
-			dataBuffer.WriteString(dataResponse)
-		} else {
-			dataBuffer.WriteString(dataResponse[0:terminatorPos])
+		if terminatorPos > -1 {
 			break
 		}
 	}
 
-	return dataBuffer.String()
+	result := dataBuffer.String()
+	result = result[:len(result)-3]
+
+	return result, nil
 }

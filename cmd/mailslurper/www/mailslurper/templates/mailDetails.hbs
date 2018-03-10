@@ -1,5 +1,5 @@
 <!--
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 -->
@@ -22,21 +22,20 @@
 {{#if mail.attachments.length}}
 	<hr />
 
-	<strong>Attachments:</strong><br />
+	<strong>Attachments:</strong>
+	<br />
 	{{#each mail.attachments}}
 		<span class="label label-success label-right-margin">
 			{{#ifIsImageAttachment this}}
 				<a href="{{attachmentURL this}}" class="downloadAttachment" data-lightbox="{{id}}">{{headers.fileName}}</a>
-			{{else}}
-				<a href="{{attachmentURL this}}" class="downloadAttachment" target="_blank">{{headers.fileName}}</a>
+{{else}}
+	<a href="{{attachmentURL this}}" class="downloadAttachment" target="_blank">{{headers.fileName}}</a>
 			{{/ifIsImageAttachment}}
 		</span>
 	{{/each}}
 {{/if}}
 
-<hr />
-
-{{{mail.body}}}
+<hr /> {{{mail.body}}}
 
 <div class="hidden">
 	<div id="attachmentModal">

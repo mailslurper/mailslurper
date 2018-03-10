@@ -3,6 +3,8 @@ package main
 import "github.com/mailslurper/mailslurper/pkg/mailslurper"
 
 func setupConfig() {
+	var err error
+
 	/*
 	 * Load configuration
 	 */

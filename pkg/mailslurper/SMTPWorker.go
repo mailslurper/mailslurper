@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/adampresley/webframework/sanitizer"
+	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -21,7 +23,7 @@ TCP connection's email.
 type SMTPWorker struct {
 	Connection             net.Conn
 	EmailValidationService EmailValidationProvider
-	Mail                   *MailItem
+	Error                  error
 	Reader                 *SMTPReader
 	Receiver               chan *MailItem
 	State                  SMTPWorkerState
@@ -29,30 +31,15 @@ type SMTPWorker struct {
 	Writer                 *SMTPWriter
 	XSSService             sanitizer.IXSSServiceProvider
 
-	connectionCloseChannel chan string
-	ctx                    context.Context
+	connectionCloseChannel chan net.Conn
+	killServerContext      context.Context
 	pool                   *ServerPool
 	logger                 *logrus.Entry
 }
 
-/*
-InitializeMailItem initializes the mail item structure that will eventually
-be written to the receiver channel.
-*/
-func (smtpWorker *SMTPWorker) InitializeMailItem() {
-	smtpWorker.Mail = &MailItem{}
-
-	smtpWorker.Mail.ToAddresses = NewMailAddressCollection()
-	smtpWorker.Mail.Attachments = make([]*Attachment, 0, 5)
-	smtpWorker.Mail.Message = NewSMTPMessagePart(smtpWorker.logger)
-
-	/*
-	 * IDs are generated ahead of time because
-	 * we do not know what order recievers
-	 * get the mail item once it is retrieved from the TCP socket.
-	 */
-	id, _ := GenerateID()
-	smtpWorker.Mail.ID = id
+type smtpCommand struct {
+	Command     SMTPCommand
+	StreamInput string
 }
 
 /*
@@ -86,8 +73,8 @@ func (smtpWorker *SMTPWorker) Prepare(
 	receiver chan *MailItem,
 	reader *SMTPReader,
 	writer *SMTPWriter,
-	ctx context.Context,
-	connectionCloseChannel chan string,
+	killServerContext context.Context,
+	connectionCloseChannel chan net.Conn,
 ) {
 	smtpWorker.State = SMTP_WORKER_WORKING
 
@@ -98,7 +85,7 @@ func (smtpWorker *SMTPWorker) Prepare(
 	smtpWorker.Writer = writer
 
 	smtpWorker.connectionCloseChannel = connectionCloseChannel
-	smtpWorker.ctx = ctx
+	smtpWorker.killServerContext = killServerContext
 }
 
 func (smtpWorker *SMTPWorker) rejoinWorkerQueue() {
@@ -111,65 +98,126 @@ is received. This will start the process by responding to the client,
 start processing commands, and finally close the connection.
 */
 func (smtpWorker *SMTPWorker) Work() {
-	var streamInput string
-	var command SMTPCommand
 	var err error
 
-	smtpWorker.InitializeMailItem()
 	smtpWorker.Writer.SayHello()
+	mailItem := NewEmptyMailItem(smtpWorker.logger)
+
+	quitChannel := make(chan bool, 2)
+	quitCommandChannel := make(chan bool, 2)
+	workerErrorChannel := make(chan error, 2)
+	commandChannel := make(chan smtpCommand)
+	commandDoneChannel := make(chan error)
 
 	/*
-	 * Read from the connection until we receive a QUIT command
-	 * or some critical error occurs and we force quit.
+	 * This goroutine is the command processor
 	 */
-	startTime := time.Now()
+	go func() {
+		var streamInput string
+		var command SMTPCommand
+		var err error
+		var networkError net.Error
+		var ok bool
 
-	for smtpWorker.State != SMTP_WORKER_DONE && smtpWorker.State != SMTP_WORKER_ERROR {
-		streamInput = smtpWorker.Reader.Read()
+		for {
+			select {
+			case <-quitCommandChannel:
+				return
 
-		if command, err = GetCommandFromString(streamInput); err != nil {
-			smtpWorker.logger.Errorf("Problem finding command from input %s: %s", streamInput, err.Error())
-			smtpWorker.State = SMTP_WORKER_ERROR
-			continue
-		}
+			default:
+				if streamInput, err = smtpWorker.Reader.Read(); err != nil {
+					if networkError, ok = err.(net.Error); ok {
+						if networkError.Timeout() {
+							smtpWorker.logger.WithField("connection", smtpWorker.Connection.RemoteAddr().String()).Infof("Connection inactivity timeout")
 
-		if command == NONE {
-			smtpWorker.logger.Debugf("No command...")
-			continue
-		}
+							quitCommandChannel <- true
+							quitChannel <- true
+							break
+						}
+					}
 
-		smtpWorker.logger.Debugf("Command: %s", command.String())
+					workerErrorChannel <- err
+					break
+				}
 
-		if command == QUIT {
-			smtpWorker.State = SMTP_WORKER_DONE
-			smtpWorker.logger.Infof("QUIT command received. Closing connection")
-		} else {
-			executor := smtpWorker.getExecutorFromCommand(command)
-			streamInput = strings.TrimSpace(streamInput)
+				if command, err = GetCommandFromString(streamInput); err != nil {
+					smtpWorker.logger.WithError(err).WithField("input", streamInput).Errorf("Problem finding command from input")
+					workerErrorChannel <- errors.Wrapf(err, "Problem finding command from input %s", streamInput)
+					break
+				}
 
-			if err = executor.Process(streamInput, smtpWorker.Mail); err != nil {
-				smtpWorker.State = SMTP_WORKER_ERROR
-				smtpWorker.logger.Errorf("Problem executing command %s (stream input == '%s'): %s", command.String(), streamInput, err.Error())
-				continue
+				if command == QUIT {
+					quitCommandChannel <- true
+					quitChannel <- true
+					break
+				}
+
+				commandChannel <- smtpCommand{Command: command, StreamInput: streamInput}
+				err = <-commandDoneChannel
+
+				if err != nil {
+					smtpWorker.logger.WithError(err).Errorf("Error executing command")
+					quitCommandChannel <- true
+				}
 			}
 		}
+	}()
 
-		if smtpWorker.TimeoutHasExpired(startTime) {
-			smtpWorker.logger.Infof("Connection timeout. Terminating client connection")
+	for {
+		select {
+		case <-smtpWorker.killServerContext.Done():
+			smtpWorker.State = SMTP_WORKER_DONE
+			smtpWorker.Writer.SayGoodbye()
+			smtpWorker.connectionCloseChannel <- smtpWorker.Connection
+			break
+
+		case <-quitChannel:
+			smtpWorker.logger.WithField("connection", smtpWorker.Connection.RemoteAddr().String()).Infof("QUIT command received")
+			smtpWorker.Writer.SayGoodbye()
+
+			smtpWorker.State = SMTP_WORKER_DONE
+			smtpWorker.connectionCloseChannel <- smtpWorker.Connection
+			smtpWorker.rejoinWorkerQueue()
+
+			break
+
+		case workerError := <-workerErrorChannel:
 			smtpWorker.State = SMTP_WORKER_ERROR
-			continue
+			smtpWorker.Error = workerError
+			smtpWorker.Writer.SayGoodbye()
+
+			smtpWorker.connectionCloseChannel <- smtpWorker.Connection
+			smtpWorker.rejoinWorkerQueue()
+			break
+
+		case command := <-commandChannel:
+			if command.Command == QUIT {
+				quitChannel <- true
+				continue
+			}
+
+			executor := smtpWorker.getExecutorFromCommand(command.Command)
+			command.StreamInput = strings.TrimSpace(command.StreamInput)
+
+			if err = executor.Process(command.StreamInput, mailItem); err != nil {
+				smtpWorker.logger.WithError(err).WithFields(logrus.Fields{"command": command.Command.String(), "input": command.StreamInput}).Errorf("Problem executing command")
+				workerErrorChannel <- errors.Wrapf(err, "Problem executing command %s (stream input == '%s')", command.Command.String(), command.StreamInput)
+
+				commandDoneChannel <- err
+				continue
+			}
+
+			if command.Command == DATA {
+				copy := NewEmptyMailItem(smtpWorker.logger)
+				copier.Copy(copy, mailItem)
+				smtpWorker.Receiver <- copy
+
+				mailItem = NewEmptyMailItem(smtpWorker.logger)
+			}
+
+			commandDoneChannel <- nil
 		}
 	}
-
-	smtpWorker.Writer.SayGoodbye()
-	smtpWorker.Connection.Close()
-
-	if smtpWorker.State != SMTP_WORKER_ERROR {
-		smtpWorker.Receiver <- smtpWorker.Mail
-	}
-
-	smtpWorker.State = SMTP_WORKER_IDLE
-	smtpWorker.rejoinWorkerQueue()
 }
 
 func (smtpWorker *SMTPWorker) getExecutorFromCommand(command SMTPCommand) ICommandExecutor {

@@ -14,7 +14,7 @@ func setupAdminListener() {
 	 * Setup and start the HTTP listener for the application site
 	 */
 	adminController := controllers.NewAdminController(mailslurper.GetLogger(*logLevel, *logFormat, "AdminController"), renderer, SERVER_VERSION, config, CONFIGURATION_FILE_NAME, DEBUG_ASSETS)
-	admin := echo.New()
+	admin = echo.New()
 	admin.HideBanner = true
 	admin.Renderer = renderer
 

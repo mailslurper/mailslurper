@@ -1,4 +1,4 @@
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 
@@ -123,7 +123,7 @@ func (s *SMTPListener) Dispatch(ctx context.Context) {
 	}()
 
 	/*
-	 * Now start accepting connections for SMTP
+	 * Now start accepting connections for SMTP. Add them to the connection manager
 	 */
 	go func() {
 		for {
@@ -134,7 +134,7 @@ func (s *SMTPListener) Dispatch(ctx context.Context) {
 			default:
 				connection, err := s.listener.Accept()
 				if err != nil {
-					s.logger.Errorf("Problem accepting SMTP requests - %s", err.Error())
+					s.logger.WithError(err).Errorf("Problem accepting SMTP requests")
 					break
 				}
 

@@ -1,4 +1,4 @@
-// Copyright 2013-2016 Adam Presley. All rights reserved
+// Copyright 2013-2018 Adam Presley. All rights reserved
 // Use of this source code is governed by the MIT license
 // that can be found in the LICENSE file.
 
@@ -13,6 +13,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/labstack/echo"
 
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/mailslurper/mailslurper/pkg/ui"
@@ -35,8 +37,13 @@ var logger *logrus.Entry
 var serviceTierConfig *mailslurper.ServiceTierConfiguration
 var renderer *ui.TemplateRenderer
 var mailItemChannel chan *mailslurper.MailItem
+var smtpListenerContext context.Context
+var smtpListenerCancel context.CancelFunc
 var smtpListener *mailslurper.SMTPListener
 var connectionManager *mailslurper.ConnectionManager
+
+var admin *echo.Echo
+var service *echo.Echo
 
 var logFormat = flag.String("logformat", "simple", "Format for logging. 'simple' or 'json'. Default is 'simple'")
 var logLevel = flag.String("loglevel", "info", "Level of logs to write. Valid values are 'debug', 'info', or 'error'. Default is 'info'")
@@ -56,8 +63,10 @@ func main() {
 	setupAdminListener()
 	setupServicesListener()
 
+	defer database.Disconnect()
+
 	if config.AutoStartBrowser {
-		ui.StartBrowser(config)
+		ui.StartBrowser(config, logger)
 	}
 
 	/*
@@ -65,7 +74,7 @@ func main() {
 	 * start shutting everything down
 	 */
 	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt, syscall.SIGQUIT)
+	signal.Notify(quit, os.Interrupt, syscall.SIGQUIT, syscall.SIGTERM)
 
 	<-quit
 

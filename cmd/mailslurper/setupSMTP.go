@@ -7,6 +7,8 @@ import (
 )
 
 func setupSMTP() {
+	var err error
+
 	/*
 	 * Setup a channel to receive parsed mail items
 	 */
@@ -27,14 +29,12 @@ func setupSMTP() {
 	/*
 	 * Setup a context for controlling shutdown of SMTP services
 	 */
-	smtpListenerContext, smtpListenerCancel := context.WithCancel(context.Background())
+	smtpListenerContext, smtpListenerCancel = context.WithCancel(context.Background())
 
 	/*
 	 * Setup the connection manager
 	 */
-	if connectionManager, err = mailslurper.NewConnectionManager(mailslurper.GetLogger(*logLevel, *logFormat, "Connection Manager"), config, smtpListenerContext, mailItemChannel, pool); err != nil {
-		logger.WithError(err).Fatalf("Error creating connection manager. Exiting...")
-	}
+	connectionManager = mailslurper.NewConnectionManager(mailslurper.GetLogger(*logLevel, *logFormat, "Connection Manager"), config, smtpListenerContext, mailItemChannel, pool)
 
 	/*
 	 * Setup the SMTP listener

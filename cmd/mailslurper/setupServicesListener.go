@@ -12,7 +12,7 @@ func setupServicesListener() {
 	 * Start the services server
 	 */
 	serviceController := controllers.NewServiceController(mailslurper.GetLogger(*logLevel, *logFormat, "ServiceController"), SERVER_VERSION, config, database)
-	service := echo.New()
+	service = echo.New()
 	service.HideBanner = true
 
 	service.Use(middleware.CORSWithConfig(middleware.CORSConfig{

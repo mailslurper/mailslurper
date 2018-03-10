@@ -72,7 +72,11 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 
 	e.writer.SendDataResponse()
 
-	entireMailContents := e.reader.ReadDataBlock()
+	entireMailContents, err := e.reader.ReadDataBlock()
+	if err != nil {
+		return errors.Wrapf(err, "Error in DataCommandExecutor")
+	}
+
 	headerReader := textproto.NewReader(bufio.NewReader(strings.NewReader(entireMailContents)))
 
 	if initialHeaders, err = headerReader.ReadMIMEHeader(); err != nil {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/skratchdot/open-golang/open"
 )
@@ -11,7 +13,7 @@ import (
 /*
 StartBrowser opens the user's default browser to the configured URL
 */
-func StartBrowser(config *mailslurper.Configuration) {
+func StartBrowser(config *mailslurper.Configuration, logger *logrus.Entry) {
 	timer := time.NewTimer(time.Second)
 
 	go func() {

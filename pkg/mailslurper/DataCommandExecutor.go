@@ -151,9 +151,15 @@ func (e *DataCommandExecutor) decodeBody(body, contentType, transferEncoding str
 		if result, err = base64.StdEncoding.DecodeString(body); err != nil {
 			return body, err
 		}
+		break
 
 	default:
 		result = []byte(body)
+		break
+	}
+
+	if strings.Contains(contentType, "text/plain") {
+		result = []byte(strings.Replace(string(result), "\n", "<br />", -1))
 	}
 
 	return string(result), nil

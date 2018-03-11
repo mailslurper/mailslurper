@@ -35,6 +35,8 @@ type SMTPWorker struct {
 	killServerContext      context.Context
 	pool                   *ServerPool
 	logger                 *logrus.Entry
+	logLevel               string
+	logFormat              string
 }
 
 type smtpCommand struct {
@@ -52,6 +54,8 @@ func NewSMTPWorker(
 	emailValidationService EmailValidationProvider,
 	xssService sanitizer.IXSSServiceProvider,
 	logger *logrus.Entry,
+	logLevel string,
+	logFormat string,
 ) *SMTPWorker {
 	return &SMTPWorker{
 		EmailValidationService: emailValidationService,
@@ -59,8 +63,10 @@ func NewSMTPWorker(
 		State:                  SMTP_WORKER_IDLE,
 		XSSService:             xssService,
 
-		pool:   pool,
-		logger: logger,
+		pool:      pool,
+		logger:    logger,
+		logLevel:  logLevel,
+		logFormat: logFormat,
 	}
 }
 
@@ -223,16 +229,38 @@ func (smtpWorker *SMTPWorker) Work() {
 func (smtpWorker *SMTPWorker) getExecutorFromCommand(command SMTPCommand) ICommandExecutor {
 	switch command {
 	case MAIL:
-		return NewMailCommandExecutor(smtpWorker.logger, smtpWorker.Reader, smtpWorker.Writer, smtpWorker.EmailValidationService, smtpWorker.XSSService)
+		return NewMailCommandExecutor(
+			GetLogger(smtpWorker.logLevel, smtpWorker.logFormat, "MAIL Command Executor"),
+			smtpWorker.Reader,
+			smtpWorker.Writer,
+			smtpWorker.EmailValidationService,
+			smtpWorker.XSSService,
+		)
 
 	case RCPT:
-		return NewRcptCommandExecutor(smtpWorker.logger, smtpWorker.Reader, smtpWorker.Writer, smtpWorker.EmailValidationService, smtpWorker.XSSService)
+		return NewRcptCommandExecutor(
+			GetLogger(smtpWorker.logLevel, smtpWorker.logFormat, "RCPT TO Command Executor"),
+			smtpWorker.Reader,
+			smtpWorker.Writer,
+			smtpWorker.EmailValidationService,
+			smtpWorker.XSSService,
+		)
 
 	case DATA:
-		return NewDataCommandExecutor(smtpWorker.logger, smtpWorker.Reader, smtpWorker.Writer, smtpWorker.EmailValidationService, smtpWorker.XSSService)
+		return NewDataCommandExecutor(
+			GetLogger(smtpWorker.logLevel, smtpWorker.logFormat, "DATA Command Executor"),
+			smtpWorker.Reader,
+			smtpWorker.Writer,
+			smtpWorker.EmailValidationService,
+			smtpWorker.XSSService,
+		)
 
 	default:
-		return NewHelloCommandExecutor(smtpWorker.logger, smtpWorker.Reader, smtpWorker.Writer)
+		return NewHelloCommandExecutor(
+			GetLogger(smtpWorker.logLevel, smtpWorker.logFormat, "HELO Command Executor"),
+			smtpWorker.Reader,
+			smtpWorker.Writer,
+		)
 	}
 }
 

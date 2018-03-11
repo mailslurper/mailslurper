@@ -131,6 +131,11 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 		mailItem.Body = mailItem.TextBody
 	}
 
+	e.logger.Debugf("Subject: %s", mailItem.Subject)
+	e.logger.Debugf("Date: %s", mailItem.DateSent)
+	e.logger.Debugf("Content-Type: %s", mailItem.ContentType)
+	e.logger.Debugf("Body: %s", mailItem.Body)
+
 	e.writer.SendOkResponse()
 	return nil
 }
@@ -208,6 +213,11 @@ func (e *DataCommandExecutor) processHTMLMail(headers textproto.MIMEHeader, cont
 	mailItem.HTMLBody, err = e.getBodyContent(contents)
 	mailItem.Body = mailItem.HTMLBody
 
+	e.logger.Debugf("Subject: %s", mailItem.Subject)
+	e.logger.Debugf("Date: %s", mailItem.DateSent)
+	e.logger.Debugf("Content-Type: %s", mailItem.ContentType)
+	e.logger.Debugf("Body: %s", mailItem.Body)
+
 	return err
 }
 
@@ -219,6 +229,11 @@ func (e *DataCommandExecutor) processTextMail(headers textproto.MIMEHeader, cont
 	mailItem.ContentType = headers.Get("Content-Type")
 	mailItem.TextBody, err = e.getBodyContent(contents)
 	mailItem.Body = mailItem.TextBody
+
+	e.logger.Debugf("Subject: %s", mailItem.Subject)
+	e.logger.Debugf("Date: %s", mailItem.DateSent)
+	e.logger.Debugf("Content-Type: %s", mailItem.ContentType)
+	e.logger.Debugf("Body: %s", mailItem.Body)
 
 	return err
 }

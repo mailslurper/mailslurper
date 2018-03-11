@@ -57,6 +57,8 @@ func NewServerPool(logger *logrus.Entry, maxWorkers int, logLevel, logFormat str
 			emailValidationService,
 			xssService,
 			GetLogger(logLevel, logFormat, fmt.Sprintf("SMTP Worker %d", index+1)),
+			logLevel,
+			logFormat,
 		))
 	}
 

@@ -12,17 +12,18 @@ populated after an incoming client connection has finished
 sending mail data to this server.
 */
 type MailItem struct {
-	ID          string                `json:"id"`
-	DateSent    string                `json:"dateSent"`
-	FromAddress string                `json:"fromAddress"`
-	ToAddresses MailAddressCollection `json:"toAddresses"`
-	Subject     string                `json:"subject"`
-	XMailer     string                `json:"xmailer"`
-	MIMEVersion string                `json:"mimeVersion"`
-	Body        string                `json:"body"`
-	ContentType string                `json:"contentType"`
-	Boundary    string                `json:"boundary"`
-	Attachments []*Attachment         `json:"attachments"`
+	ID               string                `json:"id"`
+	DateSent         string                `json:"dateSent"`
+	FromAddress      string                `json:"fromAddress"`
+	ToAddresses      MailAddressCollection `json:"toAddresses"`
+	Subject          string                `json:"subject"`
+	XMailer          string                `json:"xmailer"`
+	MIMEVersion      string                `json:"mimeVersion"`
+	Body             string                `json:"body"`
+	ContentType      string                `json:"contentType"`
+	Boundary         string                `json:"boundary"`
+	Attachments      []*Attachment         `json:"attachments"`
+	TransferEncoding string                `json:"transferEncoding"`
 
 	Message           *SMTPMessagePart
 	InlineAttachments []*Attachment

@@ -1,8 +1,7 @@
 package mailslurper
 
 import (
-	"bufio"
-	"fmt"
+	"encoding/base64"
 	"mime"
 	"net/textproto"
 	"strings"
@@ -64,7 +63,6 @@ This function will return the following items.
 */
 func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) error {
 	var err error
-	var initialHeaders textproto.MIMEHeader
 
 	commandCheck := strings.Index(strings.ToLower(streamInput), "data")
 	if commandCheck < 0 {
@@ -78,33 +76,6 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 		return errors.Wrapf(err, "Error in DataCommandExecutor")
 	}
 
-	headerReader := textproto.NewReader(bufio.NewReader(strings.NewReader(entireMailContents)))
-
-	if initialHeaders, err = headerReader.ReadMIMEHeader(); err != nil {
-		return errors.Wrapf(err, "Unable to read MIME header for data block")
-	}
-
-	/*
-	 * This is a simple text-based email
-	 */
-	if strings.Contains(initialHeaders.Get("Content-Type"), "text/plain") {
-		e.processTextMail(initialHeaders, entireMailContents, mailItem)
-		e.writer.SendOkResponse()
-		return nil
-	}
-
-	/*
-	 * This is a simple HTML email
-	 */
-	if strings.Contains(initialHeaders.Get("Content-Type"), "text/html") {
-		e.processHTMLMail(initialHeaders, entireMailContents, mailItem)
-		e.writer.SendOkResponse()
-		return nil
-	}
-
-	/*
-	 * Nothing simple here. We have some type of multipart email
-	 */
 	if err = mailItem.Message.BuildMessages(entireMailContents); err != nil {
 		e.logger.Errorf("Problem parsing message contents: %s", err.Error())
 		e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
@@ -114,27 +85,36 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 	mailItem.Subject = e.getSubjectFromPart(mailItem.Message)
 	mailItem.DateSent = ParseDateTime(mailItem.Message.GetHeader("Date"), e.logger)
 	mailItem.ContentType = mailItem.Message.GetHeader("Content-Type")
+	mailItem.TransferEncoding = mailItem.Message.GetHeader("Content-Transfer-Encoding")
 
 	if len(mailItem.Message.MessageParts) > 0 {
 		for _, m := range mailItem.Message.MessageParts {
 			e.recordMessagePart(m, mailItem)
 		}
+
+		if mailItem.HTMLBody != "" {
+			mailItem.Body = mailItem.HTMLBody
+		} else {
+			mailItem.Body = mailItem.TextBody
+		}
+
 	} else {
-		e.logger.Errorf("MessagePart has no parts!")
-		e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
-		return fmt.Errorf("Message part has no parts!")
+		if mailItem.Body, err = e.getBodyContent(mailItem.Message.GetBody()); err != nil {
+			e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
+			return errors.Wrapf(err, "Problem reading body")
+		}
 	}
 
-	if mailItem.HTMLBody != "" {
-		mailItem.Body = mailItem.HTMLBody
-	} else {
-		mailItem.Body = mailItem.TextBody
+	if mailItem.Body, err = e.decodeBody(mailItem.Body, mailItem.ContentType, mailItem.TransferEncoding); err != nil {
+		e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
+		return errors.Wrapf(err, "Problem decoding body")
 	}
 
 	e.logger.Debugf("Subject: %s", mailItem.Subject)
 	e.logger.Debugf("Date: %s", mailItem.DateSent)
 	e.logger.Debugf("Content-Type: %s", mailItem.ContentType)
 	e.logger.Debugf("Body: %s", mailItem.Body)
+	e.logger.Debugf("Transfer Encoding: %s", mailItem.TransferEncoding)
 
 	e.writer.SendOkResponse()
 	return nil
@@ -160,6 +140,23 @@ func (e *DataCommandExecutor) addAttachment(messagePart ISMTPMessagePart, mailIt
 	}
 
 	return nil
+}
+
+func (e *DataCommandExecutor) decodeBody(body, contentType, transferEncoding string) (string, error) {
+	var result []byte
+	var err error
+
+	switch transferEncoding {
+	case "base64":
+		if result, err = base64.StdEncoding.DecodeString(body); err != nil {
+			return body, err
+		}
+
+	default:
+		result = []byte(body)
+	}
+
+	return string(result), nil
 }
 
 func (e *DataCommandExecutor) getBodyContent(contents string) (string, error) {
@@ -202,40 +199,6 @@ func (e *DataCommandExecutor) isMIMEType(messagePart ISMTPMessagePart, mimeType 
 
 func (e *DataCommandExecutor) messagePartIsAttachment(messagePart ISMTPMessagePart) bool {
 	return strings.Contains(messagePart.GetContentDisposition(), "attachment")
-}
-
-func (e *DataCommandExecutor) processHTMLMail(headers textproto.MIMEHeader, contents string, mailItem *MailItem) error {
-	var err error
-
-	mailItem.Subject = e.getSubjectFromHeaders(headers)
-	mailItem.DateSent = ParseDateTime(headers.Get("Date"), e.logger)
-	mailItem.ContentType = headers.Get("Content-Type")
-	mailItem.HTMLBody, err = e.getBodyContent(contents)
-	mailItem.Body = mailItem.HTMLBody
-
-	e.logger.Debugf("Subject: %s", mailItem.Subject)
-	e.logger.Debugf("Date: %s", mailItem.DateSent)
-	e.logger.Debugf("Content-Type: %s", mailItem.ContentType)
-	e.logger.Debugf("Body: %s", mailItem.Body)
-
-	return err
-}
-
-func (e *DataCommandExecutor) processTextMail(headers textproto.MIMEHeader, contents string, mailItem *MailItem) error {
-	var err error
-
-	mailItem.Subject = e.getSubjectFromHeaders(headers)
-	mailItem.DateSent = ParseDateTime(headers.Get("Date"), e.logger)
-	mailItem.ContentType = headers.Get("Content-Type")
-	mailItem.TextBody, err = e.getBodyContent(contents)
-	mailItem.Body = mailItem.TextBody
-
-	e.logger.Debugf("Subject: %s", mailItem.Subject)
-	e.logger.Debugf("Date: %s", mailItem.DateSent)
-	e.logger.Debugf("Content-Type: %s", mailItem.ContentType)
-	e.logger.Debugf("Body: %s", mailItem.Body)
-
-	return err
 }
 
 func (e *DataCommandExecutor) recordMessagePart(message ISMTPMessagePart, mailItem *MailItem) error {

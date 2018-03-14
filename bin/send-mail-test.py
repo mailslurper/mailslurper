@@ -153,6 +153,18 @@ try:
     sendMail(msg)
 
     #
+    # Send plain text email with special characters in subject
+    #
+    msg = makeTextMessage(
+        "Plain Text Email with special characters (á, é, í, ó, ú)",
+        datetime.datetime.now(),
+        DATE_FORMAT_1,
+        "This is a plain text email with special characters in the subject.\n(á, é, í, ó, ú)\n\nSincerely,\nAdam Presley"
+    )
+
+    sendMail(msg)
+
+    #
     # Send text+attachment
     #
     msg = makeTextMessage(

@@ -30,10 +30,20 @@ func setupAdminListener() {
 	admin.POST("/theme", adminController.ApplyTheme)
 
 	go func() {
-		logger.Infof("HTTP admin listener running on %s", config.GetFullWWWBindingAddress())
+		var err error
 
-		if err := admin.Start(config.GetFullWWWBindingAddress()); err != nil {
-			logger.Info("Shutting down HTTP admin listener")
+		if config.IsAdminSSL() {
+			logger.Infof("HTTP admin listener running on SSL %s", config.GetFullWWWBindingAddress())
+
+			if err = admin.StartTLS(config.GetFullWWWBindingAddress(), config.AdminCertFile, config.AdminKeyFile); err != nil {
+				logger.WithError(err).Info("Shutting down HTTP admin listener")
+			}
+		} else {
+			logger.Infof("HTTP admin listener running on %s", config.GetFullWWWBindingAddress())
+
+			if err = admin.Start(config.GetFullWWWBindingAddress()); err != nil {
+				logger.WithError(err).Info("Shutting down HTTP admin listener")
+			}
 		}
 	}()
 }

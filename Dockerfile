@@ -13,20 +13,42 @@ ENV CGO_ENABLED 1
 RUN \
   apk update \
   && apk add go git libc-dev \
-  && mkdir -p /home/go/src/github.com/mailslurper /home/go/bin /home/go/bin \
+  && mkdir -p /home/go/src/github.com/mailslurper /home/go/bin /home/go/pkg \
   && cd /home/go/src/github.com/mailslurper \
-  && git clone https://github.com/mailslurper/libmailslurper.git \
-  && mv /tmp/mailslurper ./ \
+  && git clone https://github.com/mailslurper/mailslurper.git \
   && go get github.com/mjibson/esc \
-  && cd mailslurper \
+  && cd mailslurper/cmd/mailslurper \
   && go get \
   && go generate \
-  && go build
+  && go build \
+  && rm /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/config.json
 
-WORKDIR /home/go/src/github.com/mailslurper/mailslurper
+RUN echo -e '{\n\
+  "wwwAddress": "0.0.0.0",\n\
+  "wwwPort": 8080,\n\
+  "serviceAddress": "0.0.0.0",\n\
+  "servicePort": 8085,\n\
+  "smtpAddress": "0.0.0.0",\n\
+  "smtpPort": 2500,\n\
+  "dbEngine": "SQLite",\n\
+  "dbHost": "",\n\
+  "dbPort": 0,\n\
+  "dbDatabase": "./mailslurper.db",\n\
+  "dbUserName": "",\n\
+  "dbPassword": "",\n\
+  "maxWorkers": 1000,\n\
+  "autoStartBrowser": false,\n\
+  "keyFile": "",\n\
+  "certFile": "",\n\
+  "adminKeyFile": "",\n\
+  "adminCertFile": ""\n\
+  }'\
+  >> /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/config.json
+
+WORKDIR /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper
 
 VOLUME /home/go/src/github.com/mailslurper/mailslurper
 
 EXPOSE 8080 8085 2500
 
-CMD /home/go/src/github.com/mailslurper/mailslurper/mailslurper
+CMD /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/mailslurper

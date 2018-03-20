@@ -14,10 +14,9 @@ The following are general instructions for compiling MailSlurper. Your details m
 $ cd ~/code/go/src/github.com
 $ mkdir mailslurper
 $ cd mailslurper
-$ git clone https://github.com/mailslurper/libmailslurper.git
 $ git clone https://github.com/mailslurper/mailslurper.git
 $ go get github.com/mjibson/esc
-$ cd mailslurper
+$ cd mailslurper/cmd/mailslurper
 $ go get
 $ go generate
 $ go build
@@ -31,8 +30,7 @@ This application uses a lot of great open source libraries.
 * [Gorilla Context](http://www.gorillatoolkit.org/pkg/context)
 * [Gorilla Websocket](https://github.com/gorilla/websocket)
 * [Alice](https://github.com/justinas/alice)
-* [GoHttpService](https://github.com/adampresley/GoHttpService)
-* [Logging](https://github.com/adampresley/logging)
+* [Logrus](https://github.com/sirupsen/logrus) - MIT
 * [GoUUID](https://github.com/nu7hatch/gouuid)
 * [bluemonday](https://github.com/microcosm-cc/bluemonday) - BSD 3 Clause. Copyright (c) 2014, David Kitchen david@buro9.com
 * [go-mssqldb](https://github.com/denisenkom/go-mssqldb)
@@ -49,9 +47,7 @@ This application uses a lot of great open source libraries.
 * [jQuery](http://jquery.com/) - MIT
 * [lightbox2](http://lokeshdhakar.com/projects/lightbox2/) - MIT
 * [Moment.js](http://momentjs.com) - MIT
-* [Promiscuous](https://github.com/RubenVerborgh/promiscuous) - MIT
-* [RequireJS Handlebars Plugin](https://github.com/SlexAxton/require-handlebars-plugin) - WTFPL License
-* [RequireJS](http://requirejs.org) - MIT
+* [NPO](https://github.com/getify/native-promise-only) - MIT
 
 Themes by Thomas Park at [Bootswatch](http://bootswatch.com/).
 
@@ -59,7 +55,7 @@ License
 -------
 The MIT License (MIT)
 
-Copyright (c) 2013-2016 Adam Presley
+Copyright (c) 2013-2018 Adam Presley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

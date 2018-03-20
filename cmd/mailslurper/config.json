@@ -14,5 +14,7 @@
 	"maxWorkers": 1000,
 	"autoStartBrowser": false,
 	"keyFile": "",
-	"certFile": ""
+	"certFile": "",
+	"adminKeyFile": "",
+	"adminCertFile": ""
 }

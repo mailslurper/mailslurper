@@ -31,14 +31,14 @@ func setupServicesListener() {
 	go func() {
 		var err error
 
-		if config.CertFile != "" && config.KeyFile != "" {
+		if config.IsServiceSSL() {
 			err = service.StartTLS(config.GetFullServiceAppAddress(), config.CertFile, config.KeyFile)
 		} else {
 			err = service.Start(config.GetFullServiceAppAddress())
 		}
 
 		if err != nil {
-			logger.Info("Shutting down HTTP service listener")
+			logger.WithError(err).Info("Shutting down HTTP service listener")
 		} else {
 			logger.Infof("Service listener running on %s", config.GetFullServiceAppAddress())
 		}

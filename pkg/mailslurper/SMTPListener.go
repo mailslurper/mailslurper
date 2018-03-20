@@ -64,7 +64,7 @@ func (s *SMTPListener) Start() error {
 	var err error
 	var tcpAddress *net.TCPAddr
 
-	if s.config.CertFile != "" && s.config.KeyFile != "" {
+	if s.config.IsServiceSSL() {
 		tlsConfig := &tls.Config{Certificates: []tls.Certificate{s.certificate}}
 
 		if s.listener, err = tls.Listen("tcp", s.config.GetFullSMTPBindingAddress(), tlsConfig); err != nil {

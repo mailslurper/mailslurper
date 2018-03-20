@@ -75,23 +75,8 @@ window.SettingsService = {
 			serviceAddress = window.location.hostname;
 		}
 
-		var serviceURL = "//" + serviceAddress + ":" + serviceSettings.servicePort;
-		return serviceURL;
-	},
-
-	/**
-	 * getServiceURLNow returns a fully formatted service URL as a key named
-	 * "serviceURL" directly instead of via a promise.
-	 */
-	getServiceURLNow: function () {
-		var serviceSettings = window.SettingsService.retrieveServiceSettings();
-		var serviceAddress = serviceSettings.serviceAddress;
-
-		if (serviceAddress === "0.0.0.0") {
-			serviceAddress = window.location.hostname;
-		}
-
-		var serviceURL = "//" + serviceAddress + ":" + serviceSettings.servicePort;
+		var protocol = (serviceSettings.isSSL) ? "https:" : "http:";
+		var serviceURL = protocol + "//" + serviceAddress + ":" + serviceSettings.servicePort;
 		return serviceURL;
 	},
 

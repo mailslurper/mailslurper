@@ -16233,7 +16233,7 @@ vAY8AAA=
 	"/www/mailslurper/css/style.css": {
 		local:   "www/mailslurper/css/style.css",
 		size:    2069,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/4yV/4rjNhDH/46eYspSaEOV2E6cdRz6x/bYwkK3FLb3ALIl22IVyUjKrx777kW2k3F2
 c8sRgmXrMzPSfEej+ZTM5/DFtCcr68ZDEsULmkRxBg+cbeEfK5wSpxk8KAUd4cAKJ+xe8GD41QkwFfhG
@@ -16276,7 +16276,7 @@ RK5CYIIBAAD//9qTW4/GAgAA
 	"/www/mailslurper/js/app.js": {
 		local:   "www/mailslurper/js/app.js",
 		size:    622,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/3SRwWrbQBCGz9JT/DU9yNDKSXop5GSCD4akFJQ+wGb1S1pY75SZtV1T8u5FUgypiU8D
 w8z3/buzWuFBfp809EPG3c3tt693N7ffsW7dDj+VFnmqsY4R04RBadQD23K1wi8jpEMegsFkr57w0hLB
@@ -16290,7 +16290,7 @@ HC+i2IkSIXWiOzeK68Wc6kNplP6JZq7nGO8LFpNxcX7HfVm8lmMp/wUAAP//YOkkWm4CAAA=
 	"/www/mailslurper/js/controllers/AdminController.js": {
 		local:   "www/mailslurper/js/controllers/AdminController.js",
 		size:    5149,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/8xXX2/bNhB/lj7FVduD3Hpy270MDozBddMuQP8EcbphKIqBls4WF4o0SMpGNvi7D6JI
 ibIlt91SYH5IpOP9v+PdT5MJLMT2XtJNruH502c//vD86bOfYJ6RAq4lKob3CcwZA8OhQKJCucMsnEzg
@@ -16322,7 +16322,7 @@ D6rYoL72YvHXZ9izk7sb9CgL7rRehF+xqHsR8Mm2PtoaA/WSqCXFzudTK35ym309naS8POZs9/tRjbvX
 	"/www/mailslurper/js/controllers/HomeController.js": {
 		local:   "www/mailslurper/js/controllers/HomeController.js",
 		size:    13729,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/8x7bW8bOZLwZ/lX1NPPACclctueAfbu5CiLxE5uDMTZwHawCGbnA9VdkrihSIFky/YM
 8t8PLJL93rI8k7tbfxDSZFWxWKwq1gtzcgIXavuo+Wpt4cfTs5+Ofzw9+w94k7MNfNJoBD6m8EYIIAgD
@@ -16389,7 +16389,7 @@ zYdFcWbwFczR6Fdn496XNO5iGh5u0R9m+xJorDT9KsT9f0nZ7vrmgtD/DgAA//+++U6yoTUAAA==
 	"/www/mailslurper/js/controllers/ManageSavedSearchesController.js": {
 		local:   "www/mailslurper/js/controllers/ManageSavedSearchesController.js",
 		size:    2038,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/6xUTU/jSBA927+i5OXg8OGE7GW1IQeE0EwkGCGFOSEOnXbF7qHTHVWXwzAo/33ktp3Y
 SWCQBh+sdLrqvapXr9zvw5VdvpDKcobh4Pzfs+Hg/D+4TMUC7gidxpcELrUGH+GA0CGtMA37ffjuEOwc
@@ -16409,7 +16409,7 @@ Y0WqTJYkSeSX5Y/mDvcNV0/7b7bsYImFqYqsvRK+67VDAEhkaeO60m3rsoDfAQAA//8Us3cw9gcAAA==
 	"/www/mailslurper/js/services/AlertService.js": {
 		local:   "www/mailslurper/js/services/AlertService.js",
 		size:    1741,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/6yUQU/jPhDF7/kUTxaHVEAK/C9/AUFCCO1WWlYrsdy4uM6ktXDtynYKFep3XzlJ2yRN
 u12JnKr6+f2SmXkzHOLBzJdWTqYeVxeX/51fXVz+j/uMz/DLklO0THCvFEqFgyVHdkFZNBzixRFMDj+V
@@ -16427,7 +16427,7 @@ WmN3XKtzsIzrCdmGxz4kfQjFZzyU6Uiw1Lmx1Y29+KA5Ah5kPdTDJVdm8lR5ddraaEEX9srubofyDgyn
 	"/www/mailslurper/js/services/MailService.js": {
 		local:   "www/mailslurper/js/services/MailService.js",
 		size:    3880,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/9RWUW/bNhB+tn7FjRg2N3XkNgWGwoExpLY7eEiyYnEf8kiLJ4spRQokZUcY8t+Ho+RY
 tqvNK4YNeRFE3t13d/w+njQcwsQUlZWrzMPFm7fvzi/evH0PV4Ln8MmiU1jFcKUUBA8HFh3aNYpoOITP
@@ -16453,7 +16453,7 @@ cmNihpaXEYXJlCps1xNv1fHdGBjbypSgX4+B/dBYA8xBYL1sJBRE/NSVo17eeW79UQZHu934IShOjc25
 	"/www/mailslurper/js/services/SeedService.js": {
 		local:   "www/mailslurper/js/services/SeedService.js",
 		size:    1945,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/4xVXW/jNhB8ln7FQChQJ3Fk54oDCqd5cOO0lyJug9gBGhzugZZWFq8UKfDDHzj4vxek
 5O8UvReD2p3ZHa5m5V4P96peaz4vLT70b366/tC/+RnDnFV41mQErVMMhUBAGGgypBeUx70eXg1BFbAl
@@ -16475,38 +16475,38 @@ JozPbOLNbfxvAAAA///vKqdQmQcAAA==
 
 	"/www/mailslurper/js/services/SettingsService.js": {
 		local:   "www/mailslurper/js/services/SettingsService.js",
-		size:    4638,
-		modtime: 1520656658,
+		size:    4220,
+		modtime: 1521521593,
 		compressed: `
-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
+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
+zcd/tRrqsgoelsE/AQAA//96Sqc9fBAAAA==
 `,
 	},
 
 	"/www/mailslurper/js/services/TemplateService.js": {
 		local:   "www/mailslurper/js/services/TemplateService.js",
 		size:    484,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/2SOwWrcMBiEz6unGEwPDtlaSXopXXoIIYdAWwLZPoBXHq9VZMn8ku2a4ncvcjctbS8/
 P8zMN6M1HsKwiD13CXc3t+/e3t3cvsd9U/d4FkbHpcK9c9gcEcJImdgorfE1EqFF6mxEDKMYwoSGsBHn
@@ -16520,7 +16520,7 @@ Hl1m5QLJd/vXfFe1HpT6GQAA//9N8bAE5AEAAA==
 	"/www/mailslurper/js/services/VersionService.js": {
 		local:   "www/mailslurper/js/services/VersionService.js",
 		size:    1426,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/9yTQW/aQBCFz/hXjKwejOQa7F4qIJGiiEZIaRsV0kuVw2KP8aL1LppdQ1Dl/155vUAw
 Laeeclmtdr558+aBBwO4V5s98VVhIBnGnz4mw/gz3GWshCdCLXAfwZ0QYAkNhBppi5k3GMCzRlA5mIJr
@@ -16537,7 +16537,7 @@ I5o4p39XapnbLnOu5BKcuEUulM6berVXjz3vTwAAAP//i1rE85IFAAA=
 	"/www/mailslurper/js/widgets/SavedSearchesWidget.js": {
 		local:   "www/mailslurper/js/widgets/SavedSearchesWidget.js",
 		size:    2389,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/9SVwW7jRgyGz9JTsGoPIyArJ+mlsOvDbnaBGm22Qb1FD0UP1AwlD3Y8Y8xQzhoLvXsh
 ybKkxGnSIpfmEMEkh/z4ixzNZnDjdgevyw3D9eXV92+uL69+gLcKt3DnKRg6ZPDWGGgjAngK5Pek4tkM
@@ -16558,7 +16558,7 @@ CJ1WzjYj+4xUT2lSOFmFHqUebVYc1Yu4Fmm6+DsAAP//eP2esFUJAAA=
 	"/www/mailslurper/layouts/mainLayout.gohtml": {
 		local:   "www/mailslurper/layouts/mainLayout.gohtml",
 		size:    4058,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/7SXS3PbuA/Az/anYPS//mm23UsPkmezaXYmM+1up072cYRFSKJLkSoJyfVk/N13qFcU
 11k3dfaQiA/gBwgQQTi+ePf71e3fH69ZQaVezuMLzudCsCtb7ZzKC2JvXr3+ib959fotu5RQso8Ovcbd
@@ -16622,7 +16622,7 @@ SgqBROFoo73Q/E0cPvnfb977byefAQAA//9NfHgvxgAAAA==
 	"/www/mailslurper/templates/adminPrune.hbs": {
 		local:   "www/mailslurper/templates/adminPrune.hbs",
 		size:    1024,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/4RSTYvbMBA9J79i1j20PTjeDyilOIYl7GGh7S7bLaVHWZrEYmWN0Yy9GJP/XiQnaUoL
 vdiS5s2befOmvMjzZVHAhrox2F0jcH15dZNfX159hFujWngMyA7HFdw6BwnBEJAxDGhi4ndGoC1IYxmY
@@ -16640,7 +16640,7 @@ SXctfp5QdnJkzj8vf/jPv18BAAD//7mvKl8ABAAA
 	"/www/mailslurper/templates/adminSettings.hbs": {
 		local:   "www/mailslurper/templates/adminSettings.hbs",
 		size:    927,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/6SSwYrbMBCGz8lTTHXXepNA6cExhO0WFtpSmu0DyNY4EpU1RhobTMi7F8sO8TalUHrJ
 zJ/5/vEPo/ydlOssgydqh2BPhmH7uNnJ7ePmAxy0auBbwOhweICDc5CICAEjhh71aPwREagGNjZCpC5U
@@ -16655,21 +16655,21 @@ AAA=
 
 	"/www/mailslurper/templates/helpers/attachmentURL.js": {
 		local:   "www/mailslurper/templates/helpers/attachmentURL.js",
-		size:    358,
-		modtime: 1520656658,
+		size:    355,
+		modtime: 1521521537,
 		compressed: `
-H4sIAAAAAAAC/1yMwWoqQRBF12++4jIrxZcZNZuAKxFBwUjQ+AFt952ZhrZbqmsUCfn3oASE7IpzTt26
-xiKdb+LbTjEdT15fpuPJG+bOnPAhzIG3CvMQ8CgyhJlyoSvqGodMpAba+YycerGETY7wGW26UCIdjjdo
-R7yvPxG8Zcy8f2pnFNZEHIkm9dHBx0e3WS+W2/0SjQ+sirLPRFbxVstZUaxMdIFHI7kStj4rZcVwpgxK
-o2psd2LUw25T/kfTR6s+RQyeZoiv4p9Qe4m4+ujStdpT1cc27ykXb1m11N/zsNts03UwxAhlfTI+1CVG
-eI5Vd7Z2D/2kfyPvZsX3cFb8BAAA//8nnOs5ZgEAAA==
+H4sIAAAAAAAC/1yMwWrCQBRF181XXLJSbBO1m4IrEUHBlqL1A8aZm2RgnJE3L4qU/ntRCkJ3j3POu3WN
+RTpdxbedYjqevL5Mx5M3zJ054lOYA68V5iHgXmQIM+VMV9Q19plIDbTzGTn1YgmbHOEz2nSmRDocrtCO
+eF9/IXjLmHn71M4orIk4EE3qo4OP926zXiw/dks0PrAqyj4TWcVbLWdFsTLRBR6M5ErY+qyUFcOJMiiN
+qrHdkVH32035jKaPVn2KGDzMEN/Fk1B7ibj46NKl2lHVxzbvKGdvWbXUv3O/3QyGGKGsj8aHusQIj6Xq
+xtburh/0f+TdrPgZzorfAAAA//+tloJ0YwEAAA==
 `,
 	},
 
 	"/www/mailslurper/templates/helpers/autoRefreshSelector.js": {
 		local:   "www/mailslurper/templates/helpers/autoRefreshSelector.js",
 		size:    716,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/2yRUW/TMBSFn+tfceSnVt3Sbrwg0oCqadImwUAUeKE8uPZNY8m1q2sno0L77yhOV1a0
 N8fnfOce38xmuAn7A9ttk3A9v3pzeT2/eoulUTt8YYqODgWWziE7IpgicUdGzGb4HgmhRmpsRAwta4IO
@@ -16685,7 +16685,7 @@ AP//OQqe+swCAAA=
 	"/www/mailslurper/templates/helpers/dateFormatSelector.js": {
 		local:   "www/mailslurper/templates/helpers/dateFormatSelector.js",
 		size:    785,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/4yRwW7bPBCEz+ZTDHiy4UR28l9+VFaLIEmRAG1awO2p7oEmVxYBijSWlFOjyLsXolwn
 qVGgt5V25tud5WyG67Dds900CZfzi//OL+cX/+PKqBafmaKjfYEr55AVEUyReEdGzGb4GgmhRmpsRAwd
@@ -16701,7 +16701,7 @@ KcWvAAAA//+r0HD/EQMAAA==
 	"/www/mailslurper/templates/helpers/formatDateTime.js": {
 		local:   "www/mailslurper/templates/helpers/formatDateTime.js",
 		size:    351,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/0TN0araQBDG8Wv3KT5ylUCbqL0phF6ItSi0paB9gDX7JVlIdmV2EpHDefeDysHLGX7/
 marCNl5u4rtesV6uvn1dL1ffsXF2xD9hGngrsRkGPESCMFFmOlNV+J+I2EJ7n5DiJA3RREf4hC7OlECH
@@ -16714,7 +16714,7 @@ zUKokwSMcWTQ5/ny+T9/uaI270VtPgIAAP//wV3ynF8BAAA=
 	"/www/mailslurper/templates/helpers/ifIsImageAttachment.js": {
 		local:   "www/mailslurper/templates/helpers/ifIsImageAttachment.js",
 		size:    491,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/2yQUYvTQBSFnzO/4pCnFrrJdn0RikJZChuwKrg+iQ/TmTPJ6HQmzJ0Ei+x/l0bQXfTx
 HL5z+bhti/s0XrLvh4K72+2rm7vb7WvsrT7jY6YEXhrsQ8BCCDKFeaZVbYvPQiSHMniBpCkbwiRLeEGf
@@ -16728,7 +16728,7 @@ CvMDw8i8qr3rpDvrnvtStBnOjKXewE3RFJ8iVvpPvcEpJPN9jZ+qmnXGrIO3y/TYHQ+Pl5GCN/iiqqr2
 	"/www/mailslurper/templates/helpers/pageSelector.js": {
 		local:   "www/mailslurper/templates/helpers/pageSelector.js",
 		size:    594,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/1SQQWvbQBCFz95f8diTjRwrTi+lslJCCCTQhkDamy/r1UhaWO2a2ZGpKfnvRZIb5Nto
 9OZ7722e4zEez+yaVnB3u/1yc3e7/YqHynR4Y0qezhs8eI9RkcCUiE9UqTzH70SINaR1CSn2bAk2VgSX
@@ -16743,7 +16743,7 @@ T1eoj1Wh/gUAAP//zzXtDVICAAA=
 	"/www/mailslurper/templates/helpers/themeSelector.js": {
 		local:   "www/mailslurper/templates/helpers/themeSelector.js",
 		size:    686,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/2yRUWvbMBSFn6NfcdBTQlon7V7GHG+UUmhhK4N0T8seHOk4FshSkOR0YfS/D8tZaGBv
 ku/57v18tVjg3u+PwezahNvlzYfr2+XNR9zpusP3wGh5LHBnLXIiIjAyHKjFYoEfkfANUmsiou+DIpTX
@@ -16758,7 +16758,7 @@ jfx3HEZ9wmXLcQXn62U7V3e8CK8Wo3uG3oR4XxmnDBUxCUx9cPl9SvE2K8XfAAAA//+Z3aDsrgIAAA==
 	"/www/mailslurper/templates/helpers/unescape.js": {
 		local:   "www/mailslurper/templates/helpers/unescape.js",
 		size:    813,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/3TR32vbMBAH8Gfrr/iiQpfQzE6bMda6GZRSaGEbg25PXWGKdbYFiuSd5LBQ8r+PpGYk
 QX2zpc+d7kdR4NZ3azZNG3ExPZ+9v5ief8KNVkt8ZwqW1jlurMVOBDAF4hVpURT4GQi+RmxNQPA9V4TK
@@ -16773,7 +16773,7 @@ nqdd/HM+dHbQz//LvbPxUOdQ98EDpdiMS/EvAAD//z9HpLwtAwAA
 	"/www/mailslurper/templates/mailDetails.hbs": {
 		local:   "www/mailslurper/templates/mailDetails.hbs",
 		size:    1011,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/6SS0WvbMBDGn62/4uayR8dtx2AUxRBKB4G2jLV9HmfrYmuTpaJT0gXh/31ITsjoSl/2
 YmHp0+/0fXfyQ1WJuoZr97z3uh8CXJ5ffKouzy++wErhCN88saH9AlbGQFYweGLyO1Lp4hMTuA2EQTOw
@@ -16790,7 +16790,7 @@ luXJyp1TaHIL3ji8djYkJ42sld4lwLzOy58AAAD//zirgHbzAwAA
 	"/www/mailslurper/templates/mailList.hbs": {
 		local:   "www/mailslurper/templates/mailList.hbs",
 		size:    4156,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/6xX71LcNhD/DE+xdSb5VOMDkrYTfMykJJkykzBMoA+wZ61ttbLkSmvgxnPv3pFln33H
 ASHkC7eW9s9v/2pJf4nj/SSBM1MvrSxKhqPZ4XF8NDv8Az4IrODSklO0PIAPSkHH4cCSI3tDwgv+7QhM
@@ -16820,7 +16820,7 @@ zR2jzypaibHCBal51ImFas89eYkFrdM9zIwNBf0y1ykppRA0j9g2FJ12qrY2ua3nfeuJv1/OU48uLd1I
 	"/www/mailslurper/templates/manageSavedSearches.hbs": {
 		local:   "www/mailslurper/templates/manageSavedSearches.hbs",
 		size:    1160,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/4STT2+cPBDGz8unmJecvc4f6VUVEdQ0TdVITVVp00OPBg/g1nhWtiFFFt+9MpDd0CTq
 Bc2Mf8/o2dmZ7D/GEs7hhvaDVXXj4fz07IKdn569g2spWvhm0WkctnCtNUyEA4sObY8yCr87BKrAN8qB
@@ -16838,7 +16838,7 @@ rqpx/BMAAP//CwAdaYgEAAA=
 	"/www/mailslurper/templates/saveSearchModal.hbs": {
 		local:   "www/mailslurper/templates/saveSearchModal.hbs",
 		size:    315,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/1SMQWrrMBRFx9+ruF9zxUlKoRTbEEIGgTYU0i5Alp4tgSwZ6dnYuy/2rJM7ueec6r+U
 RVniGsc1ud4yzsfTizwfT2+4GDXgK1H2tB5w8R47kZEoU5rJbOJPJsQObF1GjlPSBB0NwWX0caYUyKBd
@@ -16851,7 +16851,7 @@ c/MbAAD//++PtUc7AQAA
 	"/www/mailslurper/templates/savedSearchesModal.hbs": {
 		local:   "www/mailslurper/templates/savedSearchesModal.hbs",
 		size:    383,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/1yNwUrDQBRF18lXXOM6TVs3Immw1C4KKkL1A6YzL83AdF6ZNwmWMP8uaTfq8sI599R3
 ZZlXFTZ8vgR77CKW88VDuZwvHrE26oSPQOLoMsPaOVwJQSChMJCZxC8hcIvYWYFwHzRBsyFYwZEHCp4M
@@ -16864,7 +16864,7 @@ OpBDy2FViBrI7EkF3e1eimY/Tdz2U11dwckQcqQjrPlv/Clo9jGwmxrZON6T0h1+4SQp5VmW1XyOlj0G
 	"/www/mailslurper/templates/searchMailModal.hbs": {
 		local:   "www/mailslurper/templates/searchMailModal.hbs",
 		size:    1100,
-		modtime: 1520656658,
+		modtime: 1521001643,
 		compressed: `
 H4sIAAAAAAAC/5SS324TPRDFr7NPMZ8vvjt326AiBBtLVSlSJQqIhAfwn9mswbFX9mxI3h7ZSZNs1KBy
 5Xhy5sz5zbr5j/OqruE+9Ntolx3B9PrmDZ9e37yDOyNX8C1icri9gjvnoCgSREwY12hy44+EEFqgziZI

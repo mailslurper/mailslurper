@@ -35,6 +35,8 @@ type Configuration struct {
 	AutoStartBrowser bool   `json:"autoStartBrowser"`
 	CertFile         string `json:"certFile"`
 	KeyFile          string `json:"keyFile"`
+	AdminCertFile    string `json:"adminCertFile"`
+	AdminKeyFile     string `json:"adminKeyFile"`
 	Theme            string `json:"theme"`
 
 	StorageType StorageType
@@ -170,4 +172,19 @@ func (config *Configuration) SaveConfiguration(configFile string) error {
 	}
 
 	return ioutil.WriteFile(configFile, serializedConfigFile, 0644)
+}
+
+/*
+IsAdminSSL returns true if cert files are provided for the admin
+*/
+func (config *Configuration) IsAdminSSL() bool {
+	return config.AdminKeyFile != "" && config.AdminCertFile != ""
+}
+
+/*
+IsServiceSSL returns true if cert files are provided for the SMTP server
+and the services tier
+*/
+func (config *Configuration) IsServiceSSL() bool {
+	return config.KeyFile != "" && config.CertFile != ""
 }

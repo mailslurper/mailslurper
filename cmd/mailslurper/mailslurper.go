@@ -78,7 +78,7 @@ func main() {
 
 	<-quit
 
-	ctx, cancel := context.WithTimeout(smtpListenerContext, 10*time.Second)
+	ctx, cancel := context.WithTimeout(smtpListenerContext, 20*time.Second)
 	defer cancel()
 
 	smtpListenerCancel()

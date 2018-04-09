@@ -1,3 +1,5 @@
+<p align="center"><img src="logo/horizontal.png" alt="mailslurper" height="100px"></p>
+
 MailSlurper
 ===========
 

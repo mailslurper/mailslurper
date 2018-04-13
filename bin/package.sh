@@ -71,8 +71,7 @@ fi
 #
 cp ../LICENSE ./deploy
 cp ../cmd/mailslurper/config.json ./deploy
-cp ../assets/MailSlurperLogo.ico ./deploy
-cp ../assets/MailSlurperLogo.png ./deploy
+cp ../logo/logo.png ./deploy
 cp ../README.md ./deploy
 cp ./create-mssql.sql ./deploy
 cp ./create-mysql.sql ./deploy
@@ -117,8 +116,7 @@ fi
 #
 rm ./deploy/LICENSE
 rm ./deploy/config.json
-rm ./deploy/MailSlurperLogo.ico
-rm ./deploy/MailSlurperLogo.png
+rm ./deploy/logo.png
 rm ./deploy/README.md
 rm ./deploy/create-mssql.sql
 rm ./deploy/create-mysql.sql

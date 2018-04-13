@@ -71,6 +71,15 @@
 
 #showSearchFilters { padding: 8px 12px 8px 12px; }
 
+.mailSlurperLogoLink {
+	padding: 0px 15px;
+}
+
+.mailSlurperLogo {
+	height: 50px;
+	width: auto;
+}
+
 /*
  * Bootstrap
  */

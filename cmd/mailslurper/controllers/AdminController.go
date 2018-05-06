@@ -5,7 +5,12 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/gorilla/sessions"
+	"github.com/mailslurper/mailslurper/pkg/auth/auth"
+	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
+
 	"github.com/labstack/echo"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/mailslurper/mailslurper/pkg/ui"
 	"github.com/sirupsen/logrus"
@@ -93,6 +98,22 @@ func (c *AdminController) Index(ctx echo.Context) error {
 }
 
 /*
+Login renders the login page
+*/
+func (c *AdminController) Login(ctx echo.Context) error {
+	data := mailslurper.Page{
+		Theme: c.config.GetTheme(),
+	}
+
+	if ctx.QueryParam("message") != "" {
+		data.Message = ctx.QueryParam("message")
+		data.Error = true
+	}
+
+	return ctx.Render(http.StatusOK, "loginLayout:login", data)
+}
+
+/*
 ManageSavedSearches is the page for managing saved searches
 */
 func (c *AdminController) ManageSavedSearches(ctx echo.Context) error {
@@ -152,4 +173,38 @@ func (c *AdminController) GetVersionFromMaster(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, result)
+}
+
+/*
+PerformLogin validates credentials, and if correct, sets the session
+and redirects to the home page
+*/
+func (c *AdminController) PerformLogin(ctx echo.Context) error {
+	var err error
+	var authProvider auth.IAuthProvider
+
+	authFactory := &authfactory.AuthFactory{
+		Config: c.config,
+	}
+
+	authProvider = authFactory.Get()
+	credentials := &auth.AuthCredentials{
+		UserName: ctx.FormValue("userName"),
+		Password: ctx.FormValue("password"),
+	}
+
+	if err = authProvider.Login(credentials); err != nil {
+		c.logger.WithError(err).Errorf("Admin authentication error")
+		return ctx.Redirect(http.StatusFound, "/login?message=Invalid user name or password")
+	}
+
+	s, _ := session.Get("session", ctx)
+	s.Options = &sessions.Options{
+		Path:   "/",
+		MaxAge: 0,
+	}
+	s.Values["user"] = credentials.UserName
+
+	s.Save(ctx.Request(), ctx.Response())
+	return ctx.Redirect(http.StatusFound, "/")
 }

@@ -1,0 +1,14 @@
+.logo-container {
+	margin: 15px auto;
+	text-align: center;
+	margin-bottom: 25px;
+}
+
+.logo-container img {
+	max-width: 40%;
+}
+
+.login-box {
+	max-width: 35%;
+	margin: 0 auto;
+}

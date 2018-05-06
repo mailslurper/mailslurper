@@ -39,8 +39,9 @@ type Configuration struct {
 	AdminKeyFile     string `json:"adminKeyFile"`
 	Theme            string `json:"theme"`
 
+	AdminCookieSecret    string            `json:"-"`
 	AuthenticationScheme string            `json:"authenticationScheme"`
-	Credentials          map[string]string `json:"-"`
+	Credentials          map[string]string `json:"credentials"`
 
 	StorageType StorageType
 }

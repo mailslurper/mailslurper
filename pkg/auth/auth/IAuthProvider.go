@@ -5,5 +5,5 @@ IAuthProvider describes a provider of authentication services, such
 as Basic, LDAP, etc...
 */
 type IAuthProvider interface {
-	Login() error
+	Login(credentials *AuthCredentials) error
 }

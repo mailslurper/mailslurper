@@ -54,4 +54,8 @@ func (t *TemplateRenderer) LoadTemplates(debugMode bool) {
 	templates["mainLayout:manageSavedSearches"], _ = template.Must(
 		template.New("layout").Parse(www.FSMustString(debugMode, "/www/mailslurper/layouts/mainLayout.gohtml")),
 	).Parse(www.FSMustString(debugMode, "/www/mailslurper/pages/manageSavedSearches.gohtml"))
+
+	templates["loginLayout:login"], _ = template.Must(
+		template.New("layout").Parse(www.FSMustString(debugMode, "/www/mailslurper/layouts/loginLayout.gohtml")),
+	).Parse(www.FSMustString(debugMode, "/www/mailslurper/pages/login.gohtml"))
 }

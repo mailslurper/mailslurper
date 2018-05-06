@@ -8,8 +8,10 @@ import (
 )
 
 func TestLogin(t *testing.T) {
-	userName := "adam"
-	password := "password"
+	credentials := &auth.AuthCredentials{
+		UserName: "adam",
+		Password: "password",
+	}
 	hashedPassword := "abcdefg"
 	var err error
 
@@ -23,12 +25,10 @@ func TestLogin(t *testing.T) {
 		CredentialMap: map[string]string{
 			"adam": hashedPassword,
 		},
-		Password:        password,
-		UserName:        userName,
 		PasswordService: mockPasswordService,
 	}
 
-	err = provider.Login()
+	err = provider.Login(credentials)
 
 	if err != nil {
 		t.Errorf("Expected error to be nil, got %s instead", err.Error())
@@ -36,8 +36,10 @@ func TestLogin(t *testing.T) {
 }
 
 func TestLoginInvalidUserName(t *testing.T) {
-	userName := "bob"
-	password := "password"
+	credentials := &auth.AuthCredentials{
+		UserName: "bob",
+		Password: "password",
+	}
 	hashedPassword := "abcdefg"
 	var err error
 
@@ -51,12 +53,10 @@ func TestLoginInvalidUserName(t *testing.T) {
 		CredentialMap: map[string]string{
 			"adam": hashedPassword,
 		},
-		Password:        password,
-		UserName:        userName,
 		PasswordService: mockPasswordService,
 	}
 
-	err = provider.Login()
+	err = provider.Login(credentials)
 
 	if err != auth.ErrInvalidUserName {
 		t.Errorf("Expected error to be ErrInvalidUserName, got %s instead", err.Error())
@@ -64,8 +64,10 @@ func TestLoginInvalidUserName(t *testing.T) {
 }
 
 func TestLoginInvalidPassword(t *testing.T) {
-	userName := "adam"
-	password := "password"
+	credentials := &auth.AuthCredentials{
+		UserName: "adam",
+		Password: "password",
+	}
 	hashedPassword := "abcdefg"
 	var err error
 
@@ -79,12 +81,10 @@ func TestLoginInvalidPassword(t *testing.T) {
 		CredentialMap: map[string]string{
 			"adam": hashedPassword,
 		},
-		Password:        password,
-		UserName:        userName,
 		PasswordService: mockPasswordService,
 	}
 
-	err = provider.Login()
+	err = provider.Login(credentials)
 
 	if err != auth.ErrInvalidPassword {
 		t.Errorf("Expected error to be ErrInvalidPassword, got %s instead", err.Error())

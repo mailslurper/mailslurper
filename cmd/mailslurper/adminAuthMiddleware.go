@@ -12,15 +12,20 @@ import (
 
 func adminAuthorization(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		if config.AuthenticationScheme == authscheme.NONE {
-			return nil
-		}
 
 		var err error
 		var s *sessions.Session
 		var temp interface{}
 		var ok bool
-		var adminUserContext *contexts.AdminUserContext
+
+		adminUserContext := &contexts.AdminUserContext{
+			Context: ctx,
+			User:    "",
+		}
+
+		if config.AuthenticationScheme == authscheme.NONE {
+			return next(adminUserContext)
+		}
 
 		if s, err = session.Get("session", ctx); err != nil {
 			logger.WithError(err).Errorf("There was a problem retrieving the admin session")
@@ -33,18 +38,12 @@ func adminAuthorization(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		if temp, ok = s.Values["user"]; !ok {
-			// if ctx.Path() == "/login" {
-			// 	return next(ctx)
-			// }
-
 			return ctx.Redirect(http.StatusTemporaryRedirect, "/login")
 		}
 
-		adminUserContext = &contexts.AdminUserContext{
-			Context: ctx,
-			User:    temp.(string),
-		}
+		adminUserContext.User = temp.(string)
 
+		logger.WithField("user", adminUserContext.User).Debugf("Admin middleware")
 		return next(adminUserContext)
 	}
 }

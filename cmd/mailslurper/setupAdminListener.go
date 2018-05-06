@@ -33,6 +33,7 @@ func setupAdminListener() {
 
 		admin.GET("/login", adminController.Login)
 		admin.POST("/perform-login", adminController.PerformLogin)
+		admin.GET("/logout", adminController.Logout, middlewares...)
 	}
 
 	admin.GET("/", adminController.Index, middlewares...)

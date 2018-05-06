@@ -26,12 +26,12 @@ func (s *PasswordService) HashPassword(password []byte) ([]byte, error) {
 
 /*
 IsPasswordValid returns true if the provided password matches the
-hashed password
+stored password
 */
-func (s *PasswordService) IsPasswordValid(password, hashedPassword []byte) bool {
+func (s *PasswordService) IsPasswordValid(password, storedPassword []byte) bool {
 	var err error
 
-	if err = bcrypt.CompareHashAndPassword(hashedPassword, password); err != nil {
+	if err = bcrypt.CompareHashAndPassword(storedPassword, password); err != nil {
 		return false
 	}
 

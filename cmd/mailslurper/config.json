@@ -16,5 +16,9 @@
 	"keyFile": "",
 	"certFile": "",
 	"adminKeyFile": "",
-	"adminCertFile": ""
+	"adminCertFile": "",
+	"authenticationScheme": "basic",
+	"credentials": {
+		"adampresley": "$2a$10$lXpnwhdC11oeDJyiH1AiSesyfNnrq8DEo6IrrltbJEB/wPPRjt2Sy"
+	}
 }

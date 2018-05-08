@@ -8,5 +8,13 @@ type AdminUserContext struct {
 }
 
 func GetAdminContext(ctx echo.Context) *AdminUserContext {
-	return ctx.(*AdminUserContext)
+	var ok bool
+
+	if _, ok = ctx.(*AdminUserContext); ok {
+		return ctx.(*AdminUserContext)
+	}
+
+	return &AdminUserContext{
+		Context: ctx,
+	}
 }

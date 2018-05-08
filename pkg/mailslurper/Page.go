@@ -8,4 +8,5 @@ type Page struct {
 	Message string
 	Theme   string
 	Title   string
+	User    string
 }

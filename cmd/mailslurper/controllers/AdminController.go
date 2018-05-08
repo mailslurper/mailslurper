@@ -54,6 +54,7 @@ func (c *AdminController) Admin(ctx echo.Context) error {
 	data := mailslurper.Page{
 		Theme: c.config.GetTheme(),
 		Title: "Admin",
+		User:  context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:admin", data)
@@ -97,6 +98,7 @@ func (c *AdminController) Index(ctx echo.Context) error {
 	data := mailslurper.Page{
 		Theme: c.config.GetTheme(),
 		Title: "Mail",
+		User:  context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:index", data)
@@ -127,6 +129,7 @@ func (c *AdminController) ManageSavedSearches(ctx echo.Context) error {
 	data := mailslurper.Page{
 		Theme: c.config.GetTheme(),
 		Title: "Manage Saved Searches",
+		User:  context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:manageSavedSearches", data)
@@ -222,6 +225,9 @@ func (c *AdminController) PerformLogin(ctx echo.Context) error {
 	return ctx.Redirect(http.StatusFound, "/")
 }
 
+/*
+Logout logs a user out, and deletes the cookie
+*/
 func (c *AdminController) Logout(ctx echo.Context) error {
 	s, _ := session.Get("session", ctx)
 	s.Options = &sessions.Options{

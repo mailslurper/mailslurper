@@ -101,6 +101,11 @@
 	padding-right: 0px;
 }
 
+.user-greeting {
+	color: white;
+	padding-top: 15px;
+}
+
 /*
  * BlockUI
  */

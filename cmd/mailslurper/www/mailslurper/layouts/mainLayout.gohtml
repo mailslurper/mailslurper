@@ -59,6 +59,11 @@
 						</a>
 					</li>
 				</ul>
+				{{if .User}}
+				<ul class="nav navbar-nav navbar-right">
+					<li class="user-greeting">Hello {{.User}}</li>
+				</ul>
+				{{end}}
 			</div>
 			<!--/.nav-collapse -->
 		</div>

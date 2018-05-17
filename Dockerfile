@@ -1,29 +1,25 @@
+FROM golang:alpine as builder
+
+LABEL maintainer="erguotou525@gmail.compute"
+
+RUN apk --no-cache add git libc-dev gcc
+RUN go get github.com/mjibson/esc
+
+COPY . ./src
+
+RUN cd src/cmd/mailslurper \
+ && go get \
+ && go generate \
+ && go build
+
+
 FROM alpine:3.6
 
-MAINTAINER erguotou525@gmail.compute
 
-COPY . /tmp/mailslurper
+COPY --from=builder /go/src/cmd/mailslurper/mailslurper mailslurper
 
-ENV GOPATH /home/go
-ENV GOBIN /home/go/bin
-ENV PATH $PATH:$GOBIN
-ENV ENABLE_CGO 1
-ENV CGO_ENABLED 1
-
-RUN \
-  apk update \
-  && apk add go git libc-dev \
-  && mkdir -p /home/go/src/github.com/mailslurper /home/go/bin /home/go/pkg \
-  && cd /home/go/src/github.com/mailslurper \
-  && git clone https://github.com/mailslurper/mailslurper.git \
-  && go get github.com/mjibson/esc \
-  && cd mailslurper/cmd/mailslurper \
-  && go get \
-  && go generate \
-  && go build \
-  && rm /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/config.json
-
-RUN echo -e '{\n\
+RUN apk add --no-cache ca-certificates \
+ && echo -e '{\n\
   "wwwAddress": "0.0.0.0",\n\
   "wwwPort": 8080,\n\
   "serviceAddress": "0.0.0.0",\n\
@@ -43,12 +39,8 @@ RUN echo -e '{\n\
   "adminKeyFile": "",\n\
   "adminCertFile": ""\n\
   }'\
-  >> /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/config.json
-
-WORKDIR /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper
-
-VOLUME /home/go/src/github.com/mailslurper/mailslurper
+  >> config.json
 
 EXPOSE 8080 8085 2500
 
-CMD /home/go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/mailslurper
+CMD ["./mailslurper"]

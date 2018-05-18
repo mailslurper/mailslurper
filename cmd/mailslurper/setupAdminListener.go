@@ -28,7 +28,7 @@ func setupAdminListener() {
 	admin.GET("/www/*", echo.WrapHandler(assetHandler))
 
 	if config.AuthenticationScheme != authscheme.NONE {
-		admin.Use(session.Middleware(sessions.NewCookieStore([]byte(config.AdminCookieSecret))))
+		admin.Use(session.Middleware(sessions.NewCookieStore([]byte(config.AuthSecret))))
 		middlewares = append(middlewares, adminAuthorization)
 
 		admin.GET("/login", adminController.Login)
@@ -39,9 +39,9 @@ func setupAdminListener() {
 	admin.GET("/", adminController.Index, middlewares...)
 	admin.GET("/admin", adminController.Admin, middlewares...)
 	admin.GET("/savedsearches", adminController.ManageSavedSearches, middlewares...)
-	admin.GET("/servicesettings", adminController.GetServiceSettings, middlewares...)
-	admin.GET("/version", adminController.GetVersion, middlewares...)
-	admin.GET("/masterversion", adminController.GetVersionFromMaster, middlewares...)
+	admin.GET("/servicesettings", adminController.GetServiceSettings)
+	admin.GET("/version", adminController.GetVersion)
+	admin.GET("/masterversion", adminController.GetVersionFromMaster)
 	admin.POST("/theme", adminController.ApplyTheme, middlewares...)
 
 	go func() {

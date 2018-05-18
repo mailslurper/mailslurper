@@ -9,7 +9,7 @@
 </div>
 {{end}}
 
-<form class="well login-box" name="frmLogin" id="formLogin" method="POST" action="/perform-login">
+<form class="well login-box" name="frmLogin" id="frmLogin" method="POST" action="/perform-login">
 	<div class="form-group">
 		<label for="userName">User Name</label>
 		<input type="text" name="userName" id="userName" class="form-control" autofocus />
@@ -20,9 +20,10 @@
 		<input type="password" name="password" id="password" class="form-control" />
 	</div>
 
-	<button type="submit" name="btnSubmit" id="btnSubmit" class="btn btn-primary btn-lg">Log In</button>
+	<button type="button" name="btnSubmit" id="btnSubmit" class="btn btn-primary btn-lg">Log In</button>
 </form>
 {{end}}
 
 {{define "js"}}
+	<script src="/www/mailslurper/js/controllers/LoginController.js"></script>
 {{end}}

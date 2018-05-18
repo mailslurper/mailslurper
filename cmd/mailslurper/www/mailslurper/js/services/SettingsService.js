@@ -64,10 +64,9 @@ window.SettingsService = {
 	},
 
 	/**
-	 * getServiceURL returns a fully formatted service URL as a key named
-	 * "serviceURL" in the context object.
+	 * getServiceURL returns a fully formatted service URL
 	 */
-	getServiceURL: function (context) {
+	getServiceURL: function (serviceSettings) {
 		var serviceSettings = window.SettingsService.retrieveServiceSettings();
 		var serviceAddress = serviceSettings.serviceAddress;
 

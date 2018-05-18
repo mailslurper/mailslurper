@@ -4,10 +4,13 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/mailslurper/mailslurper/cmd/mailslurper/controllers"
+	"github.com/mailslurper/mailslurper/pkg/auth/authscheme"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 )
 
 func setupServicesListener() {
+	middlewares := make([]echo.MiddlewareFunc, 0, 5)
+
 	/*
 	 * Start the services server
 	 */
@@ -15,18 +18,23 @@ func setupServicesListener() {
 	service = echo.New()
 	service.HideBanner = true
 
+	if config.AuthenticationScheme != authscheme.NONE {
+		middlewares = append(middlewares, serviceAuthorization)
+	}
+
 	service.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
 	}))
 
-	service.GET("/mail/:id", serviceController.GetMail)
-	service.GET("/mail/:id/message", serviceController.GetMailMessage)
-	service.DELETE("/mail", serviceController.DeleteMail)
-	service.GET("/mail", serviceController.GetMailCollection)
-	service.GET("/mailcount", serviceController.GetMailCount)
-	service.GET("/mail/:mailID/attachment/:attachmentID", serviceController.DownloadAttachment)
-	service.GET("/version", serviceController.Version)
-	service.GET("/pruneoptions", serviceController.GetPruneOptions)
+	service.GET("/mail/:id", serviceController.GetMail, middlewares...)
+	service.GET("/mail/:id/message", serviceController.GetMailMessage, middlewares...)
+	service.DELETE("/mail", serviceController.DeleteMail, middlewares...)
+	service.GET("/mail", serviceController.GetMailCollection, middlewares...)
+	service.GET("/mailcount", serviceController.GetMailCount, middlewares...)
+	service.GET("/mail/:mailID/attachment/:attachmentID", serviceController.DownloadAttachment, middlewares...)
+	service.GET("/version", serviceController.Version, middlewares...)
+	service.GET("/pruneoptions", serviceController.GetPruneOptions, middlewares...)
+	service.POST("/login", serviceController.Login)
 
 	go func() {
 		var err error

@@ -61,7 +61,10 @@
 				</ul>
 				{{if .User}}
 				<ul class="nav navbar-nav navbar-right">
-					<li class="user-greeting">Hello {{.User}}</li>
+					<li class="user-greeting">
+						Hello {{.User}} -
+						<a href="/logout" class="logout">Log Out</a>
+					</li>
 				</ul>
 				{{end}}
 			</div>
@@ -95,6 +98,7 @@
 <script src="/www/lightbox2/js/lightbox.js"></script>
 
 <script src="/www/mailslurper/js/services/SettingsService.js"></script>
+<script src="/www/mailslurper/js/services/AuthService.js"></script>
 <script src="/www/mailslurper/js/services/AlertService.js"></script>
 <script src="/www/mailslurper/js/services/MailService.js"></script>
 <script src="/www/mailslurper/js/services/SeedService.js"></script>

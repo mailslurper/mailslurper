@@ -511,7 +511,7 @@
 	var mailListTemplate = null;
 	var searchMailModalTemplate = null;
 
-	var serviceURL = window.SettingsService.getServiceURL();
+	var serviceURL = window.SettingsService.getServiceURL(window.SettingsService.retrieveServiceSettings());
 
 	window.AlertService.block("Loading");
 
@@ -522,6 +522,7 @@
 	])
 		.then(performSearch)
 		.catch(function (err) {
+			console.log(err);
 			window.AlertService.error("There was an error getting mail items!");
 		});
 }());

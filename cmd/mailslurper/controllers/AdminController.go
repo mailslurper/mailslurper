@@ -153,10 +153,11 @@ func (c *AdminController) GetServiceSettings(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	settings := mailslurper.ServiceSettings{
-		IsSSL:          c.config.IsServiceSSL(),
-		ServiceAddress: c.config.ServiceAddress,
-		ServicePort:    c.config.ServicePort,
-		Version:        c.serverVersion,
+		AuthenticationScheme: c.config.AuthenticationScheme,
+		IsSSL:                c.config.IsServiceSSL(),
+		ServiceAddress:       c.config.ServiceAddress,
+		ServicePort:          c.config.ServicePort,
+		Version:              c.serverVersion,
 	}
 
 	return context.JSON(http.StatusOK, settings)
@@ -217,7 +218,7 @@ func (c *AdminController) PerformLogin(ctx echo.Context) error {
 	s, _ := session.Get("session", ctx)
 	s.Options = &sessions.Options{
 		Path:   "/",
-		MaxAge: 0,
+		MaxAge: 7200,
 	}
 	s.Values["user"] = credentials.UserName
 

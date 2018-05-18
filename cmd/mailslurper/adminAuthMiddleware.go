@@ -12,7 +12,6 @@ import (
 
 func adminAuthorization(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-
 		var err error
 		var s *sessions.Session
 		var temp interface{}

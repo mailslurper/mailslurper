@@ -15,7 +15,7 @@ window.MailService = {
 	 */
 	deleteMailItems: function (serviceURL, pruneCode) {
 		return new Promise(function (resolve, reject) {
-			$.ajax({
+			$.ajax(window.AuthService.decorateRequestWithAuthorization({
 				method: "DELETE",
 				url: serviceURL + "/mail",
 				contentType: "application/json; charset=utf-8",
@@ -23,7 +23,7 @@ window.MailService = {
 				data: JSON.stringify({
 					pruneCode: pruneCode
 				})
-			}).then(
+			})).then(
 				function (result) {
 					return resolve(result);
 				},
@@ -41,10 +41,10 @@ window.MailService = {
 	 */
 	getAttachment: function (serviceURL, mailID, attachmentID) {
 		return new Promise(function (resolve, reject) {
-			$.ajax({
+			$.ajax(window.AuthService.decorateRequestWithAuthorization({
 				method: "GET",
 				url: serviceURL + "/mail/" + mailID + "/attachment/" + attachmentID
-			}).then(
+			})).then(
 				function (result) {
 					return resolve(result);
 				},
@@ -61,10 +61,10 @@ window.MailService = {
 	 */
 	getMailByID: function (serviceURL, mailID) {
 		return new Promise(function (resolve, reject) {
-			$.ajax({
+			$.ajax(window.AuthService.decorateRequestWithAuthorization({
 				method: "GET",
 				url: serviceURL + "/mail/" + mailID
-			}).then(
+			})).then(
 				function (result) {
 					return resolve(result);
 				},
@@ -81,11 +81,11 @@ window.MailService = {
 	 */
 	getMailCount: function (serviceURL) {
 		return new Promise(function (resolve, reject) {
-			$.ajax({
+			$.ajax(window.AuthService.decorateRequestWithAuthorization({
 				method: "GET",
 				url: serviceURL + "/mailcount",
 				cache: false
-			}).then(
+			})).then(
 				function (result) {
 					return resolve(result);
 				},
@@ -140,15 +140,18 @@ window.MailService = {
 				url += "&dir=" + sortCriteria.orderByDirection;
 			}
 
-			$.ajax({
+			var params = window.AuthService.decorateRequestWithAuthorization({
 				method: "GET",
 				url: url,
 				cache: false
-			}).then(
+			});
+
+			$.ajax(params).then(
 				function (result) {
 					return resolve(result);
 				},
 				function (xhr, errorType, err) {
+					console.log(xhr);
 					return reject(err);
 				}
 			);

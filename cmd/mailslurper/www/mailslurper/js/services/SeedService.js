@@ -27,10 +27,10 @@ window.SeedService = {
 	 */
 	getPruneOptions: function (serviceURL) {
 		return new Promise(function (resolve, reject) {
-			$.ajax({
+			$.ajax(window.AuthService.decorateRequestWithAuthorization({
 				url: serviceURL + "/pruneoptions",
 				method: "GET"
-			}).then(
+			})).then(
 				function (result) {
 					return resolve(result);
 				},

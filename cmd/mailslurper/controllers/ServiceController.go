@@ -8,6 +8,10 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo"
+	"github.com/mailslurper/mailslurper/pkg/auth/auth"
+	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
+	"github.com/mailslurper/mailslurper/pkg/auth/jwt"
+	"github.com/mailslurper/mailslurper/pkg/contexts"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/sirupsen/logrus"
 )
@@ -46,25 +50,27 @@ func (c *ServiceController) DeleteMail(ctx echo.Context) error {
 	var deleteMailRequest *mailslurper.DeleteMailRequest
 	var rowsDeleted int64
 
+	context := contexts.GetAdminContext(ctx)
+
 	if err = ctx.Bind(&deleteMailRequest); err != nil {
 		c.logger.Errorf("Invalid delete request in DeleteMail: %s", err.Error())
-		return ctx.String(http.StatusBadRequest, "Invalid delete request")
+		return context.String(http.StatusBadRequest, "Invalid delete request")
 	}
 
 	if !deleteMailRequest.PruneCode.IsValid() {
 		c.logger.Errorf("Attempt to use invalid prune code - %s", deleteMailRequest.PruneCode)
-		return ctx.String(http.StatusBadRequest, "Invalid prune type")
+		return context.String(http.StatusBadRequest, "Invalid prune type")
 	}
 
 	startDate := deleteMailRequest.PruneCode.ConvertToDate()
 
 	if rowsDeleted, err = c.database.DeleteMailsAfterDate(startDate); err != nil {
 		c.logger.Errorf("Problem deleting mails with code %s - %s", deleteMailRequest.PruneCode.String(), err.Error())
-		return ctx.String(http.StatusInternalServerError, "There was a problem deleting mails")
+		return context.String(http.StatusInternalServerError, "There was a problem deleting mails")
 	}
 
 	c.logger.Infof("Deleting %d mails, code %s before %s", rowsDeleted, deleteMailRequest.PruneCode.String(), startDate)
-	return ctx.String(http.StatusOK, strconv.Itoa(int(rowsDeleted)))
+	return context.String(http.StatusOK, strconv.Itoa(int(rowsDeleted)))
 }
 
 /*
@@ -77,18 +83,20 @@ func (c *ServiceController) GetMail(ctx echo.Context) error {
 	var result *mailslurper.MailItem
 	var err error
 
-	mailID = ctx.Param("id")
+	context := contexts.GetAdminContext(ctx)
+
+	mailID = context.Param("id")
 
 	/*
 	 * Retrieve the mail item
 	 */
 	if result, err = c.database.GetMailByID(mailID); err != nil {
 		c.logger.Errorf("Problem getting mail item %s - %s", mailID, err.Error())
-		return ctx.String(http.StatusInternalServerError, "Problem getting mail item")
+		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
 
 	c.logger.Infof("Mail item %s retrieved", mailID)
-	return ctx.JSON(http.StatusOK, result)
+	return context.JSON(http.StatusOK, result)
 }
 
 /*
@@ -104,16 +112,18 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 	var mailCollection []*mailslurper.MailItem
 	var totalRecordCount int
 
+	context := contexts.GetAdminContext(ctx)
+
 	/*
 	 * Validate incoming arguments. A page is currently 50 items, hard coded
 	 */
-	pageNumberString = ctx.QueryParam("pageNumber")
+	pageNumberString = context.QueryParam("pageNumber")
 	if pageNumberString == "" {
 		pageNumber = 1
 	} else {
 		if pageNumber, err = strconv.Atoi(pageNumberString); err != nil {
 			c.logger.Errorf("Invalid page number passed to GetMailCollection - %s", pageNumberString)
-			return ctx.String(http.StatusBadRequest, "A valid page number is required")
+			return context.String(http.StatusBadRequest, "A valid page number is required")
 		}
 	}
 
@@ -124,24 +134,24 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 	 * Retrieve mail items
 	 */
 	mailSearch := &mailslurper.MailSearch{
-		Message: ctx.QueryParam("message"),
-		Start:   ctx.QueryParam("start"),
-		End:     ctx.QueryParam("end"),
-		From:    ctx.QueryParam("from"),
-		To:      ctx.QueryParam("to"),
+		Message: context.QueryParam("message"),
+		Start:   context.QueryParam("start"),
+		End:     context.QueryParam("end"),
+		From:    context.QueryParam("from"),
+		To:      context.QueryParam("to"),
 
-		OrderByField:     ctx.QueryParam("orderby"),
-		OrderByDirection: ctx.QueryParam("dir"),
+		OrderByField:     context.QueryParam("orderby"),
+		OrderByDirection: context.QueryParam("dir"),
 	}
 
 	if mailCollection, err = c.database.GetMailCollection(offset, length, mailSearch); err != nil {
 		c.logger.Errorf("Problem getting mail collection - %s", err.Error())
-		return ctx.String(http.StatusInternalServerError, "Problem getting mail collection")
+		return context.String(http.StatusInternalServerError, "Problem getting mail collection")
 	}
 
 	if totalRecordCount, err = c.database.GetMailCount(mailSearch); err != nil {
 		c.logger.Errorf("Problem getting record count in GetMailCollection - %s", err.Error())
-		return ctx.String(http.StatusInternalServerError, "Error getting record count")
+		return context.String(http.StatusInternalServerError, "Error getting record count")
 	}
 
 	totalPages := int(math.Ceil(float64(totalRecordCount / length)))
@@ -157,7 +167,7 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 		TotalRecords: totalRecordCount,
 	}
 
-	return ctx.JSON(http.StatusOK, result)
+	return context.JSON(http.StatusOK, result)
 }
 
 /*
@@ -169,12 +179,14 @@ func (c *ServiceController) GetMailCount(ctx echo.Context) error {
 	var err error
 	var mailItemCount int
 
+	context := contexts.GetAdminContext(ctx)
+
 	/*
 	 * Get the count
 	 */
 	if mailItemCount, err = c.database.GetMailCount(&mailslurper.MailSearch{}); err != nil {
 		c.logger.Errorf("Problem getting mail item count in GetMailCount - %s", err.Error())
-		return ctx.String(http.StatusInternalServerError, "Problem getting mail count")
+		return context.String(http.StatusInternalServerError, "Problem getting mail count")
 	}
 
 	c.logger.Infof("Mail item count - %d", mailItemCount)
@@ -183,7 +195,7 @@ func (c *ServiceController) GetMailCount(ctx echo.Context) error {
 		MailCount: mailItemCount,
 	}
 
-	return ctx.JSON(http.StatusOK, result)
+	return context.JSON(http.StatusOK, result)
 }
 
 /*
@@ -196,18 +208,20 @@ func (c *ServiceController) GetMailMessage(ctx echo.Context) error {
 	var mailItem *mailslurper.MailItem
 	var err error
 
-	mailID = ctx.Param("id")
+	context := contexts.GetAdminContext(ctx)
+
+	mailID = context.Param("id")
 
 	/*
 	 * Retrieve the mail item
 	 */
 	if mailItem, err = c.database.GetMailByID(mailID); err != nil {
 		c.logger.Errorf("Problem getting mail item %s in GetMailMessage - %s", mailID, err.Error())
-		return ctx.String(http.StatusInternalServerError, "Problem getting mail item")
+		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
 
 	c.logger.Infof("Mail item %s retrieved", mailID)
-	return ctx.HTML(http.StatusOK, mailItem.Body)
+	return context.HTML(http.StatusOK, mailItem.Body)
 }
 
 /*
@@ -216,7 +230,8 @@ GetPruneOptions retrieves the set of options available to users for pruning
 	GET: /pruneoptions
 */
 func (c *ServiceController) GetPruneOptions(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, mailslurper.PruneOptions)
+	context := contexts.GetAdminContext(ctx)
+	return context.JSON(http.StatusOK, mailslurper.PruneOptions)
 }
 
 /*
@@ -233,15 +248,16 @@ func (c *ServiceController) DownloadAttachment(ctx echo.Context) error {
 	var attachment *mailslurper.Attachment
 	var data []byte
 
-	mailID = ctx.Param("mailID")
-	attachmentID = ctx.Param("attachmentID")
+	context := contexts.GetAdminContext(ctx)
+	mailID = context.Param("mailID")
+	attachmentID = context.Param("attachmentID")
 
 	/*
 	 * Retrieve the attachment
 	 */
 	if attachment, err = c.database.GetAttachment(mailID, attachmentID); err != nil {
 		c.logger.Errorf("Problem getting attachment %s - %s", attachmentID, err.Error())
-		return ctx.String(http.StatusInternalServerError, "Error getting attachment")
+		return context.String(http.StatusInternalServerError, "Error getting attachment")
 	}
 
 	/*
@@ -250,7 +266,7 @@ func (c *ServiceController) DownloadAttachment(ctx echo.Context) error {
 	if attachment.IsContentBase64() {
 		if data, err = base64.StdEncoding.DecodeString(attachment.Contents); err != nil {
 			c.logger.Errorf("Problem decoding attachment %s - %s", attachmentID, err.Error())
-			return ctx.String(http.StatusInternalServerError, "Cannot decode attachment")
+			return context.String(http.StatusInternalServerError, "Cannot decode attachment")
 		}
 	} else {
 		data = []byte(attachment.Contents)
@@ -259,9 +275,41 @@ func (c *ServiceController) DownloadAttachment(ctx echo.Context) error {
 	c.logger.Infof("Attachment %s retrieved", attachmentID)
 
 	reader := bytes.NewReader(data)
-	return ctx.Stream(http.StatusOK, attachment.Headers.ContentType, reader)
+	return context.Stream(http.StatusOK, attachment.Headers.ContentType, reader)
+}
+
+func (c *ServiceController) Login(ctx echo.Context) error {
+	var err error
+	var token string
+
+	authFactory := &authfactory.AuthFactory{
+		Config: c.config,
+	}
+
+	jwtService := &jwt.JWTService{
+		Config: c.config,
+	}
+
+	authService := authFactory.Get()
+	credentials := &auth.AuthCredentials{
+		UserName: ctx.FormValue("userName"),
+		Password: ctx.FormValue("password"),
+	}
+
+	if err = authService.Login(credentials); err != nil {
+		c.logger.WithError(err).Errorf("Invalid service login attempt")
+		return ctx.String(http.StatusForbidden, "Invalid credentials")
+	}
+
+	if token, err = jwtService.CreateToken(c.config.AuthSecret, credentials.UserName); err != nil {
+		c.logger.WithError(err).Errorf("Problem creating token in service login")
+		return ctx.String(http.StatusInternalServerError, "Problem creating JWT token")
+	}
+
+	return ctx.String(http.StatusOK, token)
 }
 
 func (c *ServiceController) Version(ctx echo.Context) error {
-	return ctx.String(http.StatusOK, c.serverVersion)
+	context := contexts.GetAdminContext(ctx)
+	return context.String(http.StatusOK, c.serverVersion)
 }

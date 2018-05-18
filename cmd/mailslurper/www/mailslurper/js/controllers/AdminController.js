@@ -152,7 +152,7 @@
 	var adminPruneTemplate;
 	var adminSettings;
 
-	var serviceURL = window.SettingsService.getServiceURL();
+	var serviceURL = window.SettingsService.getServiceURL(window.SettingsService.retrieveServiceSettings());
 	var pruneOptions = [];
 	var currentTheme = "";
 

@@ -7,6 +7,14 @@ $(document).ready(function () {
 		window.SettingsService.getServiceSettings()
 			.then(function (serviceSettings) {
 				window.SettingsService.storeServiceSettings(serviceSettings);
+				return serviceSettings;
+			})
+			.then(function (serviceSettings) {
+				if (serviceSettings.authenticationScheme !== "") {
+					if (!window.AuthService.tokenExistsInStorage()) {
+						window.location = "/login";
+					}
+				}
 			})
 			.catch(function (err) {
 				window.AlertService.error("There was an error getting service settings. See the console for more information.");

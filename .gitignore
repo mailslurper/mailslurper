@@ -27,6 +27,7 @@ _testmain.go
 *.exe
 cmd/mailslurper/debug
 cmd/mailslurper/mailslurper
+cmd/createcredentials/createcredentials
 mail.db
 mailslurper.db
 www/assets/mailslurper/.DS_Store

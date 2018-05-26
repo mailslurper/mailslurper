@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/mailslurper/mailslurper/pkg/auth/auth"
@@ -301,7 +302,7 @@ func (c *ServiceController) Login(ctx echo.Context) error {
 		return ctx.String(http.StatusInternalServerError, "Error encrypting JWT token")
 	}
 
-	c.CacheService.Set(credentials.UserName, encryptedToken)
+	c.CacheService.Set(credentials.UserName, encryptedToken, time.Minute*time.Duration(c.Config.AuthTimeoutInMinutes))
 
 	c.Logger.WithField("token", encryptedToken).Debugf("Encrypted JWT token generated")
 	return ctx.String(http.StatusOK, encryptedToken)

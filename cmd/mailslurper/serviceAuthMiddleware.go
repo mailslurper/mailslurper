@@ -51,7 +51,7 @@ func serviceAuthorization(next echo.HandlerFunc) echo.HandlerFunc {
 		adminUserContext.User = jwtService.GetUserFromToken(token)
 		logger.WithField("user", adminUserContext.User).Debugf("Service middleware")
 
-		if ok := cacheService.KeyExists(adminUserContext.User); !ok {
+		if _, ok := cacheService.Get(adminUserContext.User); !ok {
 			logger.WithField("user", adminUserContext.User).Errorf("User not found in JWT token cache")
 			return ctx.String(http.StatusForbidden, "JWT token not found in cache")
 		}

@@ -15,10 +15,9 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/mailslurper/mailslurper/pkg/cache"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/mailslurper/mailslurper/pkg/ui"
-	gocache "github.com/patrickmn/go-cache"
+	"github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
 )
 
@@ -42,7 +41,7 @@ var smtpListenerContext context.Context
 var smtpListenerCancel context.CancelFunc
 var smtpListener *mailslurper.SMTPListener
 var connectionManager *mailslurper.ConnectionManager
-var cacheService *cache.CacheService
+var cacheService *cache.Cache
 
 var admin *echo.Echo
 var service *echo.Echo
@@ -60,11 +59,7 @@ func main() {
 	renderer = ui.NewTemplateRenderer(DEBUG_ASSETS)
 	setupConfig()
 
-	cacheService = &cache.CacheService{
-		CacheProvider: gocache.New(time.Minute*time.Duration(config.AuthTimeoutInMinutes), time.Minute*time.Duration(config.AuthTimeoutInMinutes)),
-		Config:        config,
-		Logger:        mailslurper.GetLogger(*logLevel, *logFormat, "CacheService"),
-	}
+	cacheService = cache.New(time.Minute*time.Duration(config.AuthTimeoutInMinutes), time.Minute*time.Duration(config.AuthTimeoutInMinutes))
 
 	setupDatabase()
 	setupSMTP()

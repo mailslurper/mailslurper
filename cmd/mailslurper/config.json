@@ -17,9 +17,9 @@
 	"certFile": "",
 	"adminKeyFile": "",
 	"adminCertFile": "",
-	"authenticationScheme": "basic",
-	"adminCookieSecret": "secret",
-	"credentials": {
-		"adampresley": "$2a$10$lXpnwhdC11oeDJyiH1AiSesyfNnrq8DEo6IrrltbJEB/wPPRjt2Sy"
-	}
+	"authenticationScheme": "",
+	"authSecret": "",
+	"authSalt": "",
+	"authTimeoutInMinutes": 7200,
+	"credentials": {}
 }

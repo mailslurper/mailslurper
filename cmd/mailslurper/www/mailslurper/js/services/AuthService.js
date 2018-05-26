@@ -26,6 +26,23 @@ window.AuthService = {
 		});
 	},
 
+	logout: function (serviceURL) {
+		return new Promise(function (resolve, reject) {
+			$.ajax({
+				url: serviceURL + "/logout",
+				method: "DELETE"
+			}).then(
+				function () {
+					return resolve();
+				},
+
+				function (response) {
+					return reject(response.responseText);
+				}
+			);
+		});
+	},
+
 	storeToken: function (token) {
 		localStorage["jwt"] = token;
 	},

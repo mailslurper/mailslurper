@@ -4,7 +4,9 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/mailslurper/mailslurper/cmd/mailslurper/controllers"
+	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
 	"github.com/mailslurper/mailslurper/pkg/auth/authscheme"
+	"github.com/mailslurper/mailslurper/pkg/auth/jwt"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 )
 
@@ -14,7 +16,20 @@ func setupServicesListener() {
 	/*
 	 * Start the services server
 	 */
-	serviceController := controllers.NewServiceController(mailslurper.GetLogger(*logLevel, *logFormat, "ServiceController"), SERVER_VERSION, config, database)
+	serviceController := &controllers.ServiceController{
+		AuthFactory: &authfactory.AuthFactory{
+			Config: config,
+		},
+		CacheService: cacheService,
+		Config:       config,
+		Database:     database,
+		JWTService: &jwt.JWTService{
+			Config: config,
+		},
+		Logger:        mailslurper.GetLogger(*logLevel, *logFormat, "ServiceController"),
+		ServerVersion: SERVER_VERSION,
+	}
+
 	service = echo.New()
 	service.HideBanner = true
 
@@ -34,7 +49,11 @@ func setupServicesListener() {
 	service.GET("/mail/:mailID/attachment/:attachmentID", serviceController.DownloadAttachment, middlewares...)
 	service.GET("/version", serviceController.Version, middlewares...)
 	service.GET("/pruneoptions", serviceController.GetPruneOptions, middlewares...)
-	service.POST("/login", serviceController.Login)
+
+	if config.AuthenticationScheme != authscheme.NONE {
+		service.POST("/login", serviceController.Login)
+		service.DELETE("/logout", serviceController.Logout, middlewares...)
+	}
 
 	go func() {
 		var err error

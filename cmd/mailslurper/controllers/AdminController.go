@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/mailslurper/mailslurper/pkg/auth/auth"
 	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
+	"github.com/mailslurper/mailslurper/pkg/cache"
 	"github.com/mailslurper/mailslurper/pkg/contexts"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/mailslurper/mailslurper/pkg/ui"
@@ -21,28 +22,14 @@ AdminController provides methods for handling admin endpoints.
 This is to primarily support the front-end
 */
 type AdminController struct {
-	config         *mailslurper.Configuration
-	configFileName string
-	debugMode      bool
-	renderer       *ui.TemplateRenderer
-	lock           *sync.Mutex
-	logger         *logrus.Entry
-	serverVersion  string
-}
-
-/*
-NewAdminController creates a new admin controller
-*/
-func NewAdminController(logger *logrus.Entry, renderer *ui.TemplateRenderer, serverVersion string, config *mailslurper.Configuration, configFileName string, debugMode bool) *AdminController {
-	return &AdminController{
-		config:         config,
-		configFileName: configFileName,
-		debugMode:      debugMode,
-		lock:           &sync.Mutex{},
-		logger:         logger,
-		renderer:       renderer,
-		serverVersion:  serverVersion,
-	}
+	CacheService   cache.ICacheService
+	Config         *mailslurper.Configuration
+	ConfigFileName string
+	DebugMode      bool
+	Renderer       *ui.TemplateRenderer
+	Lock           *sync.Mutex
+	Logger         *logrus.Entry
+	ServerVersion  string
 }
 
 /*
@@ -52,7 +39,7 @@ func (c *AdminController) Admin(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.config.GetTheme(),
+		Theme: c.Config.GetTheme(),
 		Title: "Admin",
 		User:  context.User,
 	}
@@ -67,8 +54,8 @@ ApplyTheme updates the theme in the config file, and refreshes the renderer
 */
 func (c *AdminController) ApplyTheme(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
-	c.lock.Lock()
-	defer c.lock.Unlock()
+	c.Lock.Lock()
+	defer c.Lock.Unlock()
 
 	var err error
 	var applyThemeRequest *mailslurper.ApplyThemeRequest
@@ -77,14 +64,14 @@ func (c *AdminController) ApplyTheme(ctx echo.Context) error {
 		return context.String(http.StatusBadRequest, "Invalid request")
 	}
 
-	c.config.Theme = applyThemeRequest.Theme
+	c.Config.Theme = applyThemeRequest.Theme
 
-	if err = c.config.SaveConfiguration(c.configFileName); err != nil {
-		c.logger.Errorf("Error saving configuration file in ApplyTheme: %s", err.Error())
+	if err = c.Config.SaveConfiguration(c.ConfigFileName); err != nil {
+		c.Logger.Errorf("Error saving configuration file in ApplyTheme: %s", err.Error())
 		return context.String(http.StatusOK, fmt.Sprintf("Error saving configuration file: %s", err.Error()))
 	}
 
-	c.renderer.LoadTemplates(c.debugMode)
+	c.Renderer.LoadTemplates(c.DebugMode)
 	return context.String(http.StatusOK, "OK")
 }
 
@@ -96,7 +83,7 @@ func (c *AdminController) Index(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.config.GetTheme(),
+		Theme: c.Config.GetTheme(),
 		Title: "Mail",
 		User:  context.User,
 	}
@@ -109,7 +96,7 @@ Login renders the login page
 */
 func (c *AdminController) Login(ctx echo.Context) error {
 	data := mailslurper.Page{
-		Theme: c.config.GetTheme(),
+		Theme: c.Config.GetTheme(),
 	}
 
 	if ctx.QueryParam("message") != "" {
@@ -127,7 +114,7 @@ func (c *AdminController) ManageSavedSearches(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.config.GetTheme(),
+		Theme: c.Config.GetTheme(),
 		Title: "Manage Saved Searches",
 		User:  context.User,
 	}
@@ -153,11 +140,11 @@ func (c *AdminController) GetServiceSettings(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	settings := mailslurper.ServiceSettings{
-		AuthenticationScheme: c.config.AuthenticationScheme,
-		IsSSL:                c.config.IsServiceSSL(),
-		ServiceAddress:       c.config.ServiceAddress,
-		ServicePort:          c.config.ServicePort,
-		Version:              c.serverVersion,
+		AuthenticationScheme: c.Config.AuthenticationScheme,
+		IsSSL:                c.Config.IsServiceSSL(),
+		ServiceAddress:       c.Config.ServiceAddress,
+		ServicePort:          c.Config.ServicePort,
+		Version:              c.ServerVersion,
 	}
 
 	return context.JSON(http.StatusOK, settings)
@@ -170,7 +157,7 @@ func (c *AdminController) GetVersion(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	result := mailslurper.Version{
-		Version: c.serverVersion,
+		Version: c.ServerVersion,
 	}
 
 	return context.JSON(http.StatusOK, result)
@@ -185,7 +172,7 @@ func (c *AdminController) GetVersionFromMaster(ctx echo.Context) error {
 	var result *mailslurper.Version
 
 	if result, err = mailslurper.GetServerVersionFromMaster(); err != nil {
-		c.logger.Errorf("Error getting version file from Github: %s", err.Error())
+		c.Logger.Errorf("Error getting version file from Github: %s", err.Error())
 		return context.String(http.StatusInternalServerError, "There was an error reading the version file from GitHub")
 	}
 
@@ -201,7 +188,7 @@ func (c *AdminController) PerformLogin(ctx echo.Context) error {
 	var authProvider auth.IAuthProvider
 
 	authFactory := &authfactory.AuthFactory{
-		Config: c.config,
+		Config: c.Config,
 	}
 
 	authProvider = authFactory.Get()
@@ -211,14 +198,14 @@ func (c *AdminController) PerformLogin(ctx echo.Context) error {
 	}
 
 	if err = authProvider.Login(credentials); err != nil {
-		c.logger.WithError(err).Errorf("Admin authentication error")
+		c.Logger.WithError(err).Errorf("Admin authentication error")
 		return ctx.Redirect(http.StatusFound, "/login?message=Invalid user name or password")
 	}
 
 	s, _ := session.Get("session", ctx)
 	s.Options = &sessions.Options{
 		Path:   "/",
-		MaxAge: 7200,
+		MaxAge: c.Config.AuthTimeoutInMinutes,
 	}
 	s.Values["user"] = credentials.UserName
 
@@ -235,7 +222,7 @@ func (c *AdminController) Logout(ctx echo.Context) error {
 		Path:   "/",
 		MaxAge: -1,
 	}
-	s.Save(ctx.Request(), ctx.Response())
 
+	s.Save(ctx.Request(), ctx.Response())
 	return ctx.Redirect(http.StatusFound, "/login")
 }

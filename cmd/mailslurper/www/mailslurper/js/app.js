@@ -20,6 +20,21 @@ $(document).ready(function () {
 				window.AlertService.error("There was an error getting service settings. See the console for more information.");
 				window.AlertService.logMessage(err, "error");
 			});
+	} else {
+		var serviceSettings = window.SettingsService.retrieveSettings();
+		var serviceURL = window.SettingsService.getServiceURL(serviceSettings);
+
+		$("#logOutLink").on("click", function () {
+			window.AuthService.logout(serviceURL)
+				.then(function () {
+					window.location = "/logout";
+				})
+				.catch(function (err) {
+					alert("There was an error logging out: " + err)
+				});
+		});
+
+
 	}
 });
 

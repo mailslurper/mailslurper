@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
@@ -29,8 +30,15 @@ func serviceAuthorization(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		logger.Debugf("Starting parse of JWT token")
+		tokenFromHeader := ctx.Request().Header.Get("Authorization")
+		tokenFromHeader = strings.TrimPrefix(tokenFromHeader, "Bearer ")
 
-		if token, err = jwtService.Parse(ctx.Request(), config.AuthSecret); err != nil {
+		if tokenFromHeader == "" {
+			logger.Errorf("No bearer and token in authorization header")
+			return ctx.String(http.StatusForbidden, "Unauthorized")
+		}
+
+		if token, err = jwtService.Parse(tokenFromHeader, config.AuthSecret); err != nil {
 			logger.WithError(err).Errorf("Error parsing JWT token in service authorization middleware")
 			return ctx.String(http.StatusForbidden, "Error parsing token")
 		}
@@ -41,8 +49,13 @@ func serviceAuthorization(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		adminUserContext.User = jwtService.GetUserFromToken(token)
-
 		logger.WithField("user", adminUserContext.User).Debugf("Service middleware")
+
+		if ok := cacheService.KeyExists(adminUserContext.User); !ok {
+			logger.WithField("user", adminUserContext.User).Errorf("User not found in JWT token cache")
+			return ctx.String(http.StatusForbidden, "JWT token not found in cache")
+		}
+
 		return next(adminUserContext)
 	}
 }

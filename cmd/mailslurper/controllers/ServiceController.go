@@ -11,6 +11,7 @@ import (
 	"github.com/mailslurper/mailslurper/pkg/auth/auth"
 	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
 	"github.com/mailslurper/mailslurper/pkg/auth/jwt"
+	"github.com/mailslurper/mailslurper/pkg/cache"
 	"github.com/mailslurper/mailslurper/pkg/contexts"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/sirupsen/logrus"
@@ -21,22 +22,13 @@ ServiceController provides methods for handling service endpoints.
 This is to primarily support the API
 */
 type ServiceController struct {
-	config        *mailslurper.Configuration
-	database      mailslurper.IStorage
-	logger        *logrus.Entry
-	serverVersion string
-}
-
-/*
-NewServiceController creates a new admin controller
-*/
-func NewServiceController(logger *logrus.Entry, serverVersion string, config *mailslurper.Configuration, database mailslurper.IStorage) *ServiceController {
-	return &ServiceController{
-		config:        config,
-		database:      database,
-		logger:        logger,
-		serverVersion: serverVersion,
-	}
+	AuthFactory   authfactory.IAuthFactory
+	CacheService  cache.ICacheService
+	Config        *mailslurper.Configuration
+	Database      mailslurper.IStorage
+	JWTService    jwt.IJWTService
+	Logger        *logrus.Entry
+	ServerVersion string
 }
 
 /*
@@ -53,23 +45,23 @@ func (c *ServiceController) DeleteMail(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	if err = ctx.Bind(&deleteMailRequest); err != nil {
-		c.logger.Errorf("Invalid delete request in DeleteMail: %s", err.Error())
+		c.Logger.Errorf("Invalid delete request in DeleteMail: %s", err.Error())
 		return context.String(http.StatusBadRequest, "Invalid delete request")
 	}
 
 	if !deleteMailRequest.PruneCode.IsValid() {
-		c.logger.Errorf("Attempt to use invalid prune code - %s", deleteMailRequest.PruneCode)
+		c.Logger.Errorf("Attempt to use invalid prune code - %s", deleteMailRequest.PruneCode)
 		return context.String(http.StatusBadRequest, "Invalid prune type")
 	}
 
 	startDate := deleteMailRequest.PruneCode.ConvertToDate()
 
-	if rowsDeleted, err = c.database.DeleteMailsAfterDate(startDate); err != nil {
-		c.logger.Errorf("Problem deleting mails with code %s - %s", deleteMailRequest.PruneCode.String(), err.Error())
+	if rowsDeleted, err = c.Database.DeleteMailsAfterDate(startDate); err != nil {
+		c.Logger.Errorf("Problem deleting mails with code %s - %s", deleteMailRequest.PruneCode.String(), err.Error())
 		return context.String(http.StatusInternalServerError, "There was a problem deleting mails")
 	}
 
-	c.logger.Infof("Deleting %d mails, code %s before %s", rowsDeleted, deleteMailRequest.PruneCode.String(), startDate)
+	c.Logger.Infof("Deleting %d mails, code %s before %s", rowsDeleted, deleteMailRequest.PruneCode.String(), startDate)
 	return context.String(http.StatusOK, strconv.Itoa(int(rowsDeleted)))
 }
 
@@ -90,12 +82,12 @@ func (c *ServiceController) GetMail(ctx echo.Context) error {
 	/*
 	 * Retrieve the mail item
 	 */
-	if result, err = c.database.GetMailByID(mailID); err != nil {
-		c.logger.Errorf("Problem getting mail item %s - %s", mailID, err.Error())
+	if result, err = c.Database.GetMailByID(mailID); err != nil {
+		c.Logger.Errorf("Problem getting mail item %s - %s", mailID, err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
 
-	c.logger.Infof("Mail item %s retrieved", mailID)
+	c.Logger.Infof("Mail item %s retrieved", mailID)
 	return context.JSON(http.StatusOK, result)
 }
 
@@ -122,7 +114,7 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 		pageNumber = 1
 	} else {
 		if pageNumber, err = strconv.Atoi(pageNumberString); err != nil {
-			c.logger.Errorf("Invalid page number passed to GetMailCollection - %s", pageNumberString)
+			c.Logger.Errorf("Invalid page number passed to GetMailCollection - %s", pageNumberString)
 			return context.String(http.StatusBadRequest, "A valid page number is required")
 		}
 	}
@@ -144,13 +136,13 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 		OrderByDirection: context.QueryParam("dir"),
 	}
 
-	if mailCollection, err = c.database.GetMailCollection(offset, length, mailSearch); err != nil {
-		c.logger.Errorf("Problem getting mail collection - %s", err.Error())
+	if mailCollection, err = c.Database.GetMailCollection(offset, length, mailSearch); err != nil {
+		c.Logger.Errorf("Problem getting mail collection - %s", err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail collection")
 	}
 
-	if totalRecordCount, err = c.database.GetMailCount(mailSearch); err != nil {
-		c.logger.Errorf("Problem getting record count in GetMailCollection - %s", err.Error())
+	if totalRecordCount, err = c.Database.GetMailCount(mailSearch); err != nil {
+		c.Logger.Errorf("Problem getting record count in GetMailCollection - %s", err.Error())
 		return context.String(http.StatusInternalServerError, "Error getting record count")
 	}
 
@@ -159,7 +151,7 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 		totalPages++
 	}
 
-	c.logger.Infof("Mail collection page %d retrieved", pageNumber)
+	c.Logger.Infof("Mail collection page %d retrieved", pageNumber)
 
 	result := &mailslurper.MailCollectionResponse{
 		MailItems:    mailCollection,
@@ -184,12 +176,12 @@ func (c *ServiceController) GetMailCount(ctx echo.Context) error {
 	/*
 	 * Get the count
 	 */
-	if mailItemCount, err = c.database.GetMailCount(&mailslurper.MailSearch{}); err != nil {
-		c.logger.Errorf("Problem getting mail item count in GetMailCount - %s", err.Error())
+	if mailItemCount, err = c.Database.GetMailCount(&mailslurper.MailSearch{}); err != nil {
+		c.Logger.Errorf("Problem getting mail item count in GetMailCount - %s", err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail count")
 	}
 
-	c.logger.Infof("Mail item count - %d", mailItemCount)
+	c.Logger.Infof("Mail item count - %d", mailItemCount)
 
 	result := &mailslurper.MailCountResponse{
 		MailCount: mailItemCount,
@@ -215,12 +207,12 @@ func (c *ServiceController) GetMailMessage(ctx echo.Context) error {
 	/*
 	 * Retrieve the mail item
 	 */
-	if mailItem, err = c.database.GetMailByID(mailID); err != nil {
-		c.logger.Errorf("Problem getting mail item %s in GetMailMessage - %s", mailID, err.Error())
+	if mailItem, err = c.Database.GetMailByID(mailID); err != nil {
+		c.Logger.Errorf("Problem getting mail item %s in GetMailMessage - %s", mailID, err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
 
-	c.logger.Infof("Mail item %s retrieved", mailID)
+	c.Logger.Infof("Mail item %s retrieved", mailID)
 	return context.HTML(http.StatusOK, mailItem.Body)
 }
 
@@ -255,8 +247,8 @@ func (c *ServiceController) DownloadAttachment(ctx echo.Context) error {
 	/*
 	 * Retrieve the attachment
 	 */
-	if attachment, err = c.database.GetAttachment(mailID, attachmentID); err != nil {
-		c.logger.Errorf("Problem getting attachment %s - %s", attachmentID, err.Error())
+	if attachment, err = c.Database.GetAttachment(mailID, attachmentID); err != nil {
+		c.Logger.Errorf("Problem getting attachment %s - %s", attachmentID, err.Error())
 		return context.String(http.StatusInternalServerError, "Error getting attachment")
 	}
 
@@ -265,51 +257,64 @@ func (c *ServiceController) DownloadAttachment(ctx echo.Context) error {
 	 */
 	if attachment.IsContentBase64() {
 		if data, err = base64.StdEncoding.DecodeString(attachment.Contents); err != nil {
-			c.logger.Errorf("Problem decoding attachment %s - %s", attachmentID, err.Error())
+			c.Logger.Errorf("Problem decoding attachment %s - %s", attachmentID, err.Error())
 			return context.String(http.StatusInternalServerError, "Cannot decode attachment")
 		}
 	} else {
 		data = []byte(attachment.Contents)
 	}
 
-	c.logger.Infof("Attachment %s retrieved", attachmentID)
+	c.Logger.Infof("Attachment %s retrieved", attachmentID)
 
 	reader := bytes.NewReader(data)
 	return context.Stream(http.StatusOK, attachment.Headers.ContentType, reader)
 }
 
+/*
+Login is an endpoint used to create a JWT token for use in service calls.
+This also stores that token in an in-memory cache so when a user logs
+out that token can be rendered invalid
+*/
 func (c *ServiceController) Login(ctx echo.Context) error {
 	var err error
 	var token string
+	var encryptedToken string
 
-	authFactory := &authfactory.AuthFactory{
-		Config: c.config,
-	}
-
-	jwtService := &jwt.JWTService{
-		Config: c.config,
-	}
-
-	authService := authFactory.Get()
+	authService := c.AuthFactory.Get()
 	credentials := &auth.AuthCredentials{
 		UserName: ctx.FormValue("userName"),
 		Password: ctx.FormValue("password"),
 	}
 
 	if err = authService.Login(credentials); err != nil {
-		c.logger.WithError(err).Errorf("Invalid service login attempt")
+		c.Logger.WithError(err).Errorf("Invalid service login attempt")
 		return ctx.String(http.StatusForbidden, "Invalid credentials")
 	}
 
-	if token, err = jwtService.CreateToken(c.config.AuthSecret, credentials.UserName); err != nil {
-		c.logger.WithError(err).Errorf("Problem creating token in service login")
+	if token, err = c.JWTService.CreateToken(c.Config.AuthSecret, credentials.UserName); err != nil {
+		c.Logger.WithError(err).Errorf("Problem creating token in service login")
 		return ctx.String(http.StatusInternalServerError, "Problem creating JWT token")
 	}
 
-	return ctx.String(http.StatusOK, token)
+	if encryptedToken, err = c.JWTService.EncryptToken(token); err != nil {
+		c.Logger.WithError(err).Errorf("Error encrypting JWT token")
+		return ctx.String(http.StatusInternalServerError, "Error encrypting JWT token")
+	}
+
+	c.CacheService.Set(credentials.UserName, encryptedToken)
+
+	c.Logger.WithField("token", encryptedToken).Debugf("Encrypted JWT token generated")
+	return ctx.String(http.StatusOK, encryptedToken)
+}
+
+func (c *ServiceController) Logout(ctx echo.Context) error {
+	context := contexts.GetAdminContext(ctx)
+	c.CacheService.Delete(context.User)
+
+	return context.String(http.StatusOK, "OK")
 }
 
 func (c *ServiceController) Version(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
-	return context.String(http.StatusOK, c.serverVersion)
+	return context.String(http.StatusOK, c.ServerVersion)
 }

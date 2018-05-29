@@ -11,6 +11,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/mailslurper/mailslurper/pkg/auth/authscheme"
 )
 
 /*
@@ -48,31 +50,41 @@ type Configuration struct {
 	StorageType StorageType `json:"-"`
 }
 
+var ErrInvalidAdminAddress = fmt.Errorf("Invalid administrator address: wwwAddress")
+var ErrInvalidServiceAddress = fmt.Errorf("Invalid service address: serviceAddress")
+var ErrInvalidSMTPAddress = fmt.Errorf("Invalid SMTP address: smtpAddress")
+var ErrInvalidDBEngine = fmt.Errorf("Invalid DB engine. Valid values are 'SQLite', 'MySQL', 'MSSQL': dbEngine")
+var ErrInvalidDBHost = fmt.Errorf("Invalid DB host: dbHost")
+var ErrInvalidDBFileName = fmt.Errorf("Invalid DB file name: dbDatabase")
+var ErrKeyFileNotFound = fmt.Errorf("Key file not found: keyFile")
+var ErrCertFileNotFound = fmt.Errorf("Certificate file not found: certFile")
+var ErrNeedCertPair = fmt.Errorf("Please provide both a key file and a cert file: keyFile, certFile")
+var ErrAdminKeyFileNotFound = fmt.Errorf("Administrator key file not found: adminKeyFile")
+var ErrAdminCertFileNotFound = fmt.Errorf("Adminstartor certificate file not found: adminCertFile")
+var ErrNeedAdminCertPair = fmt.Errorf("Please provide both a key file and a cert file: adminKeyFile, adminCertFile")
+var ErrInvalidAuthScheme = fmt.Errorf("Invalid authentication scheme. Valid values are 'basic': authenticationScheme")
+var ErrMissingAuthSecret = fmt.Errorf("Missing authentication secret. An authentication secret is requried when authentication is enabled: authSecret")
+var ErrMissingAuthSalt = fmt.Errorf("Missing authentication salt. A salt value is required when authentication is enabled: authSalt")
+var ErrNoUsersConfigured = fmt.Errorf("No users configured. When authentication is enabled you must have at least 1 valid user: credentials")
+
 /*
 GetDatabaseConfiguration returns a pointer to a DatabaseConnection structure with data
 pulled from a Configuration structure.
 */
 func (config *Configuration) GetDatabaseConfiguration() (StorageType, *ConnectionInformation) {
-	result := NewConnectionInformation(config.DBHost, config.DBPort)
-	result.SetDatabaseInformation(config.DBDatabase, config.DBUserName, config.DBPassword)
+	connectionInformation := NewConnectionInformation(config.DBHost, config.DBPort)
+	connectionInformation.SetDatabaseInformation(config.DBDatabase, config.DBUserName, config.DBPassword)
 
 	if strings.ToLower(config.DBEngine) == "sqlite" {
-		result.SetDatabaseFile(config.DBDatabase)
+		connectionInformation.SetDatabaseFile(config.DBDatabase)
 	}
 
-	return config.getDatabaseEngineFromName(config.DBEngine), result
-}
-
-func (config *Configuration) getDatabaseEngineFromName(engineName string) StorageType {
-	switch strings.ToLower(engineName) {
-	case "mssql":
-		return STORAGE_MSSQL
-
-	case "mysql":
-		return STORAGE_MYSQL
+	result, err := GetDatabaseEngineFromName(config.DBEngine)
+	if err != nil {
+		panic("Unable to determine database engine")
 	}
 
-	return STORAGE_SQLITE
+	return result, connectionInformation
 }
 
 /*
@@ -193,4 +205,88 @@ and the services tier
 */
 func (config *Configuration) IsServiceSSL() bool {
 	return config.KeyFile != "" && config.CertFile != ""
+}
+
+func (config *Configuration) Validate() error {
+	if config.WWWAddress == "" {
+		return ErrInvalidAdminAddress
+	}
+
+	if config.ServiceAddress == "" {
+		return ErrInvalidServiceAddress
+	}
+
+	if config.SMTPAddress == "" {
+		return ErrInvalidSMTPAddress
+	}
+
+	if !IsValidStorageType(config.DBEngine) {
+		return ErrInvalidDBEngine
+	}
+
+	if NeedDBHost(config.DBEngine) {
+		if config.DBHost == "" {
+			return ErrInvalidDBHost
+		}
+	}
+
+	if config.DBDatabase == "" {
+		return ErrInvalidDBFileName
+	}
+
+	if (config.KeyFile == "" && config.CertFile != "") || (config.KeyFile != "" && config.CertFile == "") {
+		return ErrNeedCertPair
+	}
+
+	if config.KeyFile != "" && config.CertFile != "" {
+		if !config.isValidFile(config.KeyFile) {
+			return ErrKeyFileNotFound
+		}
+
+		if !config.isValidFile(config.CertFile) {
+			return ErrCertFileNotFound
+		}
+	}
+
+	if config.AdminKeyFile != "" && config.AdminCertFile != "" {
+		if !config.isValidFile(config.AdminKeyFile) {
+			return ErrAdminKeyFileNotFound
+		}
+
+		if !config.isValidFile(config.AdminCertFile) {
+			return ErrAdminCertFileNotFound
+		}
+	}
+
+	if (config.AdminKeyFile == "" && config.AdminCertFile != "") || (config.AdminKeyFile != "" && config.AdminCertFile == "") {
+		return ErrNeedAdminCertPair
+	}
+
+	if config.AuthenticationScheme != "" {
+		if !authscheme.IsValidAuthScheme(config.AuthenticationScheme) {
+			return ErrInvalidAuthScheme
+		}
+
+		if config.AuthSecret == "" {
+			return ErrMissingAuthSecret
+		}
+
+		if config.AuthSalt == "" {
+			return ErrMissingAuthSalt
+		}
+
+		if len(config.Credentials) < 1 {
+			return ErrNoUsersConfigured
+		}
+	}
+
+	return nil
+}
+
+func (config *Configuration) isValidFile(filename string) bool {
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		return false
+	}
+
+	return true
 }

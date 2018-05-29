@@ -59,6 +59,10 @@ func main() {
 	renderer = ui.NewTemplateRenderer(DEBUG_ASSETS)
 	setupConfig()
 
+	if err = config.Validate(); err != nil {
+		logger.WithError(err).Fatalf("Invalid configuration")
+	}
+
 	cacheService = cache.New(time.Minute*time.Duration(config.AuthTimeoutInMinutes), time.Minute*time.Duration(config.AuthTimeoutInMinutes))
 
 	setupDatabase()

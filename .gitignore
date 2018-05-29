@@ -6,7 +6,7 @@
 # Folders
 _obj
 _test
-cache
+#cache
 tmp
 deploy
 .DS_Store

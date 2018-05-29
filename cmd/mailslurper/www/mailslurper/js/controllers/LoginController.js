@@ -79,6 +79,7 @@
 	window.SettingsService.getServiceSettings()
 		.then(function (settings) {
 			serviceSettings = settings;
+			window.SettingsService.storeServiceSettings(serviceSettings);
 		})
 		.catch(function (err) {
 			console.log(err);

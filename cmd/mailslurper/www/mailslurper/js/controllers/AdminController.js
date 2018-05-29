@@ -24,6 +24,10 @@
 				});
 			})
 			.catch(function (err) {
+				if (window.AuthService.isUnauthorized(err)) {
+					window.AuthService.gotoLogin();
+				}
+
 				window.AlertService.error(err);
 			});
 	}
@@ -89,15 +93,27 @@
 
 					window.MailService.deleteMailItems(serviceURL, pruneCode)
 						.then(function (rowsAffected) {
-							window.MailService.getMailCount(serviceURL).then(function (response) {
-								renderPruneTemplate(pruneOptions, response.mailCount);
-								initialize();
+							window.MailService.getMailCount(serviceURL)
+								.then(function (response) {
+									renderPruneTemplate(pruneOptions, response.mailCount);
+									initialize();
 
-								window.AlertService.unblock();
-								showPruneSuccessMessage(window.parseInt(rowsAffected));
-							});
+									window.AlertService.unblock();
+									showPruneSuccessMessage(window.parseInt(rowsAffected));
+								})
+								.catch(function (err) {
+									if (window.AuthService.isUnauthorized(err)) {
+										window.AuthService.gotoLogin();
+									}
+
+									window.AlertService.error("There was a problem getting mail count");
+								});
 						})
 						.catch(function (err) {
+							if (window.AuthService.isUnauthorized(err)) {
+								window.AuthService.gotoLogin();
+							}
+
 							window.AlertService.error("There was an error deleting mail items.");
 						});
 				}
@@ -118,6 +134,10 @@
 				window.AlertService.success("Settings saved!");
 			})
 			.catch(function (err) {
+				if (window.AuthService.isUnauthorized(err)) {
+					window.AuthService.gotoLogin();
+				}
+
 				window.AlertService.error(err);
 			});
 	}
@@ -182,10 +202,18 @@
 					window.AlertService.unblock();
 				})
 				.catch(function (err) {
+					if (window.AuthService.isUnauthorized(err)) {
+						window.AuthService.gotoLogin();
+					}
+
 					window.AlertService.error(err);
 				});
 		})
 		.catch(function (err) {
+			if (window.AuthService.isUnauthorized(err)) {
+				window.AuthService.gotoLogin();
+			}
+
 			window.AlertService.error(err);
 		});
 }());

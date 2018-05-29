@@ -63,5 +63,17 @@ window.AuthService = {
 		}
 
 		return requestParameters;
+	},
+
+	isUnauthorized: function (err) {
+		if (err === "Forbidden") {
+			return true;
+		}
+
+		return false;
+	},
+
+	gotoLogin: function () {
+		window.location = "/login";
 	}
 };

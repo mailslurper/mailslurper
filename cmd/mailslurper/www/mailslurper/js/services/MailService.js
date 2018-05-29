@@ -151,7 +151,6 @@ window.MailService = {
 					return resolve(result);
 				},
 				function (xhr, errorType, err) {
-					console.log(xhr);
 					return reject(err);
 				}
 			);

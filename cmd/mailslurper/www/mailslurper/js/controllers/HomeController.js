@@ -53,6 +53,10 @@
 				window.AlertService.unblock();
 			})
 			.catch(function () {
+				if (window.AuthService.isUnauthorized(err)) {
+					window.AuthService.gotoLogin();
+				}
+
 				window.AlertService.error("There was a problem retrieving your attachment.");
 			});
 	};
@@ -225,6 +229,10 @@
 					return resolve();
 				})
 				.catch(function (err) {
+					if (window.AuthService.isUnauthorized(err)) {
+						window.AuthService.gotoLogin();
+					}
+
 					window.AlertService.error("There was a problem performing your search");
 					return reject(err);
 				});
@@ -481,6 +489,10 @@
 				window.AlertService.unblock();
 			})
 			.catch(function () {
+				if (window.AuthService.isUnauthorized(err)) {
+					window.AuthService.gotoLogin();
+				}
+
 				window.AlertService.error("There was a problem getting this mail's details");
 			});
 	};
@@ -522,7 +534,10 @@
 	])
 		.then(performSearch)
 		.catch(function (err) {
-			console.log(err);
+			if (window.AuthService.isUnauthorized(err)) {
+				window.AuthService.gotoLogin();
+			}
+
 			window.AlertService.error("There was an error getting mail items!");
 		});
 }());

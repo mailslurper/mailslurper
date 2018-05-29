@@ -45,7 +45,7 @@ type Configuration struct {
 	AuthTimeoutInMinutes int               `json:"authTimeoutInMinutes"`
 	Credentials          map[string]string `json:"credentials"`
 
-	StorageType StorageType
+	StorageType StorageType `json:"-"`
 }
 
 /*

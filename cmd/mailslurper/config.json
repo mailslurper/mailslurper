@@ -20,6 +20,6 @@
 	"authenticationScheme": "",
 	"authSecret": "",
 	"authSalt": "",
-	"authTimeoutInMinutes": 7200,
+	"authTimeoutInMinutes": 120,
 	"credentials": {}
 }

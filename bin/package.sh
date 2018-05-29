@@ -79,12 +79,16 @@ cp ./create-mysql.sql ./deploy
 #
 # Compile for the various targets. Copy to the deploy folder
 #
-cd ../cmd/mailslurper
 
 # OSX
 if [ $TARGET = "osx" ]; then
+	cd ../cmd/mailslurper
 	env GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w"
 	mv ./mailslurper ../../bin/deploy
+
+	cd ../createcredentials
+	env GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w"
+	mv ./createcredentials ../../bin/deploy
 
 	cd ../../bin/deploy
 	zip -r -X $ZIPFILENAME *
@@ -93,8 +97,13 @@ fi
 
 # Linux
 if [ $TARGET = "linux" ]; then
+	cd ../cmd/mailslurper
 	env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"
 	mv ./mailslurper ../../bin/deploy
+
+	cd ../createcredentials
+	env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"
+	mv ./createcredentials ../../bin/deploy
 
 	cd ../../bin/deploy
 	zip -r -X $ZIPFILENAME *
@@ -103,8 +112,13 @@ fi
 
 # Windows
 if [ $TARGET = "windows" ]; then
+	cd ../cmd/mailslurper
 	env GOOS=windows GOARCH=amd64 go build -ldflags="-s -w"
 	mv ./mailslurper.exe ../../bin/deploy
+
+	cd ../createcredentials
+	env GOOS=windows GOARCH=amd64 go build -ldflags="-s -w"
+	mv ./createcredentials.exe ../../bin/deploy
 
 	cd ../../bin/deploy
 	zip -r -X $ZIPFILENAME *
@@ -125,8 +139,16 @@ if [ -f "./deploy/mailslurper.exe" ]; then
 	rm ./deploy/mailslurper.exe
 fi
 
+if [ -f "./deploy/createcredentials.exe" ]; then
+	rm ./deploy/createcredentials.exe
+fi
+
 if [ -f "./deploy/mailsurper" ]; then
 	rm ./deploy/mailslurper
+fi
+
+if [ -f "./deploy/createcredentials" ]; then
+	rm ./deploy/createcredentials
 fi
 
 echo "Package complete."

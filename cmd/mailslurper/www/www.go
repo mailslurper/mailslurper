@@ -18550,11 +18550,11 @@ gRi4oP1VWsbfU4Bu7k47Cto3LW09oGqCBIY0cCaY/zcAAP//KWsQ81xFAgA=
 
 	"/www/mailslurper/themes/readable/style.css": {
 		local:   "www/mailslurper/themes/readable/style.css",
-		size:    80,
-		modtime: 1517350779,
+		size:    78,
+		modtime: 1527564863,
 		compressed: `
-H4sIAAAAAAAC/9JLyk+p1E3OzytJzMxLLVKo5uLMTSxKz8yzUjAzKahQMABBa65aLuXcxMwcz5LU3GLn
-/JzS3DyQyoLElJTMvHTdosz0jBIrsDpAAAAA///+8oHVUAAAAA==
+H4sIAAAAAAAC/9JLyk+p1E3OzytJzMxLLVKo5uLMTSxKz8zTLckvsFIwMymosOaq5VLOTczM8SxJzS12
+zs8pzc0DqStITEnJzEvXLcpMzyixUjCw5qoFBAAA///OZT//TgAAAA==
 `,
 	},
 

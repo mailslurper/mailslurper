@@ -46,7 +46,7 @@ func setupServicesListener() {
 	service.DELETE("/mail", serviceController.DeleteMail, middlewares...)
 	service.GET("/mail", serviceController.GetMailCollection, middlewares...)
 	service.GET("/mailcount", serviceController.GetMailCount, middlewares...)
-	service.GET("/mail/:mailID/attachment/:attachmentID", serviceController.DownloadAttachment, middlewares...)
+	service.GET("/mail/:mailID/attachment/:attachmentID", serviceController.DownloadAttachment)
 	service.GET("/version", serviceController.Version, middlewares...)
 	service.GET("/pruneoptions", serviceController.GetPruneOptions, middlewares...)
 

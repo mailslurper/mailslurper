@@ -23,7 +23,7 @@ import (
 
 const (
 	// Version of the MailSlurper Server application
-	SERVER_VERSION string = "1.13.2"
+	SERVER_VERSION string = "1.14.1"
 
 	// Set to true while developing
 	DEBUG_ASSETS bool = false

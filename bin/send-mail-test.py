@@ -175,7 +175,7 @@ try:
         multipart=True
     )
 
-    msg = addAttachment(msg, "../assets/MailSlurperLogo.png", "image/png")
+    msg = addAttachment(msg, "../logo/logo.png", "image/png")
     sendMail(msg)
 
     #
@@ -189,8 +189,8 @@ try:
         "<p>This is a <strong>HTML</strong> email with an attachment. It's got lots of >great text< & special` characters.</p><p>Ceci est mon contenu accentué éàçè</p>"
     )
 
-    msg = addAttachment(msg, "../assets/MailSlurperLogo.png", "image/png")
-    msg = addAttachment(msg, "../assets/MailSlurperLogo.png", "image/png")
+    msg = addAttachment(msg, "../logo/logo.png", "image/png")
+    msg = addAttachment(msg, "../logo/logo.png", "image/png")
 
     sendMail(msg)
 

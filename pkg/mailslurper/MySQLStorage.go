@@ -104,6 +104,7 @@ func (storage *MySQLStorage) GetAttachment(mailID, attachmentID string) (*Attach
 	result.Headers = &AttachmentHeader{
 		FileName:    fileName,
 		ContentType: contentType,
+		Logger:      storage.logger,
 	}
 
 	result.MailID = mailID
@@ -174,6 +175,7 @@ func (storage *MySQLStorage) GetMailByID(mailItemID string) (*MailItem, error) {
 				Headers: &AttachmentHeader{
 					FileName:    storage.xssService.SanitizeString(fileName.String),
 					ContentType: attachmentContentType.String,
+					Logger:      storage.logger,
 				},
 			}
 
@@ -296,6 +298,7 @@ func (storage *MySQLStorage) GetMailCollection(offset, length int, mailSearch *M
 				Headers: &AttachmentHeader{
 					FileName:    storage.xssService.SanitizeString(fileName.String),
 					ContentType: attachmentContentType.String,
+					Logger:      storage.logger,
 				},
 			}
 

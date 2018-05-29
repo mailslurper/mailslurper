@@ -134,6 +134,7 @@ func (storage *SQLiteStorage) GetAttachment(mailID, attachmentID string) (*Attac
 	result.Headers = &AttachmentHeader{
 		FileName:    fileName,
 		ContentType: contentType,
+		Logger:      storage.logger,
 	}
 
 	result.MailID = mailID
@@ -204,6 +205,7 @@ func (storage *SQLiteStorage) GetMailByID(mailItemID string) (*MailItem, error) 
 				Headers: &AttachmentHeader{
 					FileName:    storage.xssService.SanitizeString(fileName.String),
 					ContentType: attachmentContentType.String,
+					Logger:      storage.logger,
 				},
 			}
 
@@ -326,6 +328,7 @@ func (storage *SQLiteStorage) GetMailCollection(offset, length int, mailSearch *
 				Headers: &AttachmentHeader{
 					FileName:    storage.xssService.SanitizeString(fileName.String),
 					ContentType: attachmentContentType.String,
+					Logger:      storage.logger,
 				},
 			}
 

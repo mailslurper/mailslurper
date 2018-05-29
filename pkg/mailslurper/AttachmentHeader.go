@@ -7,7 +7,7 @@ package mailslurper
 import (
 	"strings"
 
-	"github.com/adampresley/webframework/logging2"
+	"github.com/sirupsen/logrus"
 )
 
 /*
@@ -22,13 +22,13 @@ type AttachmentHeader struct {
 	FileName                string `json:"fileName"`
 	Body                    string `json:"body"`
 
-	logger logging2.ILogger
+	Logger *logrus.Entry
 }
 
 /*
 NewAttachmentHeader creates a new AttachmentHeader object
 */
-func NewAttachmentHeader(contentType, mimeVersion, contentTransferEncoding, contentDisposition, fileName, body string, logger logging2.ILogger) *AttachmentHeader {
+func NewAttachmentHeader(contentType, mimeVersion, contentTransferEncoding, contentDisposition, fileName, body string) *AttachmentHeader {
 	return &AttachmentHeader{
 		ContentType:             contentType,
 		MIMEVersion:             mimeVersion,
@@ -36,8 +36,6 @@ func NewAttachmentHeader(contentType, mimeVersion, contentTransferEncoding, cont
 		ContentDisposition:      contentDisposition,
 		FileName:                fileName,
 		Body:                    body,
-
-		logger: logger,
 	}
 }
 
@@ -60,7 +58,7 @@ func (attachmentHeader *AttachmentHeader) Parse(contents string) {
 	headerBodySplit := strings.Split(contents, "\r\n\r\n")
 
 	if len(headerBodySplit) < 2 {
-		attachmentHeader.logger.Debugf("Attachment has no body content")
+		attachmentHeader.Logger.Debugf("Attachment has no body content")
 	} else {
 		attachmentHeader.Body = strings.Join(headerBodySplit[1:], "\r\n\r\n")
 	}
@@ -83,7 +81,7 @@ func (attachmentHeader *AttachmentHeader) Parse(contents string) {
 		switch strings.ToLower(key) {
 		case "content-disposition":
 			contentDisposition := strings.TrimSpace(strings.Join(splitItem[1:], ""))
-			attachmentHeader.logger.Debugf("Attachment Content-Disposition: %s", contentDisposition)
+			attachmentHeader.Logger.WithField("contentDisposition", contentDisposition).Debugf("Attachment Content-Disposition")
 
 			contentDispositionSplit := strings.Split(contentDisposition, ";")
 			contentDispositionRightSide := strings.TrimSpace(strings.Join(contentDispositionSplit[1:], ";"))
@@ -104,11 +102,11 @@ func (attachmentHeader *AttachmentHeader) Parse(contents string) {
 
 		case "content-transfer-encoding":
 			attachmentHeader.ContentTransferEncoding = strings.TrimSpace(strings.Join(splitItem[1:], ""))
-			attachmentHeader.logger.Debugf("Attachment Content-Transfer-Encoding: %s", attachmentHeader.ContentTransferEncoding)
+			attachmentHeader.Logger.WithField("content-transfer-encoding", attachmentHeader.ContentTransferEncoding).Debugf("Attachment Content-Transfer-Encoding")
 
 		case "content-type":
 			contentType := strings.TrimSpace(strings.Join(splitItem[1:], ""))
-			attachmentHeader.logger.Debugf("Attachment Content-Type: %s", contentType)
+			attachmentHeader.Logger.WithField("content-type", contentType).Debugf("Attachment Content-Type")
 
 			contentTypeSplit := strings.Split(contentType, ";")
 
@@ -129,7 +127,7 @@ func (attachmentHeader *AttachmentHeader) Parse(contents string) {
 
 		case "mime-version":
 			attachmentHeader.MIMEVersion = strings.TrimSpace(strings.Join(splitItem[1:], ""))
-			attachmentHeader.logger.Debugf("Attachment MIME-Version: %s", attachmentHeader.MIMEVersion)
+			attachmentHeader.Logger.WithField("mime-version", attachmentHeader.MIMEVersion).Debugf("Attachment MIME-Version")
 		}
 	}
 }

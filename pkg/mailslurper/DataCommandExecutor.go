@@ -131,6 +131,7 @@ func (e *DataCommandExecutor) addAttachment(messagePart ISMTPMessagePart, mailIt
 		ContentTransferEncoding: messagePart.GetHeader("Content-Transfer-Encoding"),
 		ContentDisposition:      messagePart.GetContentDisposition(),
 		FileName:                messagePart.GetFilenameFromContentDisposition(),
+		Logger:                  e.logger,
 	}
 
 	e.logger.Debugf("Adding attachment: %v", headers)

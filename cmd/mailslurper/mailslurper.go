@@ -34,7 +34,6 @@ const (
 var config *mailslurper.Configuration
 var database mailslurper.IStorage
 var logger *logrus.Entry
-var serviceTierConfig *mailslurper.ServiceTierConfiguration
 var renderer *ui.TemplateRenderer
 var mailItemChannel chan *mailslurper.MailItem
 var smtpListenerContext context.Context

@@ -16232,35 +16232,37 @@ vAY8AAA=
 
 	"/www/mailslurper/css/login.css": {
 		local:   "www/mailslurper/css/login.css",
-		size:    174,
-		modtime: 1525584704,
+		size:    328,
+		modtime: 1527568074,
 		compressed: `
-H4sIAAAAAAAC/1zOOwrDMAyA4Tk6hZaMLunDi30aNzWuIJaCUamg5O6FPsH7z8e/W6SIm4U1EeeGDxhq
-aoU44N6vhummEmHQbOrSQoUDzpk1t/gN3VlUpQY8+NUibAC9SbW8XXN3uug14Gkaf+VLsC44+jH+T6bP
-xvYMAAD//2QuXoGuAAAA
+H4sIAAAAAAAC/2TOzWryQBSH8bVzFf+NGyEa9RVekpWIC6EthbYXMM4cJwOTOWHmxCYU772QfkG7//Hw
+rBbqwN2YvGsEm3K9LTbl+j/2Vrd4TJQDjUvsQ8AkMhJlSley6iUT+AJpfEbmPhmCYUvwGY6vlCJZnEdI
+Q7g/PSN4QzGTkkYLjI44Ey7cRwsfJ3R3Ohwfno64+EBLtVipZWDHheEo2kdKeFOzVifnY4X1rhuge+Fa
+zYQGKXTwLlYwFIVS/QWLM4twW2Gz64Za3dSfpm/dR3coXr2VpsK/cv4tp8LwC2x38/rnpPzcuL0HAAD/
+/zRtO1RIAQAA
 `,
 	},
 
 	"/www/mailslurper/css/style.css": {
 		local:   "www/mailslurper/css/style.css",
-		size:    2287,
-		modtime: 1526611612,
+		size:    2278,
+		modtime: 1527568088,
 		compressed: `
-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
+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
 `,
 	},
 
@@ -16755,7 +16757,7 @@ sNySpi4Ur+Mk2/4K4EsGjkSAujBkoB8A/mF8JqP677psSevoMnXhKwj4GI9nA27Ej2ueZ32ePv4EAAD/
 	"/www/mailslurper/js/controllers/AdminController.js": {
 		local:   "www/mailslurper/js/controllers/AdminController.js",
 		size:    5920,
-		modtime: 1527543259,
+		modtime: 1527568108,
 		compressed: `
 H4sIAAAAAAAC/9RYW2/bNhR+ln7FqbYHufWUtnsZHBiDm6ZdgF6CON0wFMVAS8cWF4o0SMpGOvi/D6JI
 ibIt28k6YMtDIlHnznP5Ts7O4EIs7yVd5BpePn/x4w8vn7/4CSYZKeBaomJ4n8CEMTAUCiQqlCvMwrMz
@@ -16789,7 +16791,7 @@ p1faxjSKvwMAAP//L6gfNCAXAAA=
 	"/www/mailslurper/js/controllers/HomeController.js": {
 		local:   "www/mailslurper/js/controllers/HomeController.js",
 		size:    14153,
-		modtime: 1527543114,
+		modtime: 1527568115,
 		compressed: `
 H4sIAAAAAAAC/9w7XW8bOZLP0q+o6xvgWonctmeAvTs5yiKJkxsDdjawHSyC2XmguksSNy1SINmynYH/
 +4FFsr9blmdyh8HmwRiRVcXqYlWxvub4GN7J7YPiq7WBH09Ofzr68eT0v+BNxjbwSaHO8SGBN3kOBKFB

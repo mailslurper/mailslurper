@@ -52,7 +52,7 @@ func setupServicesListener() {
 
 	if config.AuthenticationScheme != authscheme.NONE {
 		service.POST("/login", serviceController.Login)
-		service.DELETE("/logout", serviceController.Logout, middlewares...)
+		service.DELETE("/logout", serviceController.Logout)
 	}
 
 	go func() {

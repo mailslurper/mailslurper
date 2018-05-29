@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
@@ -24,6 +25,7 @@ func setupAdminListener() {
 		ConfigFileName: CONFIGURATION_FILE_NAME,
 		DebugMode:      DEBUG_ASSETS,
 		Renderer:       renderer,
+		Lock:           &sync.Mutex{},
 		Logger:         mailslurper.GetLogger(*logLevel, *logFormat, "AdminController"),
 		ServerVersion:  SERVER_VERSION,
 	}
@@ -41,7 +43,7 @@ func setupAdminListener() {
 
 		admin.GET("/login", adminController.Login)
 		admin.POST("/perform-login", adminController.PerformLogin)
-		admin.GET("/logout", adminController.Logout, middlewares...)
+		admin.GET("/logout", adminController.Logout)
 	}
 
 	admin.GET("/", adminController.Index, middlewares...)

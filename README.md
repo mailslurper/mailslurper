@@ -9,7 +9,7 @@ Compiling
 ---------
 The following are general instructions for compiling MailSlurper. Your details may vary a bit here and there. The below example is based on a Unix-style system, such as Ubuntu or OSX. Furthermore for instructional purposes it is assumed that your GOPATH is set to *~/code/go*, and that you have a folder in your source directory called **github.com**. Your setup may vary. The instructions below also assume you have the following already installed.
 
-* Go 1.5 (or higher)
+* Go 1.10 (or higher)
 * Git
 
 ```bash

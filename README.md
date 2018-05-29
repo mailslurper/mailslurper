@@ -28,28 +28,33 @@ Library and Framework Credits
 -----------------------------
 This application uses a lot of great open source libraries.
 
-* [Gorilla Mux](http://www.gorillatoolkit.org/pkg/mux)
-* [Gorilla Context](http://www.gorillatoolkit.org/pkg/context)
-* [Gorilla Websocket](https://github.com/gorilla/websocket)
-* [Alice](https://github.com/justinas/alice)
-* [Logrus](https://github.com/sirupsen/logrus) - MIT
-* [GoUUID](https://github.com/nu7hatch/gouuid)
-* [bluemonday](https://github.com/microcosm-cc/bluemonday) - BSD 3 Clause. Copyright (c) 2014, David Kitchen david@buro9.com
+* [BlockUI](http://jquery.malsup.com/block/) - MIT
+* [bluemonday](https://github.com/microcosm-cc/bluemonday) - BSD 3-Clause
+* [Bootstrap](http://getbootstrap.com/) - MIT
+* [bootstrap-dialog](https://github.com/nakupanda/bootstrap3-dialog) - MIT
+* [bootstrap-growl](https://github.com/ifightcrime/bootstrap-growl) - MIT
+* [Date Range Picker for Bootstrap](http://www.daterangepicker.com) - MIT
+* [Gorilla Context](https://github.com/gorilla/context) - BSD 3-Clause
+* [Gorilla Secure Cookie](https://github.com/gorilla/securecookie) - BSD 3-Clause
+* [Gorilla Sessions](https://github.com/gorilla/sessions) - BSD 3-Clause
+* [Copier](https://github.com/jinzhu/copier) - MIT
+* [Echo](https://github.com/labstack/echo) - MIT
+* [errors](https://github.com/pkg/errors) - BSD 2-Clause
+* [esc](https://github.com/mjibson/esc) - MIT
+* [Font Awesome](http://fortawesome.github.io/Font-Awesome/) - Fonts under OFL License, CSS under MIT license
+* [GoUUID](https://github.com/nu7hatch/gouuid) - MIT
+* [go-cache](https://github.com/patrickmn/go-cache) - MIT
 * [go-mssqldb](https://github.com/denisenkom/go-mssqldb)
 * [Go-MySQL-Driver](https://github.com/go-sql-driver/mysql) - Mozilla Public License Version 2.0
 * [go-sqlite3](https://github.com/mattn/go-sqlite3) - MIT
-* [esc](https://github.com/mjibson/esc) - MIT
-* [BlockUI](http://jquery.malsup.com/block/) - MIT
-* [Bootstrap](http://getbootstrap.com/) - MIT
-* [Date Range Picker for Bootstrap](http://www.daterangepicker.com) - MIT
-* [bootstrap-dialog](https://github.com/nakupanda/bootstrap3-dialog) - MIT
-* [bootstrap-growl](https://github.com/ifightcrime/bootstrap-growl) - MIT
-* [Font Awesome](http://fortawesome.github.io/Font-Awesome/) - Fonts under OFL License, CSS under MIT license
 * [Handlebars](http://handlebarsjs.com) - MIT
 * [jQuery](http://jquery.com/) - MIT
+* [jwt-go](https://github.com/dgrijalva/jwt-go) - MIT
 * [lightbox2](http://lokeshdhakar.com/projects/lightbox2/) - MIT
+* [Logrus](https://github.com/sirupsen/logrus) - MIT
 * [Moment.js](http://momentjs.com) - MIT
 * [NPO](https://github.com/getify/native-promise-only) - MIT
+* [open](https://github.com/skratchdot/open-golang) - MIT
 
 Themes by Thomas Park at [Bootswatch](http://bootswatch.com/).
 

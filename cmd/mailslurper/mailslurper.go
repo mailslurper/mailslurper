@@ -45,8 +45,8 @@ var cacheService *cache.Cache
 var admin *echo.Echo
 var service *echo.Echo
 
-var logFormat = flag.String("logformat", "simple", "Format for logging. 'simple' or 'json'. Default is 'simple'")
-var logLevel = flag.String("loglevel", "info", "Level of logs to write. Valid values are 'debug', 'info', or 'error'. Default is 'info'")
+var logFormat = flag.String("logformat", "simple", "Format for logging. 'simple' or 'json'.")
+var logLevel = flag.String("loglevel", "info", "Level of logs to write. Valid values are 'debug', 'info', or 'error'.")
 
 func main() {
 	var err error

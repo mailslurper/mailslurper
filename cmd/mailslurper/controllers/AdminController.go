@@ -141,14 +141,14 @@ back-end service tier.
 */
 func (c *AdminController) GetServiceSettings(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
-
 	settings := mailslurper.ServiceSettings{
 		AuthenticationScheme: c.Config.AuthenticationScheme,
 		IsSSL:                c.Config.IsServiceSSL(),
 		ServiceAddress:       c.Config.ServiceAddress,
 		ServicePort:          c.Config.ServicePort,
+	        ServiceURL:           c.Config.ServiceURL,
 		Version:              c.ServerVersion,
-	}
+	} 
 
 	return context.JSON(http.StatusOK, settings)
 }

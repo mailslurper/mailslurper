@@ -3,6 +3,7 @@
 	"wwwPort": 8080,
 	"serviceAddress": "localhost",
 	"servicePort": 8085,
+	"serviceURL": "http://svc-mailslurper.127.0.0.1.xip.io:8085",
 	"smtpAddress": "localhost",
 	"smtpPort": 2500,
 	"dbEngine": "SQLite",

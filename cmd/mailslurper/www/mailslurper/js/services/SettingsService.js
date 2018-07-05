@@ -68,6 +68,11 @@ window.SettingsService = {
 	 */
 	getServiceURL: function (serviceSettings) {
 		var serviceSettings = window.SettingsService.retrieveServiceSettings();
+
+                if (serviceSettings.serviceURL != "" && serviceSettings.serviceURL != undefined) {
+                   return serviceSettings.serviceURL;
+                }
+
 		var serviceAddress = serviceSettings.serviceAddress;
 
 		if (serviceAddress === "0.0.0.0") {

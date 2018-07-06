@@ -25,6 +25,7 @@ type Configuration struct {
 	WWWPort          int    `json:"wwwPort"`
 	ServiceAddress   string `json:"serviceAddress"`
 	ServicePort      int    `json:"servicePort"`
+	ServiceURL       string `json:"serviceURL"`
 	SMTPAddress      string `json:"smtpAddress"`
 	SMTPPort         int    `json:"smtpPort"`
 	DBEngine         string `json:"dbEngine"`

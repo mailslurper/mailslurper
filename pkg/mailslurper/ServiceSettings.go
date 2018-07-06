@@ -13,5 +13,6 @@ type ServiceSettings struct {
 	IsSSL                bool   `json:"isSSL"`
 	ServiceAddress       string `json:"serviceAddress"`
 	ServicePort          int    `json:"servicePort"`
+	ServiceURL           string `json:"serviceURL"`
 	Version              string `json:"version"`
 }

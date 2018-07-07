@@ -61,13 +61,17 @@ func (storage *SQLiteStorage) Create() error {
 	var err error
 
 	if _, err = os.Stat(storage.connectionInformation.Filename); err == nil {
-		if err = os.Remove(storage.connectionInformation.Filename); err != nil {
-			return errors.Wrapf(err, "Error removing existing SQLite storage file %s", storage.connectionInformation.Filename)
+		if storage.connectionInformation.Ephemeral {
+			if err = os.Remove(storage.connectionInformation.Filename); err != nil {
+				return errors.Wrapf(err, "Error removing existing SQLite storage file %s", storage.connectionInformation.Filename)
+			}
+		} else {
+			storage.logger.Infof("SQLite Ephemeral disabled, preserving database.")
 		}
 	}
 
 	sqlStatement := `
-		CREATE TABLE mailitem (
+		CREATE TABLE IF NOT EXISTS mailitem (
 			id TEXT PRIMARY KEY,
 			dateSent TEXT,
 			fromAddress TEXT,
@@ -84,7 +88,7 @@ func (storage *SQLiteStorage) Create() error {
 	}
 
 	sqlStatement = `
-		CREATE TABLE attachment (
+		CREATE TABLE IF NOT EXISTS attachment (
 			id TEXT PRIMARY KEY,
 			mailItemId TEXT,
 			fileName TEXT,

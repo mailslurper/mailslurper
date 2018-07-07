@@ -11,12 +11,13 @@ ConnectionInformation contains data necessary to establish a connection
 to a database server.
 */
 type ConnectionInformation struct {
-	Address  string
-	Port     int
-	Database string
-	UserName string
-	Password string
-	Filename string
+	Address   string
+	Port      int
+	Database  string
+	UserName  string
+	Password  string
+	Filename  string
+	Ephemeral bool
 }
 
 /*
@@ -45,6 +46,13 @@ SetDatabaseFile sets the name of a file-base database. This is used for SQLite
 */
 func (information *ConnectionInformation) SetDatabaseFile(filename string) {
 	information.Filename = filename
+}
+
+/*
+SetEphemeral decides if an existing database is deleted at startup. This is used for SQLite
+*/
+func (information *ConnectionInformation) SetEphemeral(ephemeral bool) {
+	information.Ephemeral = ephemeral
 }
 
 func (information *ConnectionInformation) String() string {

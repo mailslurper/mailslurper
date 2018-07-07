@@ -34,6 +34,7 @@ type Configuration struct {
 	DBDatabase       string `json:"dbDatabase"`
 	DBUserName       string `json:"dbUserName"`
 	DBPassword       string `json:"dbPassword"`
+	DBEphemeral      bool   `json:"dbEphemeral"`
 	MaxWorkers       int    `json:"maxWorkers"`
 	AutoStartBrowser bool   `json:"autoStartBrowser"`
 	CertFile         string `json:"certFile"`
@@ -57,6 +58,7 @@ var ErrInvalidSMTPAddress = fmt.Errorf("Invalid SMTP address: smtpAddress")
 var ErrInvalidDBEngine = fmt.Errorf("Invalid DB engine. Valid values are 'SQLite', 'MySQL', 'MSSQL': dbEngine")
 var ErrInvalidDBHost = fmt.Errorf("Invalid DB host: dbHost")
 var ErrInvalidDBFileName = fmt.Errorf("Invalid DB file name: dbDatabase")
+var ErrInvalidDBEphemeral = fmt.Errorf("Ephemeral mode only available with SQLite DB engine")
 var ErrKeyFileNotFound = fmt.Errorf("Key file not found: keyFile")
 var ErrCertFileNotFound = fmt.Errorf("Certificate file not found: certFile")
 var ErrNeedCertPair = fmt.Errorf("Please provide both a key file and a cert file: keyFile, certFile")
@@ -78,6 +80,7 @@ func (config *Configuration) GetDatabaseConfiguration() (StorageType, *Connectio
 
 	if strings.ToLower(config.DBEngine) == "sqlite" {
 		connectionInformation.SetDatabaseFile(config.DBDatabase)
+		connectionInformation.SetEphemeral(config.DBEphemeral)
 	}
 
 	result, err := GetDatabaseEngineFromName(config.DBEngine)
@@ -229,6 +232,10 @@ func (config *Configuration) Validate() error {
 		if config.DBHost == "" {
 			return ErrInvalidDBHost
 		}
+	}
+
+	if config.DBEphemeral && config.DBEngine != "SQLite" {
+		return ErrInvalidDBEphemeral
 	}
 
 	if config.DBDatabase == "" {

@@ -30,6 +30,16 @@
 		return grouped;
 	}
 
+	function importJSON(json) {
+		var savedSearches = JSON.parse(json).savedSearches;
+		if(savedSearches === undefined) {
+			window.AlertService.error("Invalid JSON");
+			return;
+		}
+
+		window.SettingsService.storeSavedSearches(savedSearches);
+	}
+
 	function initialize() {
 		$(".deleteSavedSearch").on("click", function () {
 			var savedSearchIndex = window.parseInt($(this).attr("data-index"), 10);
@@ -37,6 +47,17 @@
 
 			renderSavedSearches(getSavedSearches());
 			initialize();
+		});
+
+		$(".importJSON").on("click", function () {
+			try {
+				importJSON($('#import-searches').val());
+
+				renderSavedSearches(getSavedSearches());
+				initialize();
+			} catch (err) {
+				window.AlertService.error(err);
+			}
 		});
 	}
 

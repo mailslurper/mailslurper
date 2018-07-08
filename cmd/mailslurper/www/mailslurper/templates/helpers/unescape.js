@@ -24,3 +24,15 @@ Handlebars.registerHelper("unescape", function (escapedString) {
 
 	return escapedString;
 });
+
+Handlebars.registerHelper("stringifySavedSearches", function(o) {
+	if(o === undefined) {
+		return "";
+	}
+
+	// https://gist.github.com/Nishchit14/4c6a7349b3c778f7f97b912629a9f228
+	let flatten = array => Array.isArray(array) ? [].concat(...array.map(flatten)) : array;
+	var flattenedSearches = flatten(o);
+
+	return JSON.stringify({ savedSearches: flattenedSearches }, undefined, 2);
+});

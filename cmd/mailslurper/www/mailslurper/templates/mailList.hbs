@@ -39,15 +39,16 @@
 			<thead>
 				<tr>
 					<th width="1%">&nbsp;</th>
-					<th width="25%">
+					<th width="20%">
 						<a href="#" id="sortDate" data-direction="{{direction}}">Date{{{dateSortIcon}}}</a>
 					</th>
-					<th width="50%">
+					<th width="40%">
 						<a href="#" id="sortSubject" data-direction="{{direction}}">Subject{{{subjectSortIcon}}}</a>
 					</th>
 					<th width="20%">
 						<a href="#" id="sortFrom" data-direction="{{direction}}">From{{{fromSortIcon}}}</a>
 					</th>
+					<th width="19%">To</th>
 				</tr>
 			</thead>
 		</table>
@@ -80,21 +81,22 @@
 								&nbsp;
 							{{/if}}
 						</td>
-						<td width="25%">{{formatDateTime dateSent}}</td>
-						<td width="50%">
+						<td width="20%">{{formatDateTime dateSent}}</td>
+						<td width="40%">
 							<a href="#" class="mailSubject" data-id="{{id}}">{{unescape subject}}</a>
 						</td>
 						<td width="20%">{{fromAddress}}</td>
+						<td width="19%">{{#each toAddresses}}{{.}}<br>{{/each}}</td>
 					</tr>
 					{{else}}
 						<tr>
-							<td colspan="4">There is no mail to display, or no mail items match your search criteria.</td>
+							<td colspan="5">There is no mail to display, or no mail items match your search criteria.</td>
 						</tr>
 				{{/each}}
 
 				{{#if hasNavigation}}
 					<tr>
-						<td colspan="3">
+						<td colspan="4">
 							<nav>
 								<ul class="pagination pagination-lg">
 									{{#if hasFirstButton}}

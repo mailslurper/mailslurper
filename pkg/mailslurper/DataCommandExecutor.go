@@ -6,7 +6,9 @@ package mailslurper
 
 import (
 	"encoding/base64"
+	"io/ioutil"
 	"mime"
+	"mime/quotedprintable"
 	"net/textproto"
 	"strings"
 
@@ -154,6 +156,11 @@ func (e *DataCommandExecutor) decodeBody(body, contentType, transferEncoding str
 	switch transferEncoding {
 	case "base64":
 		if result, err = base64.StdEncoding.DecodeString(body); err != nil {
+			return body, err
+		}
+		break
+	case "quoted-printable":
+		if result, err = ioutil.ReadAll(quotedprintable.NewReader(strings.NewReader(body))); err != nil {
 			return body, err
 		}
 		break

@@ -16,6 +16,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/net/html/charset"
 )
 
 /*
@@ -152,6 +153,11 @@ GetHeader returns the value of a specified header key
 */
 func (messagePart *SMTPMessagePart) GetHeader(key string) string {
 	decoder := new(mime.WordDecoder)
+	decoder.CharsetReader = func(headerCharset string, input io.Reader) (io.Reader, error) {
+		encoding, _ := charset.Lookup(headerCharset)
+		return encoding.NewDecoder().Reader(input), nil
+	}
+
 	result, _ := decoder.DecodeHeader(messagePart.Message.Header.Get(key))
 	return result
 }

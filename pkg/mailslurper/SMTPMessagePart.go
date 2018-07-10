@@ -255,7 +255,12 @@ func (messagePart *SMTPMessagePart) GetContentType() string {
 }
 
 func (messagePart *SMTPMessagePart) parseContentType() (string, string, error) {
-	mediaType, params, err := mime.ParseMediaType(messagePart.Message.Header.Get("Content-Type"))
+	contentType := messagePart.GetContentType()
+	if contentType == "" {
+		return "", "", nil
+	}
+
+	mediaType, params, err := mime.ParseMediaType(contentType)
 	if err != nil {
 		return "", "", err
 	}

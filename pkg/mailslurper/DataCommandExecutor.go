@@ -6,8 +6,8 @@ package mailslurper
 
 import (
 	"encoding/base64"
-	"mime"
-	"net/textproto"
+	"io/ioutil"
+	"mime/quotedprintable"
 	"strings"
 
 	"github.com/adampresley/webframework/sanitizer"
@@ -157,6 +157,11 @@ func (e *DataCommandExecutor) decodeBody(body, contentType, transferEncoding str
 			return body, err
 		}
 		break
+	case "quoted-printable":
+		if result, err = ioutil.ReadAll(quotedprintable.NewReader(strings.NewReader(body))); err != nil {
+			return body, err
+		}
+		break
 
 	default:
 		result = []byte(body)
@@ -181,17 +186,6 @@ func (e *DataCommandExecutor) getBodyContent(contents string) (string, error) {
 	}
 
 	return strings.Join(headerBodySplit[1:], "\r\n\r\n"), nil
-}
-
-func (e *DataCommandExecutor) getSubjectFromHeaders(headers textproto.MIMEHeader) string {
-	decoder := new(mime.WordDecoder)
-	result, _ := decoder.DecodeHeader(headers.Get("Subject"))
-
-	if strings.Compare(result, "") == 0 {
-		result = "(No Subject)"
-	}
-
-	return result
 }
 
 func (e *DataCommandExecutor) getSubjectFromPart(part *SMTPMessagePart) string {

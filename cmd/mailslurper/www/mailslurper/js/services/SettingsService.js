@@ -68,14 +68,10 @@ window.SettingsService = {
 	 */
 	getServiceURL: function () {
 		var serviceSettings = window.SettingsService.retrieveServiceSettings();
-		var serviceAddress = serviceSettings.serviceAddress;
+		var serviceURL = serviceSettings.url;
 
-		if (serviceAddress === "0.0.0.0") {
-			serviceAddress = window.location.hostname;
-		}
+		serviceURL = serviceURL.replace('0.0.0.0', window.location.hostname);
 
-		var protocol = (serviceSettings.isSSL) ? "https:" : "http:";
-		var serviceURL = protocol + "//" + serviceAddress + ":" + serviceSettings.servicePort;
 		return serviceURL;
 	},
 

@@ -111,6 +111,20 @@ func (config *Configuration) GetFullWWWBindingAddress() string {
 }
 
 /*
+GetPublicServiceURL returns a full protocol, address, and port for the MailSlurper service
+*/
+func (config *Configuration) GetPublicServiceURL() string {
+	result := "http"
+
+	if config.CertFile != "" && config.KeyFile != "" {
+		result += "s"
+	}
+
+	result += fmt.Sprintf("://%s:%d", config.ServiceAddress, config.ServicePort)
+	return result
+}
+
+/*
 GetPublicWWWRoot returns a full protocol, address and port for the web application
 */
 func (config *Configuration) GetPublicWWWRoot() string {

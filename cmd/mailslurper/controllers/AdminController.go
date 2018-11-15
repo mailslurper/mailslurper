@@ -145,9 +145,7 @@ func (c *AdminController) GetServiceSettings(ctx echo.Context) error {
 
 	settings := mailslurper.ServiceSettings{
 		AuthenticationScheme: c.Config.AuthenticationScheme,
-		IsSSL:                c.Config.IsServiceSSL(),
-		ServiceAddress:       c.Config.ServiceAddress,
-		ServicePort:          c.Config.ServicePort,
+		URL:                  c.Config.GetPublicServiceURL(),
 		Version:              c.ServerVersion,
 	}
 

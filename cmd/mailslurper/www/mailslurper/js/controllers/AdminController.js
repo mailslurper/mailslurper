@@ -127,7 +127,8 @@
 		window.SettingsService.storeSettings(settings)
 			.then(function () {
 				if (settings.theme != currentTheme) {
-					window.location = "/admin";
+					var appURL = window.SettingsService.getAppURL();
+					window.location = appURL + "/admin";
 					return;
 				}
 

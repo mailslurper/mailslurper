@@ -42,9 +42,10 @@ func (c *AdminController) Admin(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
-		Title: "Admin",
-		User:  context.User,
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
+		Title:        "Admin",
+		User:         context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:admin", data)
@@ -86,9 +87,10 @@ func (c *AdminController) Index(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
-		Title: "Mail",
-		User:  context.User,
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
+		Title:        "Mail",
+		User:         context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:index", data)
@@ -118,9 +120,10 @@ func (c *AdminController) ManageSavedSearches(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
-		Title: "Manage Saved Searches",
-		User:  context.User,
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
+		Title:        "Manage Saved Searches",
+		User:         context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:manageSavedSearches", data)

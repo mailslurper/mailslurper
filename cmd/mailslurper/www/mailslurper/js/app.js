@@ -3,6 +3,8 @@
 // that can be found in the LICENSE file.
 
 $(document).ready(function () {
+	var appURL = window.SettingsService.getAppURL();
+	
 	if (!window.SettingsService.serviceSettingsExistInLocalStore()) {
 		window.SettingsService.getServiceSettings()
 			.then(function (serviceSettings) {
@@ -12,7 +14,7 @@ $(document).ready(function () {
 			.then(function (serviceSettings) {
 				if (serviceSettings.authenticationScheme !== "") {
 					if (!window.AuthService.tokenExistsInStorage()) {
-						window.location = "/login";
+						window.location = appURL + "/login";
 					}
 				}
 			})
@@ -26,7 +28,7 @@ $(document).ready(function () {
 		$("#logOutLink").on("click", function () {
 			window.AuthService.logout(serviceURL)
 				.then(function () {
-					window.location = "/logout";
+					window.location = appURL + "/logout";
 				})
 				.catch(function (err) {
 					alert("There was an error logging out: " + err)

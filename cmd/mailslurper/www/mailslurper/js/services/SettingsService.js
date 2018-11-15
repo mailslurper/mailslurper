@@ -76,6 +76,13 @@ window.SettingsService = {
 	},
 
 	/**
+	 * getWWURL return the fully formatted app URL
+	 */
+	getAppURL: function () {
+		return $('meta[name=app-url]').attr('content')
+	},
+
+	/**
 	 * retrieveSavedSearches reads saved searches from local storage
 	 */
 	retrieveSavedSearches: function () {

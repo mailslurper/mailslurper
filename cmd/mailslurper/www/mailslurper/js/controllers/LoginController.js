@@ -55,7 +55,8 @@
 				$("#frmLogin").submit();
 			})
 			.catch(function (err) {
-				window.location = "/login?message=Invalid user name or password";
+				var appURL = window.SettingsService.getAppURL();
+				window.location = appURL + "/login?message=Invalid user name or password";
 			});
 	}
 

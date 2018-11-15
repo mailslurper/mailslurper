@@ -1,8 +1,10 @@
 {
 	"wwwAddress": "localhost",
 	"wwwPort": 8080,
+	"wwwPublicURL": "",
 	"serviceAddress": "localhost",
 	"servicePort": 8085,
+	"servicePublicURL": "",
 	"smtpAddress": "localhost",
 	"smtpPort": 2500,
 	"dbEngine": "SQLite",

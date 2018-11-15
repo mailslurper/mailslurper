@@ -21,8 +21,7 @@ $(document).ready(function () {
 				window.AlertService.logMessage(err, "error");
 			});
 	} else {
-		var serviceSettings = window.SettingsService.retrieveSettings();
-		var serviceURL = window.SettingsService.getServiceURL(serviceSettings);
+		var serviceURL = window.SettingsService.getServiceURL();
 
 		$("#logOutLink").on("click", function () {
 			window.AuthService.logout(serviceURL)

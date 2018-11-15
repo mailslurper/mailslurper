@@ -47,7 +47,7 @@
 			return false;
 		}
 
-		var serviceURL = window.SettingsService.getServiceURL(serviceSettings);
+		var serviceURL = window.SettingsService.getServiceURL();
 
 		window.AuthService.login(serviceURL, getUserName(), getPassword())
 			.then(function (token) {

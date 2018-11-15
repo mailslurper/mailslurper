@@ -66,7 +66,7 @@ window.SettingsService = {
 	/**
 	 * getServiceURL returns a fully formatted service URL
 	 */
-	getServiceURL: function (serviceSettings) {
+	getServiceURL: function () {
 		var serviceSettings = window.SettingsService.retrieveServiceSettings();
 		var serviceAddress = serviceSettings.serviceAddress;
 

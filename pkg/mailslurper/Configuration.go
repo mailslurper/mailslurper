@@ -125,9 +125,9 @@ func (config *Configuration) GetPublicServiceURL() string {
 }
 
 /*
-GetPublicWWWRoot returns a full protocol, address and port for the web application
+GetPublicWWWURL returns a full protocol, address and port for the web application
 */
-func (config *Configuration) GetPublicWWWRoot() string {
+func (config *Configuration) GetPublicWWWURL() string {
 	result := "http"
 
 	if config.AdminCertFile != "" && config.AdminKeyFile != "" {

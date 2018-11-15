@@ -8,10 +8,10 @@ package mailslurper
 A Page is the basis for all displayed HTML pages
 */
 type Page struct {
-	PublicWWWRoot string
-	Error         bool
-	Message       string
-	Theme         string
-	Title         string
-	User          string
+	PublicWWWURL string
+	Error        bool
+	Message      string
+	Theme        string
+	Title        string
+	User         string
 }

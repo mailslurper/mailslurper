@@ -13,17 +13,17 @@
 	<meta name="description" content="MailSlurper Server - Slurps mail into oblivion!" />
 	<meta name="author" content="Adam Presley <adam@adampresley.com>" />
 
-	<link rel="icon" href="{{PublicWWWRoot}}/mailslurper/images/favicon.ico" />
+	<link rel="icon" href="{{PublicWWWURL}}/mailslurper/images/favicon.ico" />
 
 	<title>{{.Title}} // MailSlurper</title>
 
-	<link href="{{PublicWWWRoot}}/mailslurper/themes/{{.Theme}}/bootstrap.css" rel="stylesheet" id="themeBootstrapStylesheet" />
-	<link href="{{PublicWWWRoot}}/fontawesome/css/font-awesome.css" rel="stylesheet" />
-	<link href="{{PublicWWWRoot}}/lightbox2/css/lightbox.css" rel="stylesheet" />
-	<link href="{{PublicWWWRoot}}/bootstrap-dialog/css/bootstrap-dialog.css" rel="stylesheet" />
-	<link href="{{PublicWWWRoot}}/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
-	<link href="{{PublicWWWRoot}}/mailslurper/css/style.css" rel="stylesheet" />
-	<link href="{{PublicWWWRoot}}/mailslurper/themes/{{.Theme}}/style.css" rel="stylesheet" id="themeStylesheet" />
+	<link href="{{PublicWWWURL}}/mailslurper/themes/{{.Theme}}/bootstrap.css" rel="stylesheet" id="themeBootstrapStylesheet" />
+	<link href="{{PublicWWWURL}}/fontawesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="{{PublicWWWURL}}/lightbox2/css/lightbox.css" rel="stylesheet" />
+	<link href="{{PublicWWWURL}}/bootstrap-dialog/css/bootstrap-dialog.css" rel="stylesheet" />
+	<link href="{{PublicWWWURL}}/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+	<link href="{{PublicWWWURL}}/mailslurper/css/style.css" rel="stylesheet" />
+	<link href="{{PublicWWWURL}}/mailslurper/themes/{{.Theme}}/style.css" rel="stylesheet" id="themeStylesheet" />
 	{{template "css" .}}
 </head>
 
@@ -38,7 +38,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand mailSlurperLogoLink" href="/"><img src="{{PublicWWWRoot}}/mailslurper/images/logo.png" alt="MailSlurper" class="mailSlurperLogo" /></a>
+				<a class="navbar-brand mailSlurperLogoLink" href="/"><img src="{{PublicWWWURL}}/mailslurper/images/logo.png" alt="MailSlurper" class="mailSlurperLogo" /></a>
 			</div>
 
 			<div id="navbar" class="collapse navbar-collapse">
@@ -78,35 +78,35 @@
 	<!-- /.container -->
 </body>
 
-<script src="{{PublicWWWRoot}}/npo/npo.js"></script>
-<script src="{{PublicWWWRoot}}/moment/moment.js"></script>
-<script src="{{PublicWWWRoot}}/handlebars/handlebars.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/attachmentURL.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/autoRefreshSelector.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/dateFormatSelector.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/formatDateTime.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/ifIsImageAttachment.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/themeSelector.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/pageSelector.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/templates/helpers/unescape.js"></script>
-<script src="{{PublicWWWRoot}}/jquery/jquery.js"></script>
-<script src="{{PublicWWWRoot}}/blockui/jquery.blockUI.js"></script>
-<script src="{{PublicWWWRoot}}/bootstrap/js/bootstrap.js"></script>
-<script src="{{PublicWWWRoot}}/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="{{PublicWWWRoot}}/bootstrap-dialog/js/bootstrap-dialog.js"></script>
-<script src="{{PublicWWWRoot}}/bootstrap-growl/jquery.bootstrap-growl.js"></script>
-<script src="{{PublicWWWRoot}}/lightbox2/js/lightbox.js"></script>
+<script src="{{PublicWWWURL}}/npo/npo.js"></script>
+<script src="{{PublicWWWURL}}/moment/moment.js"></script>
+<script src="{{PublicWWWURL}}/handlebars/handlebars.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/attachmentURL.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/autoRefreshSelector.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/dateFormatSelector.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/formatDateTime.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/ifIsImageAttachment.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/themeSelector.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/pageSelector.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/templates/helpers/unescape.js"></script>
+<script src="{{PublicWWWURL}}/jquery/jquery.js"></script>
+<script src="{{PublicWWWURL}}/blockui/jquery.blockUI.js"></script>
+<script src="{{PublicWWWURL}}/bootstrap/js/bootstrap.js"></script>
+<script src="{{PublicWWWURL}}/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="{{PublicWWWURL}}/bootstrap-dialog/js/bootstrap-dialog.js"></script>
+<script src="{{PublicWWWURL}}/bootstrap-growl/jquery.bootstrap-growl.js"></script>
+<script src="{{PublicWWWURL}}/lightbox2/js/lightbox.js"></script>
 
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/SettingsService.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/AuthService.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/AlertService.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/MailService.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/SeedService.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/VersionService.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/services/TemplateService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/SettingsService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/AuthService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/AlertService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/MailService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/SeedService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/VersionService.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/services/TemplateService.js"></script>
 
-<script src="{{PublicWWWRoot}}/mailslurper/js/widgets/SavedSearchesWidget.js"></script>
-<script src="{{PublicWWWRoot}}/mailslurper/js/app.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/widgets/SavedSearchesWidget.js"></script>
+<script src="{{PublicWWWURL}}/mailslurper/js/app.js"></script>
 {{template "js" .}}
 
 </html>

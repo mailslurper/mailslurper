@@ -99,8 +99,8 @@ Login renders the login page
 */
 func (c *AdminController) Login(ctx echo.Context) error {
 	data := mailslurper.Page{
-		PublicWWWRoot: c.Config.GetPublicWWWRoot(),
-		Theme:         c.Config.GetTheme(),
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
 	}
 
 	if ctx.QueryParam("message") != "" {

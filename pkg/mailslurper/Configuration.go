@@ -111,9 +111,9 @@ func (config *Configuration) GetFullWWWBindingAddress() string {
 }
 
 /*
-GetCORSWWWAddress returns a full protocol, address and port for the web application
+GetPublicWWWRoot returns a full protocol, address and port for the web application
 */
-func (config *Configuration) GetCORSWWWAddress() string {
+func (config *Configuration) GetPublicWWWRoot() string {
 	result := "http"
 
 	if config.CertFile != "" && config.KeyFile != "" {

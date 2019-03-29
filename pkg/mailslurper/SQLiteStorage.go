@@ -218,6 +218,46 @@ func (storage *SQLiteStorage) GetMailByID(mailItemID string) (*MailItem, error) 
 }
 
 /*
+GetMailMessageRawByID retrieves a single mail item and attachment by ID
+*/
+func (storage *SQLiteStorage) GetMailMessageRawByID(mailItemID string) (string, error) {
+	result := ""
+
+	var err error
+	var rows *sql.Rows
+
+	var dateSent string
+	var fromAddress string
+	var toAddressList string
+	var subject string
+	var xmailer string
+	var body string
+	var boundary sql.NullString
+	var attachmentID sql.NullString
+	var fileName sql.NullString
+	var mailContentType string
+	var attachmentContentType sql.NullString
+
+	sqlQuery := getMailAndAttachmentsQuery(" AND mailitem.id=? ")
+
+	if rows, err = storage.db.Query(sqlQuery, mailItemID); err != nil {
+		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&dateSent, &fromAddress, &toAddressList, &subject, &xmailer, &body, &mailContentType, &boundary, &attachmentID, &fileName, &attachmentContentType)
+		if err != nil {
+			return result, errors.Wrapf(err, "Error scanning mail record %s in GetMailMessageRawByID", mailItemID)
+		}
+		result = body
+		return result, nil
+	}
+	return result, nil
+}
+
+/*
 GetMailCollection retrieves a slice of mail items starting at offset and getting length number
 of records. This query is MSSQL 2005 and higher compatible.
 */

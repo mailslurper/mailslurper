@@ -15,6 +15,7 @@ type IStorage interface {
 
 	GetAttachment(mailID, attachmentID string) (*Attachment, error)
 	GetMailByID(id string) (*MailItem, error)
+	GetMailMessageRawByID(id string) (string, error)
 	GetMailCollection(offset, length int, mailSearch *MailSearch) ([]*MailItem, error)
 	GetMailCount(mailSearch *MailSearch) (int, error)
 

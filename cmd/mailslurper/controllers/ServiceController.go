@@ -221,6 +221,32 @@ func (c *ServiceController) GetMailMessage(ctx echo.Context) error {
 }
 
 /*
+GetMailMessageRaw returns the message contents of a single mail item
+
+	GET: /mail/{id}/messageraw
+*/
+func (c *ServiceController) GetMailMessageRaw(ctx echo.Context) error {
+	var mailID string
+	var body string
+	var err error
+
+	context := contexts.GetAdminContext(ctx)
+
+	mailID = context.Param("id")
+
+	/*
+	 * Retrieve the mail item
+	 */
+	if body, err = c.Database.GetMailMessageRawByID(mailID); err != nil {
+		c.Logger.Errorf("Problem getting mail item %s in GetMailMessageRaw - %s", mailID, err.Error())
+		return context.String(http.StatusInternalServerError, "Problem getting mail item")
+	}
+
+	c.Logger.Infof("Mail item %s retrieved", mailID)
+	return context.HTML(http.StatusOK, body)
+}
+
+/*
 GetPruneOptions retrieves the set of options available to users for pruning
 
 	GET: /pruneoptions

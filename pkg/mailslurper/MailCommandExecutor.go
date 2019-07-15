@@ -58,14 +58,17 @@ func (e *MailCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 		return err
 	}
 
-	if fromComponents, err = e.emailValidationService.GetEmailComponents(from); err != nil {
-		return InvalidEmail(from)
-	}
+	// For all we know, <> is a valid email address (RFC 2821, Section 6.1 & 3.7; NULL return path)
+	if from != "<>" {
+		if fromComponents, err = e.emailValidationService.GetEmailComponents(from); err != nil {
+			return InvalidEmail(from)
+		}
 
-	from = e.xssService.SanitizeString(fromComponents.Address)
+		from = e.xssService.SanitizeString(fromComponents.Address)
 
-	if !e.emailValidationService.IsValidEmail(from) {
-		return InvalidEmail(from)
+		if !e.emailValidationService.IsValidEmail(from) {
+			return InvalidEmail(from)
+		}
 	}
 
 	mailItem.FromAddress = from

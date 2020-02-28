@@ -6,13 +6,13 @@ RUN apk --no-cache add git libc-dev gcc
 
 WORKDIR /app
 COPY . /app
-WORKDIR /go/src/github.com/mailslurper/mailslurper/cmd/mailslurper
 
 RUN go get ./...
+RUN go get github.com/mjibson/esc
 RUN go generate ./...
 RUN go build ./cmd/mailslurper
 
-FROM alpine:3.6
+FROM alpine:3.11
 
 RUN apk add --no-cache ca-certificates \
  && echo -e '{\n\

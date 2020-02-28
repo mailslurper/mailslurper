@@ -9,11 +9,10 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gorilla/sessions v1.2.0
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo-contrib v0.8.0
+	github.com/labstack/echo/v4 v4.1.14
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
-	github.com/mjibson/esc v0.2.0 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1

@@ -3,14 +3,14 @@ FROM golang:alpine as builder
 LABEL maintainer="erguotou525@gmail.compute"
 
 RUN apk --no-cache add git libc-dev gcc
-RUN go get github.com/mjibson/esc
 
-COPY . /go/src/github.com/mailslurper/mailslurper
+WORKDIR /app
+COPY . /app
 WORKDIR /go/src/github.com/mailslurper/mailslurper/cmd/mailslurper
 
-RUN go get
-RUN go generate
-RUN go build
+RUN go get ./...
+RUN go generate ./...
+RUN go build ./cmd/mailslurper
 
 FROM alpine:3.6
 
@@ -37,7 +37,7 @@ RUN apk add --no-cache ca-certificates \
   }'\
   >> config.json
 
-COPY --from=builder /go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/mailslurper mailslurper
+COPY --from=builder /app/mailslurper mailslurper
 
 EXPOSE 8080 8085 2500
 

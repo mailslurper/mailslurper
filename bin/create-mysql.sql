@@ -21,5 +21,5 @@ CREATE TABLE attachment (
 	mailItemId VARCHAR(36) NOT NULL,
 	fileName VARCHAR(255),
 	contentType VARCHAR(50),
-	content TEXT
+	content LONGTEXT
 ) ENGINE=MyISAM;

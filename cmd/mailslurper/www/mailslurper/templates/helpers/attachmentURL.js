@@ -4,5 +4,5 @@
 "use strict";
 
 Handlebars.registerHelper("attachmentURL", function (attachment) {
-	return window.SettingsService.getServiceURL(window.SettingsService.retrieveServiceSettings()) + "/mail/" + attachment.mailId + "/attachment/" + attachment.id;
+	return window.SettingsService.getServiceURL() + "/mail/" + attachment.mailId + "/attachment/" + attachment.id;
 });

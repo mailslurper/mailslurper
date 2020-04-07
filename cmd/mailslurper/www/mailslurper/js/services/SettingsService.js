@@ -66,17 +66,20 @@ window.SettingsService = {
 	/**
 	 * getServiceURL returns a fully formatted service URL
 	 */
-	getServiceURL: function (serviceSettings) {
+	getServiceURL: function () {
 		var serviceSettings = window.SettingsService.retrieveServiceSettings();
-		var serviceAddress = serviceSettings.serviceAddress;
+		var serviceURL = serviceSettings.url;
 
-		if (serviceAddress === "0.0.0.0") {
-			serviceAddress = window.location.hostname;
-		}
+		serviceURL = serviceURL.replace('0.0.0.0', window.location.hostname);
 
-		var protocol = (serviceSettings.isSSL) ? "https:" : "http:";
-		var serviceURL = protocol + "//" + serviceAddress + ":" + serviceSettings.servicePort;
 		return serviceURL;
+	},
+
+	/**
+	 * getWWURL return the fully formatted app URL
+	 */
+	getAppURL: function () {
+		return $('meta[name=app-url]').attr('content')
 	},
 
 	/**

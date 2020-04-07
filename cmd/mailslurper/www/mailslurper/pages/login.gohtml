@@ -1,6 +1,6 @@
 {{define "body"}}
 <p class="logo-container">
-	<img src="/www/mailslurper/images/vertical.png" alt="MailSlurper Logo" />
+	<img src="{{.PublicWWWURL}}/www/mailslurper/images/vertical.png" alt="MailSlurper Logo" />
 </p>
 
 {{if .Error}}
@@ -25,5 +25,5 @@
 {{end}}
 
 {{define "js"}}
-	<script src="/www/mailslurper/js/controllers/LoginController.js"></script>
+	<script src="{{.PublicWWWURL}}/www/mailslurper/js/controllers/LoginController.js"></script>
 {{end}}

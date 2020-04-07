@@ -13,17 +13,19 @@
 	<meta name="description" content="MailSlurper Server - Slurps mail into oblivion!" />
 	<meta name="author" content="Adam Presley <adam@adampresley.com>" />
 
-	<link rel="icon" href="/www/mailslurper/images/favicon.ico" />
+	<meta name="app-url" content="{{.PublicWWWURL}}" />
+
+	<link rel="icon" href="{{.PublicWWWURL}}/www/mailslurper/images/favicon.ico" />
 
 	<title>Login // MailSlurper</title>
 
-	<link href="/www/mailslurper/themes/{{.Theme}}/bootstrap.css" rel="stylesheet" id="themeBootstrapStylesheet" />
-	<link href="/www/fontawesome/css/font-awesome.css" rel="stylesheet" />
-	<link href="/www/lightbox2/css/lightbox.css" rel="stylesheet" />
-	<link href="/www/bootstrap-dialog/css/bootstrap-dialog.css" rel="stylesheet" />
-	<link href="/www/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
-	<link href="/www/mailslurper/themes/{{.Theme}}/style.css" rel="stylesheet" id="themeStylesheet" />
-	<link href="/www/mailslurper/css/login.css" rel="stylesheet" />
+	<link href="{{.PublicWWWURL}}/www/mailslurper/themes/{{.Theme}}/bootstrap.css" rel="stylesheet" id="themeBootstrapStylesheet" />
+	<link href="{{.PublicWWWURL}}/www/fontawesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="{{.PublicWWWURL}}/www/lightbox2/css/lightbox.css" rel="stylesheet" />
+	<link href="{{.PublicWWWURL}}/www/bootstrap-dialog/css/bootstrap-dialog.css" rel="stylesheet" />
+	<link href="{{.PublicWWWURL}}/www/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+	<link href="{{.PublicWWWURL}}/www/mailslurper/themes/{{.Theme}}/style.css" rel="stylesheet" id="themeStylesheet" />
+	<link href="{{.PublicWWWURL}}/www/mailslurper/css/login.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -33,18 +35,18 @@
 	<!-- /.container -->
 </body>
 
-<script src="/www/npo/npo.js"></script>
-<script src="/www/moment/moment.js"></script>
-<script src="/www/handlebars/handlebars.js"></script>
-<script src="/www/jquery/jquery.js"></script>
-<script src="/www/blockui/jquery.blockUI.js"></script>
-<script src="/www/bootstrap/js/bootstrap.js"></script>
-<script src="/www/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="/www/bootstrap-dialog/js/bootstrap-dialog.js"></script>
-<script src="/www/bootstrap-growl/jquery.bootstrap-growl.js"></script>
-<script src="/www/lightbox2/js/lightbox.js"></script>
-<script src="/www/mailslurper/js/services/SettingsService.js"></script>
-<script src="/www/mailslurper/js/services/AuthService.js"></script>
+<script src="{{.PublicWWWURL}}/www/npo/npo.js"></script>
+<script src="{{.PublicWWWURL}}/www/moment/moment.js"></script>
+<script src="{{.PublicWWWURL}}/www/handlebars/handlebars.js"></script>
+<script src="{{.PublicWWWURL}}/www/jquery/jquery.js"></script>
+<script src="{{.PublicWWWURL}}/www/blockui/jquery.blockUI.js"></script>
+<script src="{{.PublicWWWURL}}/www/bootstrap/js/bootstrap.js"></script>
+<script src="{{.PublicWWWURL}}/www/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="{{.PublicWWWURL}}/www/bootstrap-dialog/js/bootstrap-dialog.js"></script>
+<script src="{{.PublicWWWURL}}/www/bootstrap-growl/jquery.bootstrap-growl.js"></script>
+<script src="{{.PublicWWWURL}}/www/lightbox2/js/lightbox.js"></script>
+<script src="{{.PublicWWWURL}}/www/mailslurper/js/services/SettingsService.js"></script>
+<script src="{{.PublicWWWURL}}/www/mailslurper/js/services/AuthService.js"></script>
 
 {{template "js" .}}
 

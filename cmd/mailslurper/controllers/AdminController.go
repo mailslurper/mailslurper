@@ -42,9 +42,10 @@ func (c *AdminController) Admin(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
-		Title: "Admin",
-		User:  context.User,
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
+		Title:        "Admin",
+		User:         context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:admin", data)
@@ -86,9 +87,10 @@ func (c *AdminController) Index(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
-		Title: "Mail",
-		User:  context.User,
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
+		Title:        "Mail",
+		User:         context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:index", data)
@@ -99,7 +101,8 @@ Login renders the login page
 */
 func (c *AdminController) Login(ctx echo.Context) error {
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
 	}
 
 	if ctx.QueryParam("message") != "" {
@@ -117,9 +120,10 @@ func (c *AdminController) ManageSavedSearches(ctx echo.Context) error {
 	context := contexts.GetAdminContext(ctx)
 
 	data := mailslurper.Page{
-		Theme: c.Config.GetTheme(),
-		Title: "Manage Saved Searches",
-		User:  context.User,
+		PublicWWWURL: c.Config.GetPublicWWWURL(),
+		Theme:        c.Config.GetTheme(),
+		Title:        "Manage Saved Searches",
+		User:         context.User,
 	}
 
 	return context.Render(http.StatusOK, "mainLayout:manageSavedSearches", data)
@@ -144,9 +148,7 @@ func (c *AdminController) GetServiceSettings(ctx echo.Context) error {
 
 	settings := mailslurper.ServiceSettings{
 		AuthenticationScheme: c.Config.AuthenticationScheme,
-		IsSSL:                c.Config.IsServiceSSL(),
-		ServiceAddress:       c.Config.ServiceAddress,
-		ServicePort:          c.Config.ServicePort,
+		URL:                  c.Config.GetPublicServiceURL(),
 		Version:              c.ServerVersion,
 	}
 

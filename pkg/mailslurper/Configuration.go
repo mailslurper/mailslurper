@@ -23,8 +23,10 @@ servers and connect to databases.
 type Configuration struct {
 	WWWAddress       string `json:"wwwAddress"`
 	WWWPort          int    `json:"wwwPort"`
+	WWWPublicURL     string `json:"wwwPublicURL"`
 	ServiceAddress   string `json:"serviceAddress"`
 	ServicePort      int    `json:"servicePort"`
+	ServicePublicURL string `json:"servicePublicURL"`
 	SMTPAddress      string `json:"smtpAddress"`
 	SMTPPort         int    `json:"smtpPort"`
 	DBEngine         string `json:"dbEngine"`
@@ -111,12 +113,34 @@ func (config *Configuration) GetFullWWWBindingAddress() string {
 }
 
 /*
-GetCORSWWWAddress returns a full protocol, address and port for the web application
+GetPublicServiceURL returns a full protocol, address, and port for the MailSlurper service
 */
-func (config *Configuration) GetCORSWWWAddress() string {
+func (config *Configuration) GetPublicServiceURL() string {
+	if config.ServicePublicURL != "" {
+		return config.ServicePublicURL
+	}
+
 	result := "http"
 
 	if config.CertFile != "" && config.KeyFile != "" {
+		result += "s"
+	}
+
+	result += fmt.Sprintf("://%s:%d", config.ServiceAddress, config.ServicePort)
+	return result
+}
+
+/*
+GetPublicWWWURL returns a full protocol, address and port for the web application
+*/
+func (config *Configuration) GetPublicWWWURL() string {
+	if config.WWWPublicURL != "" {
+		return config.WWWPublicURL
+	}
+
+	result := "http"
+
+	if config.AdminCertFile != "" && config.AdminKeyFile != "" {
 		result += "s"
 	}
 

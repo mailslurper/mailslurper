@@ -26,6 +26,7 @@ const (
 	RSET SMTPCommand = iota
 	DATA SMTPCommand = iota
 	QUIT SMTPCommand = iota
+	NOOP SMTPCommand = iota
 )
 
 /*
@@ -43,6 +44,7 @@ var SMTPCommands = map[string]SMTPCommand{
 	"rset":      RSET,
 	"quit":      QUIT,
 	"data":      DATA,
+	"noop":      NOOP,
 }
 
 /*
@@ -56,6 +58,7 @@ var SMTPCommandsToStrings = map[SMTPCommand]string{
 	RSET: "RSET",
 	QUIT: "QUIT",
 	DATA: "DATA",
+	NOOP: "NOOP",
 }
 
 /*

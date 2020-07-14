@@ -30,7 +30,8 @@
 						label: "Manage",
 						cssClass: "btn-default",
 						action: function () {
-							window.location = "/savedsearches";
+							var appURL = window.SettingsService.getAppURL();
+							window.location = appURL + "/savedsearches";
 						}
 					},
 					{

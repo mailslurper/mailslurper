@@ -7,7 +7,8 @@
 window.TemplateService = {
 	load: function (name) {
 		return new Promise(function (resolve, reject) {
-			$.get("/www/mailslurper/templates/" + name + ".hbs").then(
+			var appURL = window.SettingsService.getAppURL();
+			$.get(appURL + "/www/mailslurper/templates/" + name + ".hbs").then(
 				function (result) {
 					return resolve(result);
 				},

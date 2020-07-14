@@ -47,7 +47,7 @@
 			return false;
 		}
 
-		var serviceURL = window.SettingsService.getServiceURL(serviceSettings);
+		var serviceURL = window.SettingsService.getServiceURL();
 
 		window.AuthService.login(serviceURL, getUserName(), getPassword())
 			.then(function (token) {
@@ -55,7 +55,8 @@
 				$("#frmLogin").submit();
 			})
 			.catch(function (err) {
-				window.location = "/login?message=Invalid user name or password";
+				var appURL = window.SettingsService.getAppURL();
+				window.location = appURL + "/login?message=Invalid user name or password";
 			});
 	}
 

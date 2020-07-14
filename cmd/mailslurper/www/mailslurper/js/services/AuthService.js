@@ -74,6 +74,7 @@ window.AuthService = {
 	},
 
 	gotoLogin: function () {
-		window.location = "/login";
+		var appURL = window.SettingsService.getAppURL();
+		window.location = appURL + "/login";
 	}
 };

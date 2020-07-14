@@ -18,8 +18,10 @@ RUN apk add --no-cache ca-certificates \
  && echo -e '{\n\
   "wwwAddress": "0.0.0.0",\n\
   "wwwPort": 8080,\n\
+  "wwwPublicURL": "",\n\
   "serviceAddress": "0.0.0.0",\n\
   "servicePort": 8085,\n\
+  "servicePublicURL": "",\n\
   "smtpAddress": "0.0.0.0",\n\
   "smtpPort": 2500,\n\
   "dbEngine": "SQLite",\n\

@@ -72,7 +72,6 @@ func (c *ServiceController) DeleteMail(ctx echo.Context) error {
 
 func (c *ServiceController) Head(ctx echo.Context) error {
 	c.Logger.Info("Just HEAD")
-	result := 1
 	return ctx.NoContent(http.StatusOK)
 }
 

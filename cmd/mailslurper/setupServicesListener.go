@@ -41,10 +41,9 @@ func setupServicesListener() {
 		middlewares = append(middlewares, serviceAuthorization)
 	}
 
-	service.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
-	}))
+	service.Use(middleware.CORS())
 
+	service.HEAD("/*", serviceController.Head, middlewares...)
 	service.GET("/mail/:id", serviceController.GetMail, middlewares...)
 	service.GET("/mail/:id/message", serviceController.GetMailMessage, middlewares...)
 	service.GET("/mail/:id/messageraw", serviceController.GetMailMessageRaw, middlewares...)

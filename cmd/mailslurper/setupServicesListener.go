@@ -43,7 +43,11 @@ func setupServicesListener() {
 
 	service.Use(middleware.CORS())
 
-	service.HEAD("/*", serviceController.Head, middlewares...)
+	service.HEAD("/", serviceController.Head, middlewares...)
+	service.HEAD("/mail", serviceController.Head, middlewares...)
+	service.HEAD("/mail/:id", serviceController.Head, middlewares...)
+	service.HEAD("/mail/:id/message", serviceController.Head, middlewares...)
+	service.HEAD("/mail/:id/messageraw", serviceController.Head, middlewares...)
 	service.GET("/mail/:id", serviceController.GetMail, middlewares...)
 	service.GET("/mail/:id/message", serviceController.GetMailMessage, middlewares...)
 	service.GET("/mail/:id/messageraw", serviceController.GetMailMessageRaw, middlewares...)

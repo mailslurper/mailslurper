@@ -47,6 +47,7 @@ var service *echo.Echo
 
 var logFormat = flag.String("logformat", "simple", "Format for logging. 'simple' or 'json'.")
 var logLevel = flag.String("loglevel", "info", "Level of logs to write. Valid values are 'debug', 'info', or 'error'.")
+var configFile = flag.String("config", "config.json", "Absolute location of the config.json. Default is 'config.json' in the current directory")
 
 func main() {
 	var err error
@@ -56,7 +57,8 @@ func main() {
 	logger.Infof("Starting MailSlurper Server v%s", SERVER_VERSION)
 
 	renderer = ui.NewTemplateRenderer(DEBUG_ASSETS)
-	setupConfig()
+	setupConfig(*configFile)
+	logger.Infof("Using configuration from %s", *configFile)
 
 	if err = config.Validate(); err != nil {
 		logger.WithError(err).Fatalf("Invalid configuration")

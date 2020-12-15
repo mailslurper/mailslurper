@@ -6,13 +6,13 @@ package main
 
 import "github.com/mailslurper/mailslurper/pkg/mailslurper"
 
-func setupConfig() {
+func setupConfig(configFile string) {
 	var err error
 
 	/*
 	 * Load configuration
 	 */
-	if config, err = mailslurper.LoadConfigurationFromFile(CONFIGURATION_FILE_NAME); err != nil {
+	if config, err = mailslurper.LoadConfigurationFromFile(configFile); err != nil {
 		logger.WithError(err).Fatalf("There was an error reading the configuration file '%s'", CONFIGURATION_FILE_NAME)
 	}
 }

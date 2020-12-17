@@ -9,8 +9,9 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
-   "strings"
+
 	"github.com/labstack/echo"
 	"github.com/mailslurper/mailslurper/pkg/auth/auth"
 	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
@@ -69,6 +70,11 @@ func (c *ServiceController) DeleteMail(ctx echo.Context) error {
 	return context.String(http.StatusOK, strconv.Itoa(int(rowsDeleted)))
 }
 
+func (c *ServiceController) Head(ctx echo.Context) error {
+	c.Logger.Info("Just HEAD")
+	return ctx.NoContent(http.StatusOK)
+}
+
 /*
 GetMail returns a single mail item by ID.
 
@@ -78,8 +84,8 @@ func (c *ServiceController) GetMail(ctx echo.Context) error {
 	var mailID string
 	var result *mailslurper.MailItem
 	var err error
-   var mailBody string
-   var convertSucess bool
+	var mailBody string
+	var convertSucess bool
 
 	context := contexts.GetAdminContext(ctx)
 
@@ -92,11 +98,10 @@ func (c *ServiceController) GetMail(ctx echo.Context) error {
 		c.Logger.Errorf("Problem getting mail item %s - %s", mailID, err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
-   if mailBody, convertSucess = c.ConvertFromBase64(result.Body); convertSucess==true{
-       result.Body=mailBody
-       result.HTMLBody=mailBody
-   }
-
+	if mailBody, convertSucess = c.ConvertFromBase64(result.Body); convertSucess == true {
+		result.Body = mailBody
+		result.HTMLBody = mailBody
+	}
 
 	c.Logger.Infof("Mail item %s retrieved", mailID)
 	return context.JSON(http.StatusOK, result)
@@ -210,8 +215,8 @@ func (c *ServiceController) GetMailMessage(ctx echo.Context) error {
 	var mailID string
 	var mailItem *mailslurper.MailItem
 	var err error
-   var mailBody string
-   var convertSucess bool
+	var mailBody string
+	var convertSucess bool
 
 	context := contexts.GetAdminContext(ctx)
 
@@ -224,23 +229,49 @@ func (c *ServiceController) GetMailMessage(ctx echo.Context) error {
 		c.Logger.Errorf("Problem getting mail item %s in GetMailMessage - %s", mailID, err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
-   if mailBody, convertSucess = c.ConvertFromBase64(mailItem.Body); convertSucess==true{
-       return context.HTML(http.StatusOK, mailBody)
-   }
+	if mailBody, convertSucess = c.ConvertFromBase64(mailItem.Body); convertSucess == true {
+		return context.HTML(http.StatusOK, mailBody)
+	}
 
 	c.Logger.Infof("Mail item %s retrieved", mailID)
 	return context.HTML(http.StatusOK, mailItem.Body)
 }
 
-func (c *ServiceController ) ConvertFromBase64(s string) (string,bool) {
-   var mailBody []byte
-   var err error
-   
-   if mailBody, err = base64.StdEncoding.DecodeString(strings.Replace( s, " ", "", -1) ); err == nil {
-         return string(mailBody[:]),true
-   }
-   return "",false
+func (c *ServiceController) ConvertFromBase64(s string) (string, bool) {
+	var mailBody []byte
+	var err error
 
+	if mailBody, err = base64.StdEncoding.DecodeString(strings.Replace(s, " ", "", -1)); err == nil {
+		return string(mailBody[:]), true
+	}
+	return "", false
+
+}
+
+/*
+GetMailMessageRaw returns the message contents of a single mail item
+
+	GET: /mail/{id}/messageraw
+*/
+func (c *ServiceController) GetMailMessageRaw(ctx echo.Context) error {
+	var mailID string
+	var body string
+	var err error
+
+	context := contexts.GetAdminContext(ctx)
+
+	mailID = context.Param("id")
+
+	/*
+	 * Retrieve the mail item
+	 */
+	if body, err = c.Database.GetMailMessageRawByID(mailID); err != nil {
+		c.Logger.Errorf("Problem getting mail item %s in GetMailMessageRaw - %s", mailID, err.Error())
+		return context.String(http.StatusInternalServerError, "Problem getting mail item")
+	}
+
+	c.Logger.Infof("Mail item %s retrieved", mailID)
+	return context.HTML(http.StatusOK, body)
 }
 
 /*

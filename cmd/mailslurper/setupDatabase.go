@@ -15,8 +15,9 @@ func setupDatabase() {
 	 * Setup global database connection handle
 	 */
 	storageType, databaseConnection := config.GetDatabaseConfiguration()
+	xssService := mailslurper.NewXSSService(config)
 
-	if database, err = mailslurper.ConnectToStorage(storageType, databaseConnection, logger); err != nil {
+	if database, err = mailslurper.ConnectToStorage(storageType, databaseConnection, xssService, logger); err != nil {
 		logger.WithError(err).Fatalf("Error connecting to storage type '%d' with a connection string of %s", int(storageType), databaseConnection.String())
 	}
 }

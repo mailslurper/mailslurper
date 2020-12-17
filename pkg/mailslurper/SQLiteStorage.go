@@ -28,10 +28,10 @@ type SQLiteStorage struct {
 /*
 NewSQLiteStorage creates a new storage object that interfaces to SQLite
 */
-func NewSQLiteStorage(connectionInformation *ConnectionInformation, logger *logrus.Entry) *SQLiteStorage {
+func NewSQLiteStorage(connectionInformation *ConnectionInformation, xssService sanitizer.IXSSServiceProvider, logger *logrus.Entry) *SQLiteStorage {
 	return &SQLiteStorage{
 		connectionInformation: connectionInformation,
-		xssService:            sanitizer.NewXSSService(),
+		xssService:            xssService,
 		logger:                logger,
 	}
 }

@@ -4,7 +4,7 @@
 
 package mailslurper
 
-import "github.com/labstack/echo"
+import "github.com/labstack/echo/v4"
 
 /*
 ApplyThemeRequest is used to update and apply a theme change

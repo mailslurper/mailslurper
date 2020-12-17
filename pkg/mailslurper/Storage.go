@@ -4,13 +4,16 @@
 
 package mailslurper
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/adampresley/webframework/sanitizer"
+	"github.com/sirupsen/logrus"
+)
 
 /*
 ConnectToStorage establishes a connection to the configured database engine and returns
 an object.
 */
-func ConnectToStorage(storageType StorageType, connectionInfo *ConnectionInformation, logger *logrus.Entry) (IStorage, error) {
+func ConnectToStorage(storageType StorageType, connectionInfo *ConnectionInformation, xssService sanitizer.IXSSServiceProvider, logger *logrus.Entry) (IStorage, error) {
 	var err error
 	var storageHandle IStorage
 
@@ -18,13 +21,13 @@ func ConnectToStorage(storageType StorageType, connectionInfo *ConnectionInforma
 
 	switch storageType {
 	case STORAGE_SQLITE:
-		storageHandle = NewSQLiteStorage(connectionInfo, logger)
+		storageHandle = NewSQLiteStorage(connectionInfo, xssService, logger)
 
 	case STORAGE_MSSQL:
-		storageHandle = NewMSSQLStorage(connectionInfo, logger)
+		storageHandle = NewMSSQLStorage(connectionInfo, xssService, logger)
 
 	case STORAGE_MYSQL:
-		storageHandle = NewMySQLStorage(connectionInfo, logger)
+		storageHandle = NewMySQLStorage(connectionInfo, xssService, logger)
 	}
 
 	if err = storageHandle.Connect(); err != nil {

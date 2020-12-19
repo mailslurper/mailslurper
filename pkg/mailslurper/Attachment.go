@@ -24,8 +24,10 @@ type Attachment struct {
 /*
 NewAttachment creates a new Attachment object
 */
-func NewAttachment(headers *AttachmentHeader, contents string) *Attachment {
+func NewAttachment(id, mailid string, headers *AttachmentHeader, contents string) *Attachment {
 	return &Attachment{
+		ID:       id,
+		MailID:   mailid,
 		Headers:  headers,
 		Contents: contents,
 	}

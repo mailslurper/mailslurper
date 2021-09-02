@@ -7,6 +7,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golangci/golangci-lint v1.42.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/jinzhu/copier v0.3.2
 	github.com/labstack/echo-contrib v0.11.0
@@ -14,9 +15,11 @@ require (
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/microcosm-cc/bluemonday v1.0.15 // indirect
+	github.com/mjibson/esc v0.2.0
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
+	github.com/securego/gosec/v2 v2.8.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5

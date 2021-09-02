@@ -222,7 +222,7 @@ func storeAttachments(mailItemID string, transaction *sql.Tx, attachments []*Att
 			return fmt.Errorf("Error executing insert attachment in StoreMail: %s", err.Error())
 		}
 
-		statement.Close()
+		_ = statement.Close()
 		currentAttachment.ID = attachmentID
 	}
 

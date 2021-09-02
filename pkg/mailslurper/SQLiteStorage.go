@@ -49,7 +49,7 @@ func (storage *SQLiteStorage) Connect() error {
 Disconnect does exactly what you think it does
 */
 func (storage *SQLiteStorage) Disconnect() {
-	storage.db.Close()
+	_ = storage.db.Close()
 }
 
 /*
@@ -127,9 +127,11 @@ func (storage *SQLiteStorage) GetAttachment(mailID, attachmentID string) (*Attac
 		return result, errors.Wrapf(err, "Error getting attachment %s for mail %s: %s", attachmentID, mailID, getAttachmentSQL)
 	}
 
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 	rows.Next()
-	rows.Scan(&fileName, &contentType, &content)
+	_ = rows.Scan(&fileName, &contentType, &content)
 
 	result.Headers = &AttachmentHeader{
 		FileName:    fileName,
@@ -170,7 +172,9 @@ func (storage *SQLiteStorage) GetMailByID(mailItemID string) (*MailItem, error) 
 		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
 	}
 
-	defer rows.Close()
+	func() {
+		_ = rows.Close()
+	}()
 
 	for rows.Next() {
 		err = rows.Scan(&dateSent, &fromAddress, &toAddressList, &subject, &xmailer, &body, &mailContentType, &boundary, &attachmentID, &fileName, &attachmentContentType)
@@ -244,9 +248,11 @@ func (storage *SQLiteStorage) GetMailMessageRawByID(mailItemID string) (string, 
 		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
 	}
 
-	defer rows.Close()
+	func() {
+		_ = rows.Close()
+	}()
 
-	for rows.Next() {
+	if rows.Next() {
 		err = rows.Scan(&dateSent, &fromAddress, &toAddressList, &subject, &xmailer, &body, &mailContentType, &boundary, &attachmentID, &fileName, &attachmentContentType)
 		if err != nil {
 			return result, errors.Wrapf(err, "Error scanning mail record %s in GetMailMessageRawByID", mailItemID)
@@ -322,7 +328,9 @@ func (storage *SQLiteStorage) GetMailCollection(offset, length int, mailSearch *
 		return result, errors.Wrapf(err, "Error getting mails: %s", sqlQuery)
 	}
 
-	defer rows.Close()
+	func() {
+		_ = rows.Close()
+	}()
 
 	currentMailItemID = ""
 
@@ -468,21 +476,21 @@ func (storage *SQLiteStorage) StoreMail(mailItem *MailItem) (string, error) {
 	)
 
 	if err != nil {
-		transaction.Rollback()
+		_ = transaction.Rollback()
 		return "", errors.Wrapf(err, "Error inserting new mail item in StoreMail")
 	}
 
-	statement.Close()
+	_ = statement.Close()
 
 	/*
 	 * Insert attachments
 	 */
 	if err = storeAttachments(mailItem.ID, transaction, mailItem.Attachments); err != nil {
-		transaction.Rollback()
+		_ = transaction.Rollback()
 		return "", errors.Wrapf(err, "Error storing attachments to mail %s", mailItem.ID)
 	}
 
-	transaction.Commit()
+	_ = transaction.Commit()
 	storage.logger.Infof("New mail item written to database.")
 
 	return mailItem.ID, nil

@@ -9,15 +9,16 @@ import (
 	"sync"
 
 	"github.com/gorilla/sessions"
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
+
 	"github.com/mailslurper/mailslurper/pkg/auth/auth"
 	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
 	"github.com/mailslurper/mailslurper/pkg/cache"
 	"github.com/mailslurper/mailslurper/pkg/contexts"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
 	"github.com/mailslurper/mailslurper/pkg/ui"
-	"github.com/sirupsen/logrus"
 )
 
 /*
@@ -214,7 +215,7 @@ func (c *AdminController) PerformLogin(ctx echo.Context) error {
 	}
 	s.Values["user"] = credentials.UserName
 
-	s.Save(ctx.Request(), ctx.Response())
+	_ = s.Save(ctx.Request(), ctx.Response())
 	return ctx.Redirect(http.StatusFound, "/")
 }
 
@@ -228,6 +229,6 @@ func (c *AdminController) Logout(ctx echo.Context) error {
 		MaxAge: -1,
 	}
 
-	s.Save(ctx.Request(), ctx.Response())
+	_ = s.Save(ctx.Request(), ctx.Response())
 	return ctx.Redirect(http.StatusFound, "/login")
 }

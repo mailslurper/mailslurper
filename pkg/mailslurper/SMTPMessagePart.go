@@ -79,7 +79,7 @@ func (messagePart *SMTPMessagePart) BuildMessages(body string) error {
 		return errors.Wrap(err, "Problem reading headers")
 	}
 
-	messagePart.AddHeaders(headers)
+	_ = messagePart.AddHeaders(headers)
 
 	/*
 	 * If this is not a multipart message, bail early. We've got
@@ -203,7 +203,7 @@ func (messagePart *SMTPMessagePart) ParseMessages(body string, boundary string) 
 			newMessage.Message.Header = messagePart.convertPartHeadersToMap(part.Header)
 			newMessage.Message.Body = strings.NewReader(innerBody)
 
-			newMessage.ParseMessages(innerBody, boundary)
+			_ = newMessage.ParseMessages(innerBody, boundary)
 			messagePart.MessageParts = append(messagePart.MessageParts, newMessage)
 
 		default:

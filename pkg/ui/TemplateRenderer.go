@@ -20,7 +20,6 @@ var templates map[string]*template.Template
 TemplateRenderer describes a handlers for rendering layouts/pages
 */
 type TemplateRenderer struct {
-	templates *template.Template
 }
 
 /*

@@ -10,9 +10,5 @@ const (
 )
 
 func IsValidAuthScheme(authScheme string) bool {
-	if authScheme != BASIC {
-		return false
-	}
-
-	return true
+	return authScheme == BASIC
 }

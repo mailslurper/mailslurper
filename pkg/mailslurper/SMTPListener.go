@@ -65,7 +65,7 @@ func (s *SMTPListener) Start() error {
 	var tcpAddress *net.TCPAddr
 
 	if s.config.IsServiceSSL() {
-		tlsConfig := &tls.Config{Certificates: []tls.Certificate{s.certificate}}
+		tlsConfig := &tls.Config{Certificates: []tls.Certificate{s.certificate}, MinVersion: tls.VersionTLS12}
 
 		if s.listener, err = tls.Listen("tcp", s.config.GetFullSMTPBindingAddress(), tlsConfig); err != nil {
 			return errors.Wrapf(err, "Unable to start SMTP listener using TLS")
@@ -112,7 +112,9 @@ func (s *SMTPListener) Dispatch(ctx context.Context) {
 			select {
 			case item := <-s.mailItemChannel:
 				for _, r := range s.receivers {
-					go r.Receive(item)
+					go func(r IMailItemReceiver) {
+						_ = r.Receive(item)
+					}(r)
 				}
 
 			case <-ctx.Done():
@@ -140,7 +142,7 @@ func (s *SMTPListener) Dispatch(ctx context.Context) {
 
 				if err = s.connectionManager.New(connection); err != nil {
 					s.logger.WithError(err).Errorf("Error adding connection '%s' to connection manager", connection.RemoteAddr().String())
-					connection.Close()
+					_ = connection.Close()
 				}
 			}
 		}

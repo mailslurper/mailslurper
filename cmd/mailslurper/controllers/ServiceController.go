@@ -6,7 +6,6 @@ package controllers
 import (
 	"bytes"
 	"encoding/base64"
-	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -100,7 +99,7 @@ func (c *ServiceController) GetMail(ctx echo.Context) error {
 		c.Logger.Errorf("Problem getting mail item %s - %s", mailID, err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
-	if mailBody, convertSucess = c.ConvertFromBase64(result.Body); convertSucess == true {
+	if mailBody, convertSucess = c.ConvertFromBase64(result.Body); convertSucess {
 		result.Body = mailBody
 		result.HTMLBody = mailBody
 	}
@@ -164,7 +163,7 @@ func (c *ServiceController) GetMailCollection(ctx echo.Context) error {
 		return context.String(http.StatusInternalServerError, "Error getting record count")
 	}
 
-	totalPages := int(math.Ceil(float64(totalRecordCount / length)))
+	totalPages := int(float64(totalRecordCount / length))
 	if totalPages*length < totalRecordCount {
 		totalPages++
 	}
@@ -231,7 +230,7 @@ func (c *ServiceController) GetMailMessage(ctx echo.Context) error {
 		c.Logger.Errorf("Problem getting mail item %s in GetMailMessage - %s", mailID, err.Error())
 		return context.String(http.StatusInternalServerError, "Problem getting mail item")
 	}
-	if mailBody, convertSucess = c.ConvertFromBase64(mailItem.Body); convertSucess == true {
+	if mailBody, convertSucess = c.ConvertFromBase64(mailItem.Body); convertSucess {
 		return context.HTML(http.StatusOK, mailBody)
 	}
 

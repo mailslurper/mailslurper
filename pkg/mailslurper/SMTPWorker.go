@@ -106,7 +106,7 @@ start processing commands, and finally close the connection.
 func (smtpWorker *SMTPWorker) Work() {
 	var err error
 
-	smtpWorker.Writer.SayHello()
+	_ = smtpWorker.Writer.SayHello()
 	mailItem := NewEmptyMailItem(smtpWorker.logger)
 
 	quitChannel := make(chan bool, 2)
@@ -173,13 +173,13 @@ func (smtpWorker *SMTPWorker) Work() {
 		select {
 		case <-smtpWorker.killServerContext.Done():
 			smtpWorker.State = SMTP_WORKER_DONE
-			smtpWorker.Writer.SayGoodbye()
+			_ = smtpWorker.Writer.SayGoodbye()
 			smtpWorker.connectionCloseChannel <- smtpWorker.Connection
 			break
 
 		case <-quitChannel:
 			smtpWorker.logger.WithField("connection", smtpWorker.Connection.RemoteAddr().String()).Infof("QUIT command received")
-			smtpWorker.Writer.SayGoodbye()
+			_ = smtpWorker.Writer.SayGoodbye()
 
 			smtpWorker.State = SMTP_WORKER_DONE
 			smtpWorker.connectionCloseChannel <- smtpWorker.Connection
@@ -190,7 +190,7 @@ func (smtpWorker *SMTPWorker) Work() {
 		case workerError := <-workerErrorChannel:
 			smtpWorker.State = SMTP_WORKER_ERROR
 			smtpWorker.Error = workerError
-			smtpWorker.Writer.SayGoodbye()
+			_ = smtpWorker.Writer.SayGoodbye()
 
 			smtpWorker.connectionCloseChannel <- smtpWorker.Connection
 			smtpWorker.rejoinWorkerQueue()
@@ -215,7 +215,7 @@ func (smtpWorker *SMTPWorker) Work() {
 
 			if command.Command == DATA {
 				copy := NewEmptyMailItem(smtpWorker.logger)
-				copier.Copy(copy, mailItem)
+				_ = copier.Copy(copy, mailItem)
 				smtpWorker.Receiver <- copy
 
 				mailItem = NewEmptyMailItem(smtpWorker.logger)

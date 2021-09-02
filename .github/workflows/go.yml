@@ -1,0 +1,137 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  generation:
+    name: Generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: |
+          go mod download
+
+      - name: Generating files
+        run: go generate ./...
+
+      - uses: setare/git-changes-action@v0.1.2
+        with:
+          github_token: ${{ github.token }}
+          name: 'File generation check'
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs:
+      - generation
+    steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: |
+          go mod download
+
+      - name: Lint
+        run: |
+          go run github.com/golangci/golangci-lint/cmd/golangci-lint run
+
+  security:
+    name: Security checks
+    runs-on: ubuntu-latest
+    needs:
+      - generation
+    steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: |
+          go mod download
+
+      - name: Sec
+        run: |
+          go run github.com/securego/gosec/v2/cmd/gosec ./...
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - security
+    steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: |
+          go mod download
+
+      - name: Unit tests
+        run: |
+          go test -race -covermode=atomic -coverprofile=coverage.out ./...

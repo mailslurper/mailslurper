@@ -73,7 +73,7 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 		return errors.New("Invalid command for DATA")
 	}
 
-	e.writer.SendDataResponse()
+	_ = e.writer.SendDataResponse()
 
 	entireMailContents, err := e.reader.ReadDataBlock()
 	if err != nil {
@@ -82,7 +82,7 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 
 	if err = mailItem.Message.BuildMessages(entireMailContents); err != nil {
 		e.logger.Errorf("Problem parsing message contents: %s", err.Error())
-		e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
+		_ = e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
 		return errors.Wrap(err, "Problem parsing message contents")
 	}
 
@@ -93,7 +93,7 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 
 	if len(mailItem.Message.MessageParts) > 0 {
 		for _, m := range mailItem.Message.MessageParts {
-			e.recordMessagePart(m, mailItem)
+			_ = e.recordMessagePart(m, mailItem)
 		}
 
 		if mailItem.HTMLBody != "" {
@@ -104,13 +104,13 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 
 	} else {
 		if mailItem.Body, err = e.getBodyContent(mailItem.Message.GetBody()); err != nil {
-			e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
+			_ = e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
 			return errors.Wrapf(err, "Problem reading body")
 		}
 	}
 
 	if mailItem.Body, err = e.decodeBody(mailItem.Body, mailItem.ContentType, mailItem.TransferEncoding); err != nil {
-		e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
+		_ = e.writer.SendResponse(SMTP_ERROR_TRANSACTION_FAILED)
 		return errors.Wrapf(err, "Problem decoding body")
 	}
 
@@ -120,7 +120,7 @@ func (e *DataCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 	e.logger.Debugf("Body: %s", mailItem.Body)
 	e.logger.Debugf("Transfer Encoding: %s", mailItem.TransferEncoding)
 
-	e.writer.SendOkResponse()
+	_ = e.writer.SendOkResponse()
 	return nil
 }
 
@@ -156,16 +156,12 @@ func (e *DataCommandExecutor) decodeBody(body, contentType, transferEncoding str
 		if result, err = base64.StdEncoding.DecodeString(body); err != nil {
 			return body, err
 		}
-		break
 	case "quoted-printable":
 		if result, err = ioutil.ReadAll(quotedprintable.NewReader(strings.NewReader(body))); err != nil {
 			return body, err
 		}
-		break
-
 	default:
 		result = []byte(body)
-		break
 	}
 
 	if strings.Contains(contentType, "text/plain") {
@@ -215,10 +211,10 @@ func (e *DataCommandExecutor) recordMessagePart(message ISMTPMessagePart, mailIt
 		} else {
 			if e.isMIMEType(message, "multipart") {
 				for _, m := range message.GetMessageParts() {
-					e.recordMessagePart(m, mailItem)
+					_ = e.recordMessagePart(m, mailItem)
 				}
 			} else {
-				e.addAttachment(message, mailItem)
+				_ = e.addAttachment(message, mailItem)
 			}
 		}
 	}

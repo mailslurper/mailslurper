@@ -69,6 +69,6 @@ func (e *RcptCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 	}
 
 	mailItem.ToAddresses = append(mailItem.ToAddresses, to)
-	e.writer.SendOkResponse()
+	_ = e.writer.SendOkResponse()
 	return nil
 }

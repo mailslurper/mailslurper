@@ -34,17 +34,9 @@ func GetDatabaseEngineFromName(engineName string) (StorageType, error) {
 
 func IsValidStorageType(storageType string) bool {
 	_, err := GetDatabaseEngineFromName(storageType)
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func NeedDBHost(storageType string) bool {
-	if strings.ToLower(storageType) == "sqlite" {
-		return false
-	}
-
-	return true
+	return strings.ToLower(storageType) != "sqlite"
 }

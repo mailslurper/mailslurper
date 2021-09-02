@@ -167,7 +167,7 @@ LoadConfiguration reads data from a Reader into a new Configuration structure.
 */
 func LoadConfiguration(reader io.Reader) (*Configuration, error) {
 	var err error
-	var buffer = make([]byte, 4096)
+	var buffer []byte
 
 	result := &Configuration{}
 	if buffer, err = ioutil.ReadAll(reader); err != nil {
@@ -190,9 +190,13 @@ func LoadConfigurationFromFile(fileName string) (*Configuration, error) {
 	result := &Configuration{}
 	var configFileHandle *os.File
 
+	/* #nosec */
 	if configFileHandle, err = os.Open(fileName); err != nil {
 		return result, err
 	}
+	defer func() {
+		_ = configFileHandle.Close()
+	}()
 
 	if result, err = LoadConfiguration(configFileHandle); err != nil {
 		return result, err
@@ -213,7 +217,7 @@ func (config *Configuration) SaveConfiguration(configFile string) error {
 		return err
 	}
 
-	return ioutil.WriteFile(configFile, serializedConfigFile, 0644)
+	return ioutil.WriteFile(configFile, serializedConfigFile, 0600)
 }
 
 /*

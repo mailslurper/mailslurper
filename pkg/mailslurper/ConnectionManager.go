@@ -123,7 +123,7 @@ func (m *ConnectionManager) New(connection net.Conn) error {
 	}
 
 	if worker, err = m.serverPool.NextWorker(connection, m.mailItemChannel, m.killServerContext, m.closeChannel); err != nil {
-		connection.Close()
+		_ = connection.Close()
 		m.logger.WithError(err).Errorf("Error getting next SMTP worker")
 		return errors.Wrapf(err, "Error getting work in ConnectionManager")
 	}

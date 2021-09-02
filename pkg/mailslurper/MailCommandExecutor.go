@@ -72,7 +72,7 @@ func (e *MailCommandExecutor) Process(streamInput string, mailItem *MailItem) er
 	}
 
 	mailItem.FromAddress = from
-	e.writer.SendOkResponse()
+	_ = e.writer.SendOkResponse()
 
 	return nil
 }

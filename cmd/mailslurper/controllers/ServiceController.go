@@ -13,13 +13,14 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
+
 	"github.com/mailslurper/mailslurper/pkg/auth/auth"
 	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
 	"github.com/mailslurper/mailslurper/pkg/auth/jwt"
 	"github.com/mailslurper/mailslurper/pkg/cache"
 	"github.com/mailslurper/mailslurper/pkg/contexts"
 	"github.com/mailslurper/mailslurper/pkg/mailslurper"
-	"github.com/sirupsen/logrus"
 )
 
 /*
@@ -40,11 +41,12 @@ type ServiceController struct {
 DeleteMail is a request to delete mail items. This expects a body containing
 a DeleteMailRequest object.
 
-	DELETE: /mail/{pruneCode}
+	DELETE: /mail
+	Body: {"pruneCode": "60plus|30plus|2wksplus|all"}
 */
 func (c *ServiceController) DeleteMail(ctx echo.Context) error {
 	var err error
-	var deleteMailRequest *mailslurper.DeleteMailRequest
+	var deleteMailRequest mailslurper.DeleteMailRequest
 	var rowsDeleted int64
 
 	context := contexts.GetAdminContext(ctx)

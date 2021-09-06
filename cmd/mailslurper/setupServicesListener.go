@@ -7,6 +7,7 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/mailslurper/mailslurper/cmd/mailslurper/controllers"
 	"github.com/mailslurper/mailslurper/pkg/auth/authfactory"
 	"github.com/mailslurper/mailslurper/pkg/auth/authscheme"
@@ -64,14 +65,7 @@ func setupServicesListener() {
 	}
 
 	go func() {
-		var err error
-
-		if config.IsServiceSSL() {
-			err = service.StartTLS(config.GetFullServiceAppAddress(), config.CertFile, config.KeyFile)
-		} else {
-			err = service.Start(config.GetFullServiceAppAddress())
-		}
-
+		err := service.Start(config.GetFullServiceAppAddress())
 		if err != nil {
 			logger.WithError(err).Info("Shutting down HTTP service listener")
 		} else {

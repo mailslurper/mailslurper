@@ -97,7 +97,7 @@ func (storage *MySQLStorage) GetAttachment(mailID, attachmentID string) (*Attach
 		return result, errors.Wrapf(err, "Error getting attachment %s for mail %s: %s", attachmentID, mailID, getAttachmentSQL)
 	}
 
-	func() {
+	defer func() {
 		_ = rows.Close()
 	}()
 	rows.Next()
@@ -142,7 +142,9 @@ func (storage *MySQLStorage) GetMailByID(mailItemID string) (*MailItem, error) {
 		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
 	}
 
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	for rows.Next() {
 		err = rows.Scan(&dateSent, &fromAddress, &toAddressList, &subject, &xmailer, &body, &mailContentType, &boundary, &attachmentID, &fileName, &attachmentContentType)

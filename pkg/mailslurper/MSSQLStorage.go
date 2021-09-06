@@ -140,7 +140,9 @@ func (storage *MSSQLStorage) GetMailByID(mailItemID string) (*MailItem, error) {
 		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
 	}
 
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	for rows.Next() {
 		err = rows.Scan(&dateSent, &fromAddress, &toAddressList, &subject, &xmailer, &body, &mailContentType, &boundary, &attachmentID, &fileName, &attachmentContentType)
@@ -312,7 +314,9 @@ func (storage *MSSQLStorage) GetMailCollection(offset, length int, mailSearch *M
 		return result, errors.Wrapf(err, "Error getting mails: %s", sqlQuery)
 	}
 
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	currentMailItemID = ""
 

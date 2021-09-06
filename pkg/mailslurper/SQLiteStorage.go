@@ -172,7 +172,7 @@ func (storage *SQLiteStorage) GetMailByID(mailItemID string) (*MailItem, error) 
 		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
 	}
 
-	func() {
+	defer func() {
 		_ = rows.Close()
 	}()
 
@@ -248,7 +248,7 @@ func (storage *SQLiteStorage) GetMailMessageRawByID(mailItemID string) (string, 
 		return result, errors.Wrapf(err, "Error getting mail %s: %s", mailItemID, sqlQuery)
 	}
 
-	func() {
+	defer func() {
 		_ = rows.Close()
 	}()
 
@@ -324,11 +324,13 @@ func (storage *SQLiteStorage) GetMailCollection(offset, length int, mailSearch *
 	parameters = append(parameters, length)
 	parameters = append(parameters, offset)
 
+	storage.logger.Infof("getting mails: %s: %+v", sqlQuery, parameters)
+
 	if rows, err = storage.db.Query(sqlQuery, parameters...); err != nil {
 		return result, errors.Wrapf(err, "Error getting mails: %s", sqlQuery)
 	}
 
-	func() {
+	defer func() {
 		_ = rows.Close()
 	}()
 

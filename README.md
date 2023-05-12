@@ -44,7 +44,7 @@ This application uses a lot of great open source libraries.
 * [Font Awesome](http://fortawesome.github.io/Font-Awesome/) - Fonts under OFL License, CSS under MIT license
 * [GoUUID](https://github.com/nu7hatch/gouuid) - MIT
 * [go-cache](https://github.com/patrickmn/go-cache) - MIT
-* [go-mssqldb](https://github.com/denisenkom/go-mssqldb)
+* [go-mssqldb](https://github.com/denisenkom/go-mssqldb) - BSD 3-Clause
 * [Go-MySQL-Driver](https://github.com/go-sql-driver/mysql) - Mozilla Public License Version 2.0
 * [go-sqlite3](https://github.com/mattn/go-sqlite3) - MIT
 * [Handlebars](http://handlebarsjs.com) - MIT

@@ -24,6 +24,16 @@ $ go generate
 $ go build
 ```
 
+Quickstart With Docker
+----------------------
+
+```bash
+# Build container image (adjust repo location as necessary)
+docker build -t mailslurper 'https://github.com/mailslurper/mailslurper#master'
+# Run a temporary container. Note that upon shutdown, all stored messages will be lost when using this config.
+docker run -it --rm --name mailslurper -p 8080:8080 -p 8085:8085 -p 2500:2500 mailslurper
+```
+
 Library and Framework Credits
 -----------------------------
 This application uses a lot of great open source libraries.

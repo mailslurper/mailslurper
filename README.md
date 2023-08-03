@@ -24,6 +24,16 @@ $ go generate
 $ go build
 ```
 
+Quickstart With Docker
+----------------------
+
+```bash
+# Build container image (adjust repo location as necessary)
+docker build -t mailslurper 'https://github.com/mailslurper/mailslurper#master'
+# Run a temporary container. Note that upon shutdown, all stored messages will be lost when using this config.
+docker run -it --rm --name mailslurper -p 8080:8080 -p 8085:8085 -p 2500:2500 mailslurper
+```
+
 Library and Framework Credits
 -----------------------------
 This application uses a lot of great open source libraries.
@@ -44,7 +54,7 @@ This application uses a lot of great open source libraries.
 * [Font Awesome](http://fortawesome.github.io/Font-Awesome/) - Fonts under OFL License, CSS under MIT license
 * [GoUUID](https://github.com/nu7hatch/gouuid) - MIT
 * [go-cache](https://github.com/patrickmn/go-cache) - MIT
-* [go-mssqldb](https://github.com/denisenkom/go-mssqldb)
+* [go-mssqldb](https://github.com/denisenkom/go-mssqldb) - BSD 3-Clause
 * [Go-MySQL-Driver](https://github.com/go-sql-driver/mysql) - Mozilla Public License Version 2.0
 * [go-sqlite3](https://github.com/mattn/go-sqlite3) - MIT
 * [Handlebars](http://handlebarsjs.com) - MIT

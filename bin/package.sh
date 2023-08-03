@@ -95,6 +95,21 @@ if [ $TARGET = "osx" ]; then
 	cd ..
 fi
 
+# OSX ARM64
+if [ $TARGET = "osxarm64" ]; then
+	cd ../cmd/mailslurper
+	env GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w"
+	mv ./mailslurper ../../bin/deploy
+
+	cd ../createcredentials
+	env GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w"
+	mv ./createcredentials ../../bin/deploy
+
+	cd ../../bin/deploy
+	zip -r -X $ZIPFILENAME *
+	cd ..
+fi
+
 # Linux
 if [ $TARGET = "linux" ]; then
 	cd ../cmd/mailslurper

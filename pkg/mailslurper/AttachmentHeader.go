@@ -28,7 +28,7 @@ type AttachmentHeader struct {
 /*
 NewAttachmentHeader creates a new AttachmentHeader object
 */
-func NewAttachmentHeader(contentType, mimeVersion, contentTransferEncoding, contentDisposition, fileName, body string) *AttachmentHeader {
+func NewAttachmentHeader(contentType, mimeVersion, contentTransferEncoding, contentDisposition, fileName, body string, logger *logrus.Entry) *AttachmentHeader {
 	return &AttachmentHeader{
 		ContentType:             contentType,
 		MIMEVersion:             mimeVersion,
@@ -36,6 +36,7 @@ func NewAttachmentHeader(contentType, mimeVersion, contentTransferEncoding, cont
 		ContentDisposition:      contentDisposition,
 		FileName:                fileName,
 		Body:                    body,
+		Logger:                  logger,
 	}
 }
 

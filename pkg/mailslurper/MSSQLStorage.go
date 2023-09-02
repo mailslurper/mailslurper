@@ -28,10 +28,10 @@ type MSSQLStorage struct {
 /*
 NewMSSQLStorage creates a new storage object that interfaces to MSSQL
 */
-func NewMSSQLStorage(connectionInformation *ConnectionInformation, logger *logrus.Entry) *MSSQLStorage {
+func NewMSSQLStorage(connectionInformation *ConnectionInformation, xssService sanitizer.IXSSServiceProvider, logger *logrus.Entry) *MSSQLStorage {
 	return &MSSQLStorage{
 		connectionInformation: connectionInformation,
-		xssService:            sanitizer.NewXSSService(),
+		xssService:            xssService,
 		logger:                logger,
 	}
 }

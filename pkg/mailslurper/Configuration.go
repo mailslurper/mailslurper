@@ -43,11 +43,12 @@ type Configuration struct {
 	AdminKeyFile     string `json:"adminKeyFile"`
 	Theme            string `json:"theme"`
 
-	AuthSecret           string            `json:"authSecret"`
-	AuthSalt             string            `json:"authSalt"`
-	AuthenticationScheme string            `json:"authenticationScheme"`
-	AuthTimeoutInMinutes int               `json:"authTimeoutInMinutes"`
-	Credentials          map[string]string `json:"credentials"`
+	AuthSecret           string                `json:"authSecret"`
+	AuthSalt             string                `json:"authSalt"`
+	AuthenticationScheme string                `json:"authenticationScheme"`
+	AuthTimeoutInMinutes int                   `json:"authTimeoutInMinutes"`
+	Credentials          map[string]string     `json:"credentials"`
+	AllowedHTMLTags      []map[string][]string `json:"allowedHTMLTags"`
 
 	StorageType StorageType `json:"-"`
 }
@@ -160,6 +161,14 @@ func (config *Configuration) GetTheme() string {
 	}
 
 	return theme
+}
+
+/*
+GetAllowedHTMLTags returns the configured theme. If there isn't one, the
+default theme is used
+*/
+func (config *Configuration) GetAllowedHTMLTags() []map[string][]string {
+	return config.AllowedHTMLTags
 }
 
 /*

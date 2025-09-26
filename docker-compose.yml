@@ -1,0 +1,24 @@
+services:
+  mailslurper:
+    build: .
+    container_name: mailslurper
+    ports:
+      - "8080:8080"  # Web UI
+      - "8085:8085"  # Service API
+      - "2500:2500"  # SMTP
+    volumes:
+      - ./data:/app/data  # Persist database
+    environment:
+      - WWW_ADDRESS=0.0.0.0
+      - WWW_PORT=8080
+      - SERVICE_ADDRESS=0.0.0.0
+      - SERVICE_PORT=8085
+      - SMTP_ADDRESS=0.0.0.0
+      - SMTP_PORT=2500
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

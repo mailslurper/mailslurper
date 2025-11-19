@@ -1,6 +1,6 @@
 module github.com/mailslurper/mailslurper
 
-go 1.13
+go 1.24.0
 
 require (
 	github.com/adampresley/webframework v0.0.0-20200114004523-0c93acb6716f
@@ -12,13 +12,26 @@ require (
 	github.com/labstack/echo-contrib v0.8.0
 	github.com/labstack/echo/v4 v4.1.14
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
-	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
-	github.com/mjibson/esc v0.2.0 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/net v0.7.0
+	golang.org/x/crypto v0.45.0
+	golang.org/x/net v0.47.0
+)
+
+require (
+	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
+	github.com/gorilla/context v1.1.1 // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
+	github.com/labstack/gommon v0.3.0 // indirect
+	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/mattn/go-isatty v0.0.11 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasttemplate v1.1.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 )

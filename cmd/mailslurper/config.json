@@ -23,5 +23,36 @@
 	"authSecret": "",
 	"authSalt": "",
 	"authTimeoutInMinutes": 120,
-	"credentials": {}
+	"credentials": {},
+    "AllowedHTMLTags": [
+      {
+        "attributes": [
+          "align",
+          "class",
+          "style"
+        ],
+       "elements": [
+          "table",
+          "div",
+          "p",
+          "section",
+          "article",
+          "header",
+          "img",
+          "span"
+       ]
+     },
+      {
+        "attributes": [
+         "width",
+          "height",
+          "src",
+          "frameborder",
+          "allowfullscreen"
+        ],
+        "elements": [
+          "iframe"
+        ]
+      }
+    ]
 }

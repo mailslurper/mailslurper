@@ -28,10 +28,10 @@ type MySQLStorage struct {
 /*
 NewMySQLStorage creates a new storage object that interfaces to MySQL
 */
-func NewMySQLStorage(connectionInformation *ConnectionInformation, logger *logrus.Entry) *MySQLStorage {
+func NewMySQLStorage(connectionInformation *ConnectionInformation, xssService sanitizer.IXSSServiceProvider, logger *logrus.Entry) *MySQLStorage {
 	return &MySQLStorage{
 		connectionInformation: connectionInformation,
-		xssService:            sanitizer.NewXSSService(),
+		xssService:            xssService,
 		logger:                logger,
 	}
 }

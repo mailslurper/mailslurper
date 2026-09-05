@@ -1,24 +1,20 @@
 services:
-  mailslurper:
+  mylslurper:
     build: .
-    container_name: mailslurper
+    container_name: mylslurper
     ports:
-      - "8080:8080"  # Web UI
-      - "8085:8085"  # Service API
-      - "2500:2500"  # SMTP
+      - "4436:4436"  # Web UI (MailSlurper-compatible)
+      - "4437:4437"  # Service REST API for tests/tools
+      - "1025:1025"  # SMTPS (implicit TLS)
     volumes:
-      - ./data:/app/data  # Persist database
+      - ./data:/app/data  # Persist the SQLite database across restarts
     environment:
-      - WWW_ADDRESS=0.0.0.0
-      - WWW_PORT=8080
-      - SERVICE_ADDRESS=0.0.0.0
-      - SERVICE_PORT=8085
-      - SMTP_ADDRESS=0.0.0.0
-      - SMTP_PORT=2500
+      - DB_FILE=/app/data/mailslurper.db
+      - AUTH_SCHEME=none
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4437/mailcount"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 10s

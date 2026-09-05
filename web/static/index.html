@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>MylSlurper</title>
+	<script>
+		// Applied synchronously before first paint to avoid a flash of the
+		// wrong theme; store.js re-derives the same value once it loads.
+		(function () {
+			var t = localStorage.getItem("mylslurper.theme");
+			if (t === null) {
+				t = localStorage.getItem("mailslurper.theme");
+				if (t !== null) {
+					localStorage.setItem("mylslurper.theme", t);
+					localStorage.removeItem("mailslurper.theme");
+				}
+			}
+			var dark = (t === "dark" || t === "slate") ||
+				(t === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+			document.documentElement.dataset.theme = dark ? "dark" : "light";
+		})();
+	</script>
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+	<div class="app-shell">
+		<header class="app-header">
+			<a href="#/inbox" class="brand">
+				<span class="brand-mark" aria-hidden="true"><span class="brand-envelope"></span></span>
+				<span class="brand-name">MylSlurper</span>
+			</a>
+			<nav>
+				<a href="#/inbox" data-nav="inbox">Inbox</a>
+				<a href="#/saved-searches" data-nav="saved-searches">Saved searches</a>
+				<a href="#/settings" data-nav="settings">Settings</a>
+				<a href="#/login" id="nav-logout" style="display:none;">Logout</a>
+			</nav>
+		</header>
+		<main class="app-main" id="app-root"></main>
+	</div>
+
+	<dialog id="search-modal" aria-labelledby="search-modal-title">
+		<form id="search-form">
+			<div class="dialog-header">
+				<h2 id="search-modal-title">Search mail</h2>
+				<button type="button" class="btn btn-icon" data-dismiss aria-label="Close">✕</button>
+			</div>
+			<div class="search-form-fields">
+				<div class="field">
+					<label for="search-q">Message text</label>
+					<input id="search-q" type="text" placeholder="Subject or body contains…">
+				</div>
+				<div class="field-row">
+					<div class="field">
+						<label for="search-from">From</label>
+						<input id="search-from" type="text">
+					</div>
+					<div class="field">
+						<label for="search-to">To</label>
+						<input id="search-to" type="text">
+					</div>
+				</div>
+				<div class="field-row">
+					<div class="field">
+						<label for="search-start">Start date</label>
+						<input id="search-start" type="date">
+					</div>
+					<div class="field">
+						<label for="search-end">End date</label>
+						<input id="search-end" type="date">
+					</div>
+				</div>
+			</div>
+			<div class="dialog-actions">
+				<button type="button" id="search-saved-btn" class="btn">Saved searches</button>
+				<button type="button" id="search-save-btn" class="btn">Save this search</button>
+				<button type="button" id="search-clear-btn" class="btn btn-muted">Clear</button>
+				<button type="submit" class="btn btn-primary">Search</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="saved-search-picker" aria-labelledby="saved-search-picker-title">
+		<div class="dialog-header">
+			<h2 id="saved-search-picker-title">Saved searches</h2>
+			<button type="button" class="btn btn-icon" data-dismiss aria-label="Close">✕</button>
+		</div>
+		<div id="saved-search-picker-list"></div>
+	</dialog>
+
+	<template id="tpl-mail-row">
+		<div class="mail-row" role="row" tabindex="0">
+			<div class="mail-row-date" data-field="dateSent"></div>
+			<div class="mail-row-subject" data-field="subject"></div>
+			<div class="mail-row-from" data-field="fromAddress"></div>
+			<div class="mail-row-att"></div>
+		</div>
+	</template>
+
+	<script type="module" src="js/main.js"></script>
+</body>
+</html>

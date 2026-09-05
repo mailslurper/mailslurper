@@ -1,0 +1,18 @@
+{
+	"wwwAddress": "0.0.0.0",
+	"wwwPort": 4436,
+	"wwwPublicURL": "",
+	"serviceAddress": "0.0.0.0",
+	"servicePort": 4437,
+	"smtpAddress": "0.0.0.0",
+	"smtpPort": 1025,
+	"dbFile": "./mailslurper.db",
+	"maxConnections": 100,
+	"autoStartBrowser": false,
+	"certFile": "",
+	"keyFile": "",
+	"authenticationScheme": "none",
+	"authSecret": "",
+	"authTimeoutInMinutes": 60,
+	"credentials": {}
+}

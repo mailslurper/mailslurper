@@ -1,24 +1,32 @@
-module github.com/mailslurper/mailslurper
+module github.com/p0vidl0/mylslurper
 
-go 1.13
+go 1.26
 
 require (
-	github.com/adampresley/webframework v0.0.0-20200114004523-0c93acb6716f
-	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gorilla/sessions v1.2.0
-	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
-	github.com/labstack/echo-contrib v0.8.0
-	github.com/labstack/echo/v4 v4.1.14
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible
-	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
-	github.com/mjibson/esc v0.2.0 // indirect
-	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
+	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.9.3
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/net v0.7.0
+	golang.org/x/crypto v0.31.0
+	modernc.org/sqlite v1.34.4
+)
+
+require (
+	github.com/aymerick/douceur v0.2.0 // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/gorilla/css v1.0.1 // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/ncruces/go-strftime v0.1.9 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	modernc.org/gc/v3 v3.0.0-20240107210532-573471604cb6 // indirect
+	modernc.org/libc v1.55.3 // indirect
+	modernc.org/mathutil v1.6.0 // indirect
+	modernc.org/memory v1.8.0 // indirect
+	modernc.org/strutil v1.2.0 // indirect
+	modernc.org/token v1.1.0 // indirect
 )

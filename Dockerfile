@@ -1,46 +1,38 @@
-FROM golang:alpine as builder
+FROM golang:1.26-alpine AS builder
 
-LABEL maintainer="erguotou525@gmail.compute"
+WORKDIR /src
+COPY . .
 
-RUN apk --no-cache add git libc-dev gcc sqlite-dev
-RUN go install github.com/mjibson/esc@latest # TODO: Consider using native file embedding
+# No CGO needed: modernc.org/sqlite is pure Go, and the frontend is plain
+# static files embedded via go:embed, so no separate asset-bundling step
+# (esc, go generate) is required either.
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /out/mylslurper ./cmd/mylslurper
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /out/createcredentials ./cmd/createcredentials
 
-COPY . /go/src/github.com/mailslurper/mailslurper
-WORKDIR /go/src/github.com/mailslurper/mailslurper/cmd/mailslurper
+FROM alpine:latest AS certs
 
-RUN go get
-RUN go generate
-RUN CGO_CFLAGS="-D_LARGEFILE64_SOURCE" CGO_ENABLED=1 GOOS=linux go build -tags="sqlite_omit_load_extension"
+RUN apk add --no-cache openssl \
+ && mkdir -p /certs \
+ && openssl req -x509 -newkey rsa:2048 -nodes \
+      -keyout /certs/server.key \
+      -out /certs/server.crt \
+      -days 3650 \
+      -subj "/CN=localhost" \
+      -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
 
 FROM alpine:latest
 
-RUN apk add --no-cache ca-certificates \
- && echo -e '{\n\
-  "wwwAddress": "0.0.0.0",\n\
-  "wwwPort": 8080,\n\
-  "wwwPublicURL": "http://localhost:8080",\n\
-  "serviceAddress": "0.0.0.0",\n\
-  "servicePort": 8085,\n\
-  "servicePublicURL": "http://localhost:8085",\n\
-  "smtpAddress": "0.0.0.0",\n\
-  "smtpPort": 2500,\n\
-  "dbEngine": "SQLite",\n\
-  "dbHost": "",\n\
-  "dbPort": 0,\n\
-  "dbDatabase": "./mailslurper.db",\n\
-  "dbUserName": "",\n\
-  "dbPassword": "",\n\
-  "maxWorkers": 1000,\n\
-  "autoStartBrowser": false,\n\
-  "keyFile": "",\n\
-  "certFile": "",\n\
-  "adminKeyFile": "",\n\
-  "adminCertFile": ""\n\
-  }'\
-  >> config.json
+RUN apk add --no-cache ca-certificates wget
 
-COPY --from=builder /go/src/github.com/mailslurper/mailslurper/cmd/mailslurper/mailslurper mailslurper
+COPY --from=builder /out/mylslurper /out/createcredentials /app/
+COPY --from=certs /certs/server.crt /certs/server.key /app/
+WORKDIR /app
 
-EXPOSE 8080 8085 2500
+# Implicit TLS on SMTP (smtps://) and HTTPS on the web UI. Unset both
+# to fall back to plaintext.
+ENV CERT_FILE=/app/server.crt \
+    KEY_FILE=/app/server.key
 
-CMD ["./mailslurper"]
+EXPOSE 4436 4437 1025
+
+ENTRYPOINT ["/app/mylslurper"]

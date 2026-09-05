@@ -1,0 +1,129 @@
+@font-face {
+	font-family: "Inter";
+	src: url("../fonts/inter/InterVariable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "JetBrains Mono";
+	src: url("../fonts/jetbrains-mono/JetBrainsMono-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root,
+[data-theme="light"] {
+	--color-bg: oklch(0.99 0.002 250);
+	--color-surface: oklch(1 0 0);
+	--color-border: oklch(0.90 0.004 250);
+	--color-border-strong: oklch(0.80 0.006 250);
+	--color-border-faint: oklch(0.95 0.003 250);
+	--color-text: oklch(0.20 0.01 250);
+	--color-text-muted: oklch(0.50 0.01 250);
+	--color-text-faint: oklch(0.64 0.008 250);
+	--color-accent: oklch(0.55 0.18 265);
+	--color-accent-fg: oklch(1 0 0);
+	--color-pill: oklch(0.95 0.004 250);
+	--color-row-hover: oklch(0.965 0.003 250);
+	--color-row-selected: oklch(0.94 0.035 265);
+	--color-danger: oklch(0.55 0.19 25);
+	--color-danger-soft: oklch(0.95 0.03 25);
+	--color-success: oklch(0.50 0.14 145);
+	--color-overlay: oklch(0.2 0.01 250 / 0.45);
+	--color-shadow: rgba(0, 0, 0, 0.25);
+
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 0.75rem;
+	--space-4: 1rem;
+	--space-5: 1.5rem;
+	--space-6: 2rem;
+
+	--radius: 8px;
+	--radius-sm: 7px;
+	--radius-md: 9px;
+	--radius-lg: 16px;
+	--font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+	--font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+[data-theme="dark"] {
+	--color-bg: oklch(0.17 0.006 250);
+	--color-surface: oklch(0.21 0.007 250);
+	--color-border: oklch(0.30 0.008 250);
+	--color-border-strong: oklch(0.40 0.01 250);
+	--color-border-faint: oklch(0.26 0.007 250);
+	--color-text: oklch(0.93 0.004 250);
+	--color-text-muted: oklch(0.64 0.01 250);
+	--color-text-faint: oklch(0.50 0.01 250);
+	--color-accent: oklch(0.72 0.15 265);
+	--color-accent-fg: oklch(0.15 0.01 265);
+	--color-pill: oklch(0.27 0.008 250);
+	--color-row-hover: oklch(0.25 0.008 250);
+	--color-row-selected: oklch(0.30 0.06 265);
+	--color-danger: oklch(0.68 0.16 25);
+	--color-danger-soft: oklch(0.28 0.05 25);
+	--color-success: oklch(0.68 0.14 145);
+	--color-overlay: oklch(0.05 0.01 250 / 0.6);
+	--color-shadow: rgba(0, 0, 0, 0.45);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+body {
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-family: var(--font-sans);
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	transition: background 0.2s, color 0.2s;
+}
+
+::selection {
+	background: oklch(0.55 0.18 265 / 0.25);
+}
+
+a {
+	color: var(--color-accent);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1, h2, h3 {
+	margin: 0 0 var(--space-3);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+button, input, select {
+	font: inherit;
+	color: inherit;
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 1px;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+}

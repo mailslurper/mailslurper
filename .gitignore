@@ -25,12 +25,9 @@ tmp.log
 _testmain.go
 
 *.exe
-cmd/mailslurper/debug
-cmd/mailslurper/mailslurper
+cmd/mylslurper/mylslurper
 cmd/createcredentials/createcredentials
 mail.db
 mailslurper.db
-www/assets/mailslurper/.DS_Store
-scripts/*.pem
-scripts/*.csr
+mylslurper.db
 temp.db

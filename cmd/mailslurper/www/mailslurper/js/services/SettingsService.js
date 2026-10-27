@@ -95,10 +95,34 @@ window.SettingsService = {
 
 	/**
 	 * retrieveServiceSettings reads the MailSlurper service settings
-	 * from the user's local storage.
+	 * from the user's local storage. Call ensureServiceSettings first if
+	 * they may not have been stored yet (first page load).
 	 */
 	retrieveServiceSettings: function () {
 		return JSON.parse(localStorage["serviceSettings"]);
+	},
+
+	/**
+	 * ensureServiceSettings resolves once the MailSlurper service settings
+	 * are in the user's local storage, fetching them if they are not there yet.
+	 * getServiceURL can be called safely after it resolves.
+	 */
+	ensureServiceSettings: function () {
+		if (window.SettingsService.serviceSettingsExistInLocalStore()) {
+			return Promise.resolve();
+		}
+
+		return fetch("/servicesettings")
+			.then(function (response) {
+				if (!response.ok) {
+					throw new Error("Unable to get service settings: " + response.status);
+				}
+
+				return response.json();
+			})
+			.then(function (serviceSettings) {
+				window.SettingsService.storeServiceSettings(serviceSettings);
+			});
 	},
 
 	/**

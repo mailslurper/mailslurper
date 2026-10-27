@@ -173,7 +173,7 @@
 	var adminPruneTemplate;
 	var adminSettings;
 
-	var serviceURL = window.SettingsService.getServiceURL();
+	var serviceURL;
 	var pruneOptions = [];
 	var currentTheme = "";
 
@@ -185,7 +185,11 @@
 			window.AlertService.error(err);
 		});
 
-	window.SeedService.getPruneOptions(serviceURL)
+	window.SettingsService.ensureServiceSettings()
+		.then(function () {
+			serviceURL = window.SettingsService.getServiceURL();
+			return window.SeedService.getPruneOptions(serviceURL);
+		})
 		.then(function (response) {
 			pruneOptions = response;
 
